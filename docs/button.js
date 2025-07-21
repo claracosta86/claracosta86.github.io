@@ -13,10 +13,14 @@ form.addEventListener('submit', function(event) {
     body: JSON.stringify({ nome, email }),
   })
   .then(res => res.json())
-  .then(data => {
-    resultado.textContent = "Resposta do servidor:\n" + JSON.stringify(data, null, 2);
+});
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  fetch("http://localhost:8080/list-user", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
   })
-  .catch(err => {
-    resultado.textContent = "Erro: " + err.message;
-  });
+  .then(res => res.json())
 });

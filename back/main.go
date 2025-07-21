@@ -75,6 +75,7 @@ func enableCors(next http.Handler) http.Handler {
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/save-user", api.NewUserHandler().HandleUserSave)
+    	mux.HandleFunc("/list-user", api.NewUserHandler().HandleListUsers)
 
     log.Println("Servidor rodando em http://localhost:8080")
     log.Fatal(http.ListenAndServe(":8080", enableCors(mux)))
