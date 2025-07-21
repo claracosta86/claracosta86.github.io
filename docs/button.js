@@ -15,10 +15,10 @@ form.addEventListener('submit', function(event) {
   .then(res => res.json())
 });
 
-form.addEventListener('submit', function(event) {
+form.addEventListener('list', function(event) {
   event.preventDefault();
 
-  fetch("http://localhost:8080/list-user", {
+  fetch("http://localhost:8080/list-users", {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   })

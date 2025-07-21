@@ -45,6 +45,11 @@ func (h *UserHandler) HandleUserSave(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) HandleListUsers(w http.ResponseWriter, r *http.Request) {
+   if r.Method != http.MethodGet {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+    
     users, err := readUsersFromCSV()
     if err != nil {
         http.Error(w, "Erro ao ler usuários", http.StatusInternalServerError)
