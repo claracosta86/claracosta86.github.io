@@ -2,15 +2,27 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meu Site</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teste botão salvar usuário</title>
+  <link rel="stylesheet" href="style.css" /> <!-- se tiver -->
 </head>
 <body>
 
-<h1 class="container">Bem-vinda ao meu site!</h1>
+  <h1>Teste do botão salvar usuário</h1>
 
+  <form id="userForm">
+    <label>
+      Nome: <input type="text" id="nome" required />
+    </label><br/><br/>
+    <label>
+      Email: <input type="email" id="email" required />
+    </label><br/><br/>
+    <button type="submit">Salvar Usuário</button>
+  </form>
 
+  <pre id="resultado"></pre>
+
+  <script src="front/button.js"></script>
 
 </body>
 </html>
