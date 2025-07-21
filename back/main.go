@@ -58,7 +58,7 @@ func tratarEvento(w http.ResponseWriter, r *http.Request) {
 func enableCors(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         origin := r.Header.Get("Origin")
-        if origin == "http://127.0.0.1:5500" || origin == "https://seu-usuario.github.io" {
+        if origin == "http://127.0.0.1" || origin == "https://claracosta86.github.io" {
             w.Header().Set("Access-Control-Allow-Origin", origin)
         }
         w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
