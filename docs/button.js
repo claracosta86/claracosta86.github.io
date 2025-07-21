@@ -1,5 +1,6 @@
 const saveUser = document.getElementById('saveUser');
 const listUsers = document.getElementById('listUsers');
+const resultado = document.getElementById('resultado');
 
 saveUser.addEventListener('submit', function(event) {
   event.preventDefault();
@@ -23,4 +24,10 @@ listUsers.addEventListener('list', function(event) {
     headers: { "Content-Type": "application/json" },
   })
   .then(res => res.json())
+  .then(data => {
+    resultado.textContent = JSON.stringify(data, null, 2);
+  })
+  .catch(error => {
+    console.error('Erro ao listar usuários:', error);
+  });
 });
