@@ -4,6 +4,7 @@ import (
     "encoding/json"
     "log"
     "net/http"
+    "fmt"
 
     "poc2/back/model"
 
@@ -28,6 +29,7 @@ func (h *UserHandler) HandleUserSave(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Dados inválidos", http.StatusBadRequest)
         return
     }
+    fmt.Printf("Usuário recebido: %+v\n", user)
 
     // Aqui você pode salvar o user em banco, arquivo, etc
     log.Printf("Usuário recebido: %+v\n", user)
