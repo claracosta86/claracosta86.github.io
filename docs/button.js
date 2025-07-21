@@ -1,7 +1,7 @@
-const form = document.getElementById('userForm');
-const resultado = document.getElementById('resultado');
+const saveUser = document.getElementById('saveUser');
+const listUsers = document.getElementById('listUsers');
 
-form.addEventListener('submit', function(event) {
+saveUser.addEventListener('submit', function(event) {
   event.preventDefault();
 
   const nome = document.getElementById('nome').value;
@@ -15,7 +15,7 @@ form.addEventListener('submit', function(event) {
   .then(res => res.json())
 });
 
-form.addEventListener('list', function(event) {
+listUsers.addEventListener('list', function(event) {
   event.preventDefault();
 
   fetch("http://localhost:8080/list-users", {
