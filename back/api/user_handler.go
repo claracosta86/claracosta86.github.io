@@ -37,7 +37,6 @@ func (h *UserHandler) HandleUserSave(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Aqui você pode salvar o user em banco, arquivo, etc
     log.Printf("Usuário recebido: %+v\n", user)
 
     w.WriteHeader(http.StatusOK)
@@ -49,7 +48,7 @@ func (h *UserHandler) HandleListUsers(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
     }
-    
+
     users, err := readUsersFromCSV()
     if err != nil {
         http.Error(w, "Erro ao ler usuários", http.StatusInternalServerError)
@@ -65,7 +64,7 @@ func writeUserToCSV(user User) error {
         return err
     }
     defer file.Close()
-
+   log.Printf("Escrevendo usuário no CSV: %+v\n", user)
     writer := csv.NewWriter(file)
     defer writer.Flush()
 
