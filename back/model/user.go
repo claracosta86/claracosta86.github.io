@@ -1,8 +1,8 @@
 package model
 
 type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password,omitempty"` // Omit password in JSON responses
 	Role     string `json:"role"` // e.g., "admin", "user"

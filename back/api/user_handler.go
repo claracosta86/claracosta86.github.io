@@ -5,6 +5,8 @@ import (
     "log"
     "net/http"
     "fmt"
+    "os"
+    "encoding/csv"
 
     "poc2/back/model"
 
@@ -58,7 +60,7 @@ func (h *UserHandler) HandleListUsers(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(users)
 }
 
-func writeUserToCSV(user User) error {
+func writeUserToCSV(user model.User) error {
     file, err := os.OpenFile("users.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
     if err != nil {
         return err
@@ -71,14 +73,14 @@ func writeUserToCSV(user User) error {
     return writer.Write([]string{user.Name, user.Email})
 }
 
-func readUsersFromCSV() ([]User, error) {
+func readUsersFromCSV() ([]model.User, error) {
     file, err := os.Open("users.csv")
     if err != nil {
         return nil, err
     }
     defer file.Close()
 
-    var users []User
+    var users []model.User
     reader := csv.NewReader(file)
     records, err := reader.ReadAll()
     if err != nil {
@@ -87,7 +89,7 @@ func readUsersFromCSV() ([]User, error) {
 
     for _, record := range records {
         if len(record) >= 2 {
-            users = append(users, User{
+            users = append(users, model.User{
                 Name:  record[0],
                 Email: record[1],
             })
