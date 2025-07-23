@@ -12,6 +12,7 @@ type EventService interface {
 	GetAllEvents() ([]model.Event, error)
 	GetEventByID(eventID string) (model.Event, error)
 	UpdateEvent(event model.Event) error
+	DeleteEventByID(eventID string) error
 }
 
 type eventService struct {
@@ -42,4 +43,8 @@ func (s *eventService) GetEventByID(eventID string) (model.Event, error) {
 
 func (s *eventService) UpdateEvent(event model.Event) error {
 	return s.eventRepository.UpdateEventData(event)
+}
+
+func (s *eventService) DeleteEventByID(eventID string) error {
+	return s.eventRepository.DeleteEventByID(eventID)
 }

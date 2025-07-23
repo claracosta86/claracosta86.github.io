@@ -6,7 +6,7 @@ type Event struct {
 	Description string    `json:"description"`
 	OpenDays    string    `json:"open_days"`
 	Location    string    `json:"location"`
-	Price      float64    `json:"price"` // Price in USD
+	Price      float64    `json:"price"` // Price in R$
 	OpenTime        string    `json:"open_time"` // Time in HH:MM format
 	IsAccessible    bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
 	Contact         string    `json:"contact"` // Contact information for the event

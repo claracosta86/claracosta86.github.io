@@ -1,82 +1,28 @@
-// package main	
-
-// import "fmt"
-
-// func main() {
-
-// 	user := handle_user()
-// 	event := add_new_event()
-// 	attraction := add_new_tourist_attraction()
-
-
-
-// }
-
 package main
 
 import (
-    "encoding/json"
-    "fmt"
     "log"
     "net/http"
 
-	"poc2/back/api"
+    "poc2/back/routes"
+    "poc2/back/repository"
+    "poc2/back/service"
 
 )
 
-type MeuEvento struct {
-    Nome string `json:"nome"`
-    Idade int   `json:"idade"`
-}
-
-func tratarEvento(w http.ResponseWriter, r *http.Request) {
-    if r.Method != http.MethodPost {
-        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-        return
-    }
-
-    var evento MeuEvento
-    err := json.NewDecoder(r.Body).Decode(&evento)
-    if err != nil {
-        http.Error(w, "Erro ao decodificar JSON", http.StatusBadRequest)
-        return
-    }
-
-    fmt.Printf("Evento recebido: %+v\n", evento)
-
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintln(w, "Evento tratado com sucesso")
-}
-
-// func main() {
-//     http.HandleFunc("/claracosta86.github.io/", tratarEvento)
-//     fmt.Println("Servidor rodando em http://localhost:8080")
-//     log.Fatal(http.ListenAndServe(":8080", nil))
-// }
-
-
-func enableCors(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        origin := r.Header.Get("Origin")
-        if origin == "http://127.0.0.1" || origin == "https://claracosta86.github.io" {
-            w.Header().Set("Access-Control-Allow-Origin", origin)
-        }
-        w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-        if r.Method == http.MethodOptions {
-            w.WriteHeader(http.StatusOK)
-            return
-        }
-        next.ServeHTTP(w, r)
-    })
-}
 
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/save-user", api.NewUserHandler().HandleUserSave)
-    	mux.HandleFunc("/list-users", api.NewUserHandler().HandleListUsers)
-
     log.Println("Servidor rodando em http://localhost:8080")
-    log.Fatal(http.ListenAndServe(":8080", enableCors(mux)))
+
+	userRepo := repository.NewUserRepository()
+	// eventRepo := repository.NewEventRepository()
+	// attractionRepo := repository.NewAttractionRepository()
+
+	userService := service.NewUserService(userRepo)
+	eventService := service.NewEventService()
+	attractionService := service.NewAttractionService()
+
+	router := routes.SetupRoutes(userService, eventService, attractionService)
+
+	http.ListenAndServe(":8080", router)
 }

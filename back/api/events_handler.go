@@ -2,8 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+	"log"
 
 	"poc2/back/model"
 	"poc2/back/service"
@@ -14,22 +14,13 @@ type EventHandler struct {
 	eventService service.EventService
 }
 
-func EventHandler() *EventHandler {
+func NewEventHandler() *EventHandler {
 	return &EventHandler{
 		eventService: service.NewEventService(),
 	}
 }
 
-func (h *EventHandler) HandleGetUserEvents(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("userID").(string)
-	events, err := h.eventService.GetUserEvents(userID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	json.NewEncoder(w).Encode(events)
-}
-
+// /events/register [POST]
 func (h *EventHandler) HandleRegisterEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -43,16 +34,28 @@ func (h *EventHandler) HandleRegisterEvent(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = h.eventService.RegisterEvent(event)
-	if err != nil {
-		http.Error(w, "Erro ao salvar evento", http.StatusInternalServerError)
-		return
-	}
+	log.Printf("Evento recebido: %+v\n", event)
+	// err = h.eventService.RegisterEvent(event)
+	// if err != nil {
+	// 	http.Error(w, "Erro ao salvar evento", http.StatusInternalServerError)
+	// 	return
+	// }
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"sucesso"}`))
 }
 
+// /events/list [GET]
+func (h *EventHandler) HandleGetUserEvents(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("userID").(string)
+	events, err := h.eventService.GetUserEvents(userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(events)
+}
+
+// /events/all [GET]
 func (h *EventHandler) HandleGetAllEvents(w http.ResponseWriter, r *http.Request) {
 	events, err := h.eventService.GetAllEvents()
 	if err != nil {
@@ -62,6 +65,7 @@ func (h *EventHandler) HandleGetAllEvents(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(events)
 }
 
+// /events/:id [GET]
 func (h *EventHandler) HandleGetEventByID(w http.ResponseWriter, r *http.Request) {
 	eventID := r.Context().Value("eventID").(string)
 	event, err := h.eventService.GetEventByID(eventID)
@@ -72,6 +76,7 @@ func (h *EventHandler) HandleGetEventByID(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(event)
 }
 
+// /events/update [PUT]
 func (h *EventHandler) HandleUpdateEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -91,6 +96,18 @@ func (h *EventHandler) HandleUpdateEvent(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"status":"sucesso"}`))
+}
+
+// /events/delete/:id [DELETE]
+func (h *EventHandler) HandleDeleteEvent(w http.ResponseWriter, r *http.Request) {
+	eventID := r.Context().Value("eventID").(string)
+	err := h.eventService.DeleteEventByID(eventID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"status":"sucesso"}`))
 }

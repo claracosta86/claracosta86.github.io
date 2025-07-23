@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+    "log"
 
 	"poc2/back/model"
 
