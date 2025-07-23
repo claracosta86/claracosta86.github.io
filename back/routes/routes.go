@@ -7,13 +7,14 @@ import (
 
 	"poc2/back/api"
 	"poc2/back/service"
+	"poc2/back/lib/logging"
 
 )
 
 func SetupRoutes(userService service.UserService, eventService service.EventService, attractionService service.AttractionService) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Use(enableCors)
+	r.Use(enableCors, logging.LoggingMiddleware)
 
 	userHandler := api.NewUserHandler(userService, eventService, attractionService)
 	eventHandler := api.NewEventHandler()

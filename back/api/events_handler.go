@@ -7,6 +7,7 @@ import (
 
 	"poc2/back/model"
 	"poc2/back/service"
+	"poc2/back/lib/logging"
 
 )
 
@@ -41,7 +42,8 @@ func (h *EventHandler) HandleRegisterEvent(w http.ResponseWriter, r *http.Reques
 	// 	return
 	// }
 
-	w.WriteHeader(http.StatusOK)
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusOK}
+	rec.WriteHeader(http.StatusOK)
 }
 
 // /events/list [GET]

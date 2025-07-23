@@ -9,8 +9,8 @@ import (
    chi  "github.com/go-chi/chi/v5"
 
     "poc2/back/model"
-    "poc2/back/lib"
     "poc2/back/service"
+    "poc2/back/lib/utils"
 
 )
 
@@ -44,7 +44,7 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     fmt.Printf("Usuário recebido: %+v\n", user)
 
     err = h.userService.RegisterUser(user)
-    err = lib.WriteUserToCSV(user)
+    err = utils.WriteUserToCSV(user)
     if err != nil {
         http.Error(w, "Erro ao salvar usuário", http.StatusInternalServerError)
         return
