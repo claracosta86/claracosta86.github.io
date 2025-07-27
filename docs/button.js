@@ -7,27 +7,13 @@ saveUser.addEventListener('submit', function(event) {
 
   const nome = document.getElementById('nome').value;
   const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const role = document.getElementById('role').value;
 
-  fetch("http://localhost:8080/save-user", {
+  fetch("http://localhost:8080/users/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nome, email }),
+    body: JSON.stringify({ nome, email, password, role }),
   })
   .then(res => res.json())
-});
-
-listUsers.addEventListener('list', function(event) {
-  event.preventDefault();
-
-  fetch("http://localhost:8080/list-users", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  })
-  .then(res => res.json())
-  .then(data => {
-    resultado.textContent = JSON.stringify(data, null, 2);
-  })
-  .catch(error => {
-    console.error('Erro ao listar usuários:', error);
-  });
 });
