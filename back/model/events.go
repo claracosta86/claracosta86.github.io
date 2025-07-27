@@ -14,3 +14,14 @@ type Event struct {
 }
 
 type EventCollection []Event
+
+func (e Event) IsValid() bool {
+	return e.ID > 0 && e.Title != "" && e.Description != "" && e.OpenDays != "" && e.Location != "" && e.Price >= 0 && e.OpenTime != ""
+}
+
+func (e *EventCollection) IsEmpty() bool {
+	if e == nil || len(*e) == 0 {
+		return true
+	}
+	return false
+}

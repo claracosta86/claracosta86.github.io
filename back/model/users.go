@@ -8,12 +8,21 @@ type User struct {
 	Role     string `json:"role"` // e.g., "admin", "user"
 }
 
-type UserList struct {
-	Users []User `json:"users"`
-}
-
 type UserFavorites struct {
 	Events              EventCollection              `json:"events"`
 	TouristAttractions   TouristAttractionCollection   `json:"tourist_attractions"`
 }
 
+type UserCollection []User 
+
+
+func (u User) IsValid() bool {
+	return u.ID > 0 && u.Name != "" && u.Email != "" && u.Password != "" && u.Role != ""
+}
+
+func (u *UserCollection) IsEmpty() bool {
+	if u == nil || len(*u) == 0 {
+		return true
+	}
+	return false
+}

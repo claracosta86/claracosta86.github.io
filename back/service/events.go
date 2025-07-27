@@ -8,11 +8,10 @@ import (
 
 type EventService interface {
 	RegisterEvent(event model.Event) error
-	GetUserEvents(userID string) ([]model.Event, error)
 	GetAllEvents() ([]model.Event, error)
-	GetEventByID(eventID string) (model.Event, error)
+	GetEventByID(eventID int) (model.Event, error)
 	UpdateEvent(event model.Event) error
-	DeleteEventByID(eventID string) error
+	DeleteEventByID(eventID int) error
 }
 
 type eventService struct {
@@ -29,15 +28,11 @@ func (s *eventService) RegisterEvent(event model.Event) error {
 	return s.eventRepository.SaveEventData(event)
 }
 
-func (s *eventService) GetUserEvents(userID string) ([]model.Event, error) {
-	return s.eventRepository.FetchUserEvents(userID)
-}
-
 func (s *eventService) GetAllEvents() ([]model.Event, error) {
 	return s.eventRepository.FetchAllEvents()
 }
 
-func (s *eventService) GetEventByID(eventID string) (model.Event, error) {
+func (s *eventService) GetEventByID(eventID int) (model.Event, error) {
 	return s.eventRepository.FetchEventByID(eventID)
 }
 
@@ -45,6 +40,6 @@ func (s *eventService) UpdateEvent(event model.Event) error {
 	return s.eventRepository.UpdateEventData(event)
 }
 
-func (s *eventService) DeleteEventByID(eventID string) error {
+func (s *eventService) DeleteEventByID(eventID int) error {
 	return s.eventRepository.DeleteEventByID(eventID)
 }

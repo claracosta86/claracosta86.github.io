@@ -15,10 +15,10 @@ func main() {
     log.Println("Servidor rodando em http://localhost:8080")
 
 	userRepo := repository.NewUserRepository()
-	// eventRepo := repository.NewEventRepository()
-	// attractionRepo := repository.NewAttractionRepository()
+	eventRepo := repository.NewEventRepository()
+	attractionRepo := repository.NewAttractionRepository()
 
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, eventRepo, attractionRepo)
 	eventService := service.NewEventService()
 	attractionService := service.NewAttractionService()
 

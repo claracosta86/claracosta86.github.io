@@ -4,14 +4,24 @@ type TouristAttraction struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Date        string `json:"date"` // ISO 8601 format
+	Date        string `json:"date"` // YYYY-MM-DD
 	Location    string `json:"location"`
 	Price      float64 `json:"price"` // Price in R$
-	DurationTime    string `json:"duration_time"` // Time in HH:MM format
-	IsAccessible bool   `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
-	Contact string `json:"contact"` // Contact information for the tourist attraction
-	Image string `json:"image"` // Image associated with the tourist attraction
+	DurationTime    string `json:"duration_time"` // HH:MM 
+	IsAccessible bool   `json:"is_accessible"` 
+	Contact string `json:"contact"` 
+	Image string `json:"image"`
 }
 
 type TouristAttractionCollection []TouristAttraction 
 
+func (t TouristAttraction) IsValid() bool {
+	return t.ID > 0 && t.Title != "" && t.Description != "" && t.Date != "" && t.Location != "" && t.Price >= 0 && t.DurationTime != ""
+}
+
+func (t *TouristAttractionCollection) IsEmpty() bool {
+	if t == nil || len(*t) == 0 {
+		return true
+	}
+	return false
+}

@@ -8,11 +8,10 @@ import (
 
 type AttractionService interface {
 	RegisterAttraction(attraction model.TouristAttraction) error
-	GetUserAttractions(userID string) ([]model.TouristAttraction, error)
 	GetAllAttractions() ([]model.TouristAttraction, error)
-	GetAttractionByID(attractionID string) (model.TouristAttraction, error)
+	GetAttractionByID(attractionID int) (model.TouristAttraction, error)
 	UpdateAttraction(attraction model.TouristAttraction) error
-	DeleteAttractionByID(attractionID string) error
+	DeleteAttractionByID(attractionID int) error
 }
 
 type attractionService struct {
@@ -29,15 +28,11 @@ func (s *attractionService) RegisterAttraction(attraction model.TouristAttractio
 	return s.attractionRepository.SaveAttractionData(attraction)
 }
 
-func (s *attractionService) GetUserAttractions(userID string) ([]model.TouristAttraction, error) {
-	return s.attractionRepository.FetchUserAttractions(userID)
-}
-
 func (s *attractionService) GetAllAttractions() ([]model.TouristAttraction, error) {
 	return s.attractionRepository.FetchAllAttractions()
 }
 
-func (s *attractionService) GetAttractionByID(attractionID string) (model.TouristAttraction, error) {
+func (s *attractionService) GetAttractionByID(attractionID int) (model.TouristAttraction, error) {
 	return s.attractionRepository.FetchAttractionByID(attractionID)
 }
 
@@ -45,7 +40,7 @@ func (s *attractionService) UpdateAttraction(attraction model.TouristAttraction)
 	return s.attractionRepository.UpdateAttractionData(attraction)
 }
 
-func (s *attractionService) DeleteAttractionByID(attractionID string) error {
+func (s *attractionService) DeleteAttractionByID(attractionID int) error {
 	return s.attractionRepository.DeleteAttractionByID(attractionID)
 }
 

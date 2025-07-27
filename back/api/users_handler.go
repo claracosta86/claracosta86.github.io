@@ -5,6 +5,7 @@ import (
     "log"
     "net/http"
     "fmt"
+    "strconv"   
 
    chi  "github.com/go-chi/chi/v5"
 
@@ -28,9 +29,11 @@ func NewUserHandler(userService service.UserService, eventService service.EventS
 	}
 }
 
+// @Register a new user handler
+// @Accept json
 // /users/register [POST]
 func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request) {
-	 if r.Method != http.MethodPost {
+	if r.Method != http.MethodPost {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
     }
@@ -56,37 +59,33 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     w.Write([]byte(`{"status":"sucesso"}`))
 }
 
-// /users/fetch [GET]
+// @Fetch user profile data
+// /users/fetch/:id [GET]
 func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodGet {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
     }
 
-    users := []model.User{
-        {
-            ID: 1,
-            Name: "Clara",
-            Email: "clara004.costa@gmail.com",
-        },
-        {
-            ID: 2,
-            Name: "Costa",
-            Email: "claraufmg4@gmail.com",
-        },
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
     }
-    // user, err := lib.ReadUsersFromCSV(user.ID)
-    // if err != nil {
-    //     http.Error(w, "Erro ao ler usuários", http.StatusInternalServerError)
-    //     return
-    // }
 
-    userFavoritesList, _ := h.userService.FetchUserDataByID(users[0].ID)
+    user, err := h.userService.GetUserDataByID(userID)
+    if err != nil {
+        http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+        return
+    }
 
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(userFavoritesList)
+    json.NewEncoder(w).Encode(user)
 }
 
+// @Update user profile data
+// @Accept json
 // /users/update [PUT]
 func (h *UserHandler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPut {
@@ -111,6 +110,7 @@ func (h *UserHandler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(`{"status":"usuário atualizado com sucesso"}`))
 }
 
+// @Get users favorites events and attractions
 // /users/favorites/:id [GET]
 func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodGet {
@@ -118,8 +118,14 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
         return
     }
 
-    userID := chi.URLParam(r, "id")
-    favorites, err := h.userService.FetchUserFavorites(userID)
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    favorites, err := h.userService.GetUserFavoritesByID(userID)
     if err != nil {
         http.Error(w, "Erro ao buscar favoritos", http.StatusInternalServerError)
         return
@@ -129,6 +135,7 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
     json.NewEncoder(w).Encode(favorites)
 }
 
+// @Deletes an user from the system
 // /users/delete/:id [DELETE]
 func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodDelete {
@@ -136,8 +143,14 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    userID := r.Context().Value("userID").(string)
-    err := h.userService.DeleteUserByID(userID)
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    err = h.userService.DeleteUserByID(userID)
     if err != nil {
         http.Error(w, "Erro ao deletar usuário", http.StatusInternalServerError)
         return
@@ -147,6 +160,8 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(`{"status":"usuário deletado com sucesso"}`))
 }
 
+// @Add an event to user favorites
+// @Accept json
 // /users/favorites/:id/event/add [POST]
 func (h *UserHandler) HandleAddEventToFavorites(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
@@ -154,14 +169,21 @@ func (h *UserHandler) HandleAddEventToFavorites(w http.ResponseWriter, r *http.R
         return
     }
 
-    var user model.User
-    err := json.NewDecoder(r.Body).Decode(&user)
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "UserID inválido", http.StatusBadRequest)
+        return
+    }
+
+    var event model.Event
+    err = json.NewDecoder(r.Body).Decode(&event)
     if err != nil {
         http.Error(w, "Dados inválidos", http.StatusBadRequest)
         return
     }
 
-    err = h.userService.AddEventToFavorites(user)
+    err = h.userService.AddEventToFavorites(userID, event)
     if err != nil {
         http.Error(w, "Erro ao adicionar evento aos favoritos", http.StatusInternalServerError)
         return
@@ -170,6 +192,39 @@ func (h *UserHandler) HandleAddEventToFavorites(w http.ResponseWriter, r *http.R
     w.WriteHeader(http.StatusOK)
 }
 
+// @Remove an event from user favorites
+// /users/favorites/:id/event/:eventID/delete [POST]
+func (h *UserHandler) HandleDeleteEventFromFavorites(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    strEventID := chi.URLParam(r, "eventID")
+    eventID, err := strconv.Atoi(strEventID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    err = h.userService.DeleteEventFromFavorites(userID, eventID)
+    if err != nil {
+        http.Error(w, "Erro ao remover evento dos favoritos", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+}
+
+// @Add an attraction from user favorites
+// @Accept json
 // /users/favorites/:id/attraction/add [POST]
 func (h *UserHandler) HandleAddAttractionToFavorites(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
@@ -177,16 +232,54 @@ func (h *UserHandler) HandleAddAttractionToFavorites(w http.ResponseWriter, r *h
         return
     }
 
-    var user model.User
-    err := json.NewDecoder(r.Body).Decode(&user)
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    var attraction model.TouristAttraction
+    err = json.NewDecoder(r.Body).Decode(&attraction)
     if err != nil {
         http.Error(w, "Dados inválidos", http.StatusBadRequest)
         return
     }
 
-    err = h.userService.AddAttractionToFavorites(user)
+    err = h.userService.AddAttractionToFavorites(userID, attraction)
     if err != nil {
         http.Error(w, "Erro ao adicionar atração aos favoritos", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+}
+
+// @Remove an attraction from user favorites
+// /users/favorites/:id/attraction/:attractionID/delete [POST]
+func (h *UserHandler) HandleDeleteAttractionFromFavorites(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    strAttractionID := chi.URLParam(r, "attractionID")
+    attractionID, err := strconv.Atoi(strAttractionID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    err = h.userService.DeleteAttractionFromFavorites(userID, attractionID)
+    if err != nil {
+        http.Error(w, "Erro ao remover atração dos favoritos", http.StatusInternalServerError)
         return
     }
 

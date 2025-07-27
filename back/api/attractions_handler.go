@@ -3,9 +3,13 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 
 	"poc2/back/model"
 	"poc2/back/service"
+	"poc2/back/lib/logging"
 
 )
 
@@ -19,6 +23,8 @@ func NewAttractionHandler() *AttractionHandler {
 	}
 }
 
+// @ Register a new tourist attraction handler
+// @ Accept json
 // /attractions/register [POST]
 func (h *AttractionHandler) HandleRegisterAttraction(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -39,21 +45,11 @@ func (h *AttractionHandler) HandleRegisterAttraction(w http.ResponseWriter, r *h
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"sucesso"}`))
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusNoContent}
+	rec.WriteHeader(http.StatusNoContent)
 }
 
-// /attractions/user [GET]
-func (h *AttractionHandler) HandleGetUserAttractions(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("userID").(string)
-	attractions, err := h.attractionService.GetUserAttractions(userID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	json.NewEncoder(w).Encode(attractions)
-}
-
+// @ Gets all tourist attractions available
 // /attractions/all [GET]
 func (h *AttractionHandler) HandleGetAllAttractions(w http.ResponseWriter, r *http.Request) {
 	attractions, err := h.attractionService.GetAllAttractions()
@@ -62,19 +58,34 @@ func (h *AttractionHandler) HandleGetAllAttractions(w http.ResponseWriter, r *ht
 		return
 	}
 	json.NewEncoder(w).Encode(attractions)
+
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusOK}
+	rec.WriteHeader(http.StatusOK)
 }
 
+// @ Gets a tourist attraction information by its ID
 // /attractions/:id [GET]
 func (h *AttractionHandler) HandleGetAttractionByID(w http.ResponseWriter, r *http.Request) {
-	attractionID := r.Context().Value("attractionID").(string)
-	attraction, err := h.attractionService.GetAttractionByID(attractionID)
+	attractionID := chi.URLParam(r, "id")
+	ID, err := strconv.Atoi(attractionID)
+	if err != nil {
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+
+	attraction, err := h.attractionService.GetAttractionByID(ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(attraction)
+
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusOK}
+	rec.WriteHeader(http.StatusOK)
 }
 
+// @ Updates a tourist attraction information
+// @ Accept json
 // /attractions/update [PUT]
 func (h *AttractionHandler) HandleUpdateAttraction(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
@@ -95,9 +106,11 @@ func (h *AttractionHandler) HandleUpdateAttraction(w http.ResponseWriter, r *htt
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusNoContent}
+	rec.WriteHeader(http.StatusNoContent)
 }
 
+// @ Deletes a tourist attraction by its ID
 // attractions/delete/:id [DELETE]
 func (h *AttractionHandler) HandleDeleteAttraction(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
@@ -105,12 +118,19 @@ func (h *AttractionHandler) HandleDeleteAttraction(w http.ResponseWriter, r *htt
 		return
 	}
 
-	attractionID := r.Context().Value("attractionID").(string)
-	err := h.attractionService.DeleteAttractionByID(attractionID)
+	attractionID := chi.URLParam(r, "id")
+	ID, err := strconv.Atoi(attractionID)
+	if err != nil {
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+
+	err = h.attractionService.DeleteAttractionByID(ID)
 	if err != nil {
 		http.Error(w, "Erro ao deletar attractiono", http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusNoContent}
+	rec.WriteHeader(http.StatusNoContent)
 }

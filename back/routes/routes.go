@@ -28,9 +28,11 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 			r.Get("/{id}", userHandler.HandleGetUserFavorites)
 			r.Route("/{id}/event", func (r chi.Router) {
 				r.Post("/add", userHandler.HandleAddEventToFavorites)
+				r.Delete("/delete", userHandler.HandleDeleteEventFromFavorites)
 			})
 			r.Route("/{id}/attraction", func (r chi.Router) {
-				r.Post("/", userHandler.HandleAddAttractionToFavorites)
+				r.Post("/add", userHandler.HandleAddAttractionToFavorites)
+				r.Delete("/delete", userHandler.HandleDeleteAttractionFromFavorites)
 			})
 		})
 		r.Put("/update", userHandler.HandleUpdateUser)
@@ -41,7 +43,6 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	// Rotas de eventos
 	r.Route("/events", func(r chi.Router) {
 		r.Post("/register", eventHandler.HandleRegisterEvent)
-		r.Get("/list", eventHandler.HandleGetUserEvents)
 		r.Get("/all", eventHandler.HandleGetAllEvents)
 		r.Get("/{id}", eventHandler.HandleGetEventByID)
 		r.Put("/update", eventHandler.HandleUpdateEvent)
@@ -51,7 +52,6 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	// Rotas de atrações
 	r.Route("/attractions", func(r chi.Router) {
 		r.Post("/register", attractionHandler.HandleRegisterAttraction)
-		r.Get("/list", attractionHandler.HandleGetUserAttractions)
 		r.Get("/all", attractionHandler.HandleGetAllAttractions)
 		r.Get("/{id}", attractionHandler.HandleGetAttractionByID)
 		r.Put("/update", attractionHandler.HandleUpdateAttraction)

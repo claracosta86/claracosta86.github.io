@@ -3,7 +3,9 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"log"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 
 	"poc2/back/model"
 	"poc2/back/service"
@@ -21,6 +23,8 @@ func NewEventHandler() *EventHandler {
 	}
 }
 
+// @ Register a new event handler
+// @ Accept json
 // /events/register [POST]
 func (h *EventHandler) HandleRegisterEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -35,28 +39,17 @@ func (h *EventHandler) HandleRegisterEvent(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	log.Printf("Evento recebido: %+v\n", event)
-	// err = h.eventService.RegisterEvent(event)
-	// if err != nil {
-	// 	http.Error(w, "Erro ao salvar evento", http.StatusInternalServerError)
-	// 	return
-	// }
-
-	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusOK}
-	rec.WriteHeader(http.StatusOK)
-}
-
-// /events/list [GET]
-func (h *EventHandler) HandleGetUserEvents(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("userID").(string)
-	events, err := h.eventService.GetUserEvents(userID)
+	err = h.eventService.RegisterEvent(event)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erro ao salvar evento", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(events)
+
+	rec := &logging.StatusRecorder{ResponseWriter: w, Status: http.StatusNoContent}
+	rec.WriteHeader(http.StatusNoContent)
 }
 
+// @ Gets all events
 // /events/all [GET]
 func (h *EventHandler) HandleGetAllEvents(w http.ResponseWriter, r *http.Request) {
 	events, err := h.eventService.GetAllEvents()
@@ -67,10 +60,17 @@ func (h *EventHandler) HandleGetAllEvents(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(events)
 }
 
+// @ Gets an event by its ID
 // /events/:id [GET]
 func (h *EventHandler) HandleGetEventByID(w http.ResponseWriter, r *http.Request) {
-	eventID := r.Context().Value("eventID").(string)
-	event, err := h.eventService.GetEventByID(eventID)
+	eventID := chi.URLParam(r, "id")
+	ID, err := strconv.Atoi(eventID)
+	if err != nil {
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+
+	event, err := h.eventService.GetEventByID(ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,6 +78,8 @@ func (h *EventHandler) HandleGetEventByID(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(event)
 }
 
+// @ Updates an event
+// @ Accepts JSON
 // /events/update [PUT]
 func (h *EventHandler) HandleUpdateEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
@@ -102,14 +104,22 @@ func (h *EventHandler) HandleUpdateEvent(w http.ResponseWriter, r *http.Request)
 	w.Write([]byte(`{"status":"sucesso"}`))
 }
 
+// Deletes an event by its ID
 // /events/delete/:id [DELETE]
 func (h *EventHandler) HandleDeleteEvent(w http.ResponseWriter, r *http.Request) {
-	eventID := r.Context().Value("eventID").(string)
-	err := h.eventService.DeleteEventByID(eventID)
+	eventID := chi.URLParam(r, "id")
+	ID, err := strconv.Atoi(eventID)
+	if err != nil {
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+
+	err = h.eventService.DeleteEventByID(ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"status":"sucesso"}`))
 }
