@@ -1,14 +1,20 @@
 
-registerUser.addEventListener('submit', function(event) {
-  event.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+  const registerForm = document.getElementById('registerUser');
+  registerForm.addEventListener('submit', function(event) {
+    event.preventDefault();
 
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const passwordConfirm = document.getElementById('passwordConfirm').value;
   const document = document.getElementById('document').value;
-  const companyName = document.getElementById('companyName').value;
   const role = document.getElementById('role').value;
+
+  const companyNameElement = document.getElementById('companyName');
+  const companyName = companyNameElement ? companyNameElement.value : "";
+
+
 
   fetch("http://localhost:8080/users/register", {
     method: "POST",
@@ -33,4 +39,4 @@ registerUser.addEventListener('submit', function(event) {
         console.error("Erro:", err);
         alert("Erro ao cadastrar usuário.");
       });
-});
+})});
