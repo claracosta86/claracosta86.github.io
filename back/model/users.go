@@ -4,20 +4,27 @@ type User struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 	Email    string `json:"email"`
+	Document      string `json:"document"` // enum: [CPF, CNPJ]
+	CompanyName string `json:"company_name"`
 	Password string `json:"password,omitempty"` // Omit password in JSON responses
-	Role     string `json:"role"` // e.g., "admin", "user"
+	PasswordConfirm string `json:"password_confirm,omitempty"` // Omit password confirm in JSON responses
+	Role     string `json:"role"` //  enum: ["organizer", "common"]
 }
 
-type UserFavorites struct {
-	Events              EventCollection              `json:"events"`
-	TouristAttractions   TouristAttractionCollection   `json:"tourist_attractions"`
-}
-
-type UserCollection []User 
+type UserCollection []User
 
 
 func (u User) IsValid() bool {
-	return u.ID > 0 && u.Name != "" && u.Email != "" && u.Password != "" && u.Role != ""
+	 if u.Name == "" || u.Email == "" || u.Password == "" ||
+        u.Role == "" || u.Document == "" || (u.PasswordConfirm != u.Password) {
+        return false
+    }
+
+    if u.Role == "organizer" && u.CompanyName == "" {
+        return false
+    }
+
+    return true
 }
 
 func (u *UserCollection) IsEmpty() bool {
@@ -25,4 +32,9 @@ func (u *UserCollection) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+type UserFavorites struct {
+	Events              EventCollection              `json:"events"`
+	TouristAttractions   TouristAttractionCollection   `json:"tourist_attractions"`
 }

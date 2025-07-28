@@ -36,8 +36,8 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
 	if r.Method != http.MethodPost {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
-    }
-
+    }   
+    
     var user model.User
     err := json.NewDecoder(r.Body).Decode(&user)
     if err != nil {
@@ -47,6 +47,11 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     fmt.Printf("Usuário recebido: %+v\n", user)
 
     err = h.userService.RegisterUser(user)
+    if err != nil {
+        http.Error(w, "Erro ao salvar usuário", http.StatusInternalServerError)
+        return
+    }
+    
     err = utils.WriteUserToCSV(user)
     if err != nil {
         http.Error(w, "Erro ao salvar usuário", http.StatusInternalServerError)

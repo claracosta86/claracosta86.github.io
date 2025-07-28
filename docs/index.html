@@ -1,32 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Teste botão salvar usuário</title>
-  <link rel="stylesheet" href="begin.css" /> <!-- se tiver -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brolê - Página Inicial</title>
+  <link rel="icon" type="image/x-icon" href="logo.png" />
+  <link rel="stylesheet" href="index.css" />
 </head>
 <body>
-
-  <h1>Teste do botão salvar usuário</h1>
-
-  <form id="saveUser">
-    <label>
-      Nome: <input type="text" id="nome" required />
-    </label><br/><br/>
-    <label>
-      Email: <input type="email" id="email" required />
-    </label><br/><br/>
-    <label>
-      Senha: <input type="password" id="password" required />
-    </label><br/><br/>
-    <label>
-      Cargo: <input type="text" id="role" required />
-    </label><br/><br/>
-    <button type="submit">Salvar Usuário</button>
-  </form>
-
-  <script src="button.js"></script>
-
+  <main class="phone">
+    <div class="screen">
+      <img src="images/logo.png" alt="Logo Brôle" class="logo-img">
+      <div class="box">
+        <h2>Bem-vindo(a)!</h2>
+        <a href="login/login-common.html" class="btn">Sou Usuário</a>
+        <a href="login/login-organizer.html" class="btn">Sou Organizador</a>
+      </div>
+      <img src="images/index-bottom.png" alt="Grupo de pessoas" class="footer-img">
+    </div>
+  </main>
 </body>
 </html>
