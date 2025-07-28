@@ -58,6 +58,13 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 		r.Delete("/delete/{id}", attractionHandler.HandleDeleteAttraction)
 	})
 
+	fs := http.FileServer(http.Dir("./docs"))
+	r.Handle("/*", fs)
+	
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./docs/index.html")
+	})
+
 	return r
 }
 

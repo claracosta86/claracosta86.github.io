@@ -8,19 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const passwordConfirm = document.getElementById('passwordConfirm').value;
-  const document = document.getElementById('document').value;
+  const documentNumber = document.getElementById('document').value;
   const role = document.getElementById('role').value;
 
   const companyNameElement = document.getElementById('companyName');
   const companyName = companyNameElement ? companyNameElement.value : "";
 
-
-
   fetch("http://localhost:8080/users/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-        name, email, password, passwordConfirm, document, companyName, role
+        name, email, password, passwordConfirm, document: documentNumber, companyName, role
     }),
   })
   .then(res => {
