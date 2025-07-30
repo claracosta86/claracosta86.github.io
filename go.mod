@@ -3,3 +3,8 @@ module poc2
 go 1.24.5
 
 require github.com/go-chi/chi/v5 v5.2.2
+
+require (
+	github.com/gorilla/securecookie v1.1.2 // indirect
+	github.com/gorilla/sessions v1.4.0 // indirect
+)

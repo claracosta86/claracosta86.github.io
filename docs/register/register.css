@@ -27,7 +27,7 @@ body {
   overflow-y: auto; /* ⬅️ permite rolagem */
 }
 
-/* Logo Broê */
+/* Logo Cultural */
 .logo {
   font-size: 42px;
   font-weight: bold;
@@ -37,9 +37,9 @@ body {
 }
 
 .logo-img {
-  width: 180px;
+  width: 120px; /* largura da imagem do logo */
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px; 
 }
 
 /* Caixa de login */
@@ -129,4 +129,19 @@ body {
   color: #346aff;
   text-decoration: none;
 }
+
+/* Errors */
+.input-error {
+  border: 2px solid red;
+}
+
+.label-error {
+  color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+}
+
 

@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const passwordConfirm = document.getElementById('passwordConfirm').value;
   const documentNumber = document.getElementById('document').value;
   const role = document.getElementById('role').value;
-
   const companyNameElement = document.getElementById('companyName');
   const companyName = companyNameElement ? companyNameElement.value : "";
 

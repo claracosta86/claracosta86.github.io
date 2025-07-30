@@ -21,7 +21,7 @@ func WriteUserToCSV(user model.User) error {
     writer := csv.NewWriter(file)
     defer writer.Flush()
 
-    return writer.Write([]string{fmt.Sprintf("%d", user.ID), user.Name, user.Email, user.Password, user.Role})
+    return writer.Write([]string{fmt.Sprintf("%d", user.ID), user.Name, user.Email, user.Password, user.Type})
 }
 
 

@@ -36,18 +36,10 @@ body {
   padding: 30px 20px;
 }
 
-/* Logo */
-.logo {
-  font-size: 42px;
-  font-weight: bold;
-  margin-top: 20px;
-  text-align: center;
-}
-
 .logo-img {
-  width: 180px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  width: 120px; /* largura da imagem do logo */
+  margin-top: 50px;
+  margin-bottom: 20px; 
 }
 
 

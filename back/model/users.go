@@ -8,7 +8,7 @@ type User struct {
 	CompanyName string `json:"company_name"`
 	Password string `json:"password,omitempty"` // Omit password in JSON responses
 	PasswordConfirm string `json:"password_confirm,omitempty"` // Omit password confirm in JSON responses
-	Role     string `json:"role"` //  enum: ["organizer", "common"]
+	Type     string `json:"type"` //  enum: ["organizer", "common"]
 }
 
 type UserCollection []User
@@ -16,11 +16,11 @@ type UserCollection []User
 
 func (u User) IsValid() bool {
 	 if u.Name == "" || u.Email == "" || u.Password == "" ||
-        u.Role == "" || u.Document == "" || (u.PasswordConfirm != u.Password) {
+        u.Type == "" || u.Document == "" || (u.PasswordConfirm != u.Password) {
         return false
     }
 
-    if u.Role == "organizer" && u.CompanyName == "" {
+    if u.Type == "organizer" && u.CompanyName == "" {
         return false
     }
 

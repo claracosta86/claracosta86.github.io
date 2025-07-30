@@ -8,6 +8,7 @@ import (
 	"poc2/back/api"
 	"poc2/back/service"
 	"poc2/back/lib/logging"
+	"poc2/front/handlers"
 
 )
 
@@ -58,12 +59,20 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 		r.Delete("/delete/{id}", attractionHandler.HandleDeleteAttraction)
 	})
 
+
+	templatesHandler := handlers.NewTemplatesHandler()
+
+	// Rotas dos templates
 	fs := http.FileServer(http.Dir("./docs"))
 	r.Handle("/*", fs)
 	
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./docs/index.html")
 	})
+
+	r.Post("/role/select", templatesHandler.HandleUserTypeSelection)
+	r.Get("/login/", templatesHandler.HandleLogin)      // login único
+	r.Get("/register/", templatesHandler.HandleRegistry) // registro único
 
 	return r
 }
