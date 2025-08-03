@@ -65,6 +65,12 @@ body {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #346aff;
 }
 
 .link-recovery {
@@ -74,6 +80,8 @@ body {
   text-decoration: none;
   margin-top: -18px;
   margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 /* Botão Login */
@@ -113,4 +121,11 @@ body {
 .link {
   color: #346aff;
   text-decoration: none;
+}
+
+.error {
+  font-style: italic;
+  font-weight: bold;
+  color: red;
+  font-size: 14px;
 }

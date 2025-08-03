@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	SaveUserData(user model.User) error
 	FetchUserDataByID(userID int) (model.User, error)
+	FetchUserIDByEmail(email string) (int, error)
 	UpdateUserData(user model.User) error
 	AddEventToFavorites(userID int, event model.Event) error
 	AddAttractionToFavorites(userID int, attraction model.TouristAttraction) error
@@ -30,6 +31,10 @@ func (r *userRepository) SaveUserData(user model.User) error {
 
 func (r *userRepository) FetchUserDataByID(userID int) (model.User, error) {
 	return model.User{}, errors.New("not implemented")
+}
+
+func (r *userRepository) FetchUserIDByEmail(userEmail string) (int, error) {
+	return 0, errors.New("not implemented")
 }
 
 func (r *userRepository) UpdateUserData(user model.User) error {

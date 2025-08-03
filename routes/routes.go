@@ -17,6 +17,8 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 
 	r.Use(enableCors, logging.LoggingMiddleware)
 
+	// Handlers Backend
+	
 	userHandler := api.NewUserHandler(userService, eventService, attractionService)
 	eventHandler := api.NewEventHandler()
 	attractionHandler := api.NewAttractionHandler()
@@ -24,7 +26,8 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	// Rotas de usuário
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/register", userHandler.HandleRegisterUser)
-		r.Get("/fetch", userHandler.HandleGetUserData)
+		r.Post("/login", userHandler.HandleUserLogin)
+		r.Get("/fetch/{id}", userHandler.HandleGetUserData)
 		r.Route("/favorites", func (r chi.Router) {
 			r.Get("/{id}", userHandler.HandleGetUserFavorites)
 			r.Route("/{id}/event", func (r chi.Router) {
@@ -60,19 +63,42 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	})
 
 
+	// Handlers Frontend
+
 	templatesHandler := handlers.NewTemplatesHandler()
 
 	// Rotas dos templates
-	fs := http.FileServer(http.Dir("./docs"))
-	r.Handle("/*", fs)
-	
+	r.Handle("/loginpage/*",
+	http.StripPrefix("/loginpage/",
+		http.FileServer(http.Dir("./docs/loginpage"))))
+
+	r.Handle("/registerpage/*",
+	http.StripPrefix("/registerpage/",
+		http.FileServer(http.Dir("./docs/registerpage"))))
+
+	r.Handle("/homepage/*",
+	http.StripPrefix("/homepage/",
+		http.FileServer(http.Dir("./docs/homepage"))))
+
+	r.Handle("/images/*",
+	http.StripPrefix("/images/",
+		http.FileServer(http.Dir("./docs/images"))))
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./docs/index.html")
+    	http.ServeFile(w, r, "./docs/index.html")
 	})
 
-	r.Post("/role/select", templatesHandler.HandleUserTypeSelection)
-	r.Get("/login/", templatesHandler.HandleLogin)      // login único
-	r.Get("/register/", templatesHandler.HandleRegistry) // registro único
+	r.Route("/user", func(r chi.Router) {
+		r.Post("/select-type", templatesHandler.HandleUserTypeSelection)
+		r.Get("/login", templatesHandler.HandleLogin)
+		r.Get("/register/", templatesHandler.HandleRegistry)
+		r.Get("/password-recovery", templatesHandler.HandleForgottenPassword)
+		r.Get("/profile", templatesHandler.HandleProfile)
+	})
+	r.Get("/home", templatesHandler.HandleHome)
+
+	// Fallback para renderizar arquivos estáticos
+	r.Handle("/*", http.StripPrefix("/", http.FileServer(http.Dir("./docs"))))
 
 	return r
 }

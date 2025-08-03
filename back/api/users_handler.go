@@ -9,6 +9,7 @@ import (
 
    chi  "github.com/go-chi/chi/v5"
 
+    "poc2/back/lib/errors"
     "poc2/back/model"
     "poc2/back/service"
     "poc2/back/lib/utils"
@@ -41,14 +42,14 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     var user model.User
     err := json.NewDecoder(r.Body).Decode(&user)
     if err != nil {
-        http.Error(w, "Dados inválidos", http.StatusBadRequest)
+        http.Error(w, errors.ErrInvalidCredentials.Error(), http.StatusBadRequest)
         return
     }
     fmt.Printf("Usuário recebido: %+v\n", user)
 
     err = h.userService.RegisterUser(user)
     if err != nil {
-        http.Error(w, "Erro ao salvar usuário", http.StatusInternalServerError)
+        http.Error(w, errors.ErrUserAlreadyExists.Error(), http.StatusConflict)
         return
     }
     
@@ -64,6 +65,37 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     w.Write([]byte(`{"status":"sucesso"}`))
 }
 
+// @Verify user login
+// /users/login [POST]
+func (h *UserHandler) HandleUserLogin(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+
+    var user model.User
+    err := json.NewDecoder(r.Body).Decode(&user)
+    if err != nil {
+        http.Error(w, errors.ErrInvalidCredentials.Error(), http.StatusBadRequest)
+        return
+    }
+    // userID, _ := h.userService.GetUserIDByEmail(user.Email)
+    // if err.Error() == errors.ErrUserNotFound {
+    //     http.Error(w, errors.ErrUserNotFound, http.StatusBadRequest)
+    //     return
+    // } else if err != nil {
+    //     http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+    //     return
+    // }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    _ = json.NewEncoder(w).Encode(map[string]any{
+		"userID": 86,
+	})
+}
+
+
 // @Fetch user profile data
 // /users/fetch/:id [GET]
 func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) {
@@ -72,18 +104,25 @@ func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) 
         return
     }
 
-    strUserID := chi.URLParam(r, "id")
-    userID, err := strconv.Atoi(strUserID)
-    if err != nil {
-        http.Error(w, "ID inválido", http.StatusBadRequest)
-        return
+    // strUserID := chi.URLParam(r, "id")
+    // userID, err := strconv.Atoi(strUserID)
+    // if err != nil {
+    //     http.Error(w, "ID inválido", http.StatusBadRequest)
+    //     return
+    // }
+
+    user := model.User{
+        ID: 86, // This should be replaced with actual user ID fetching logic
+        Name: "John Doe",
+        Email: "john.doe@example.com",
     }
 
-    user, err := h.userService.GetUserDataByID(userID)
-    if err != nil {
-        http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
-        return
-    }
+
+    // user, err := h.userService.GetUserDataByID(userID)
+    // if err != nil {
+    //     http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+    //     return
+    // }
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(user)

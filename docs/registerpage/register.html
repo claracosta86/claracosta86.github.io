@@ -3,50 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brolê - Login</title>
-  <link rel="stylesheet" href="register.css" />
+  <title>Cultural :) - User Registration</title>
+  <link rel="stylesheet" href="/registerpage/register.css" />
 </head>
 <body>
   <section class="screen" id="tela-login">
-    <a href="../index.html">
+    <a href="/">
       <img src="../images/logo6.png" alt="Logo Cultural" class="logo-img">
     </a>
-    <div class="box login-box">
+    <div class="login-box">
+      <h2>Crie sua conta</h2>
       <form id="registerUser">
-
-        <h2>Crie sua conta</h2>
         <label>Nome</label>
         <input id="name" type="text" placeholder="Nome completo" />
-        <span class="error-message" id="error-empty-name"></span>
 
         <label>Email</label>
         <input id="email" type="email" placeholder="email@exemplo.com" />
-        <span class="error-message" id="error-empty-email"></span>
 
         {{if eq .UserType "organizer"}}
           <label>CNPJ</label>
+            <input id="document" type="text" placeholder="CNPJ (apenas números)" />
         {{else}}
           <label>CPF</label>
+            <input id="document" type="text" placeholder="CPF (apenas números)" />
         {{end}}
-        <input id="document" type="text" placeholder="CPF (apenas números)" />
-        <span class="error-message" id="error-empty-document"></span>
+
+        {{if eq .UserType "organizer"}}
+          <label>Nome da Empresa</label>
+          <input id="companyName" type="text" placeholder="Nome da empresa" />
+        {{end}}
 
         <label>Senha </label>
         <input id="password" type="password" placeholder="Digite sua senha" />
-        <span class="error-message" id="error-empty-password"></span>
 
         <label>Confirme sua senha</label>
         <input id="passwordConfirm" type="password" placeholder="Repita sua senha" />
-        <span class="error-message" id="error-different-passwordConfirm"></span>
-
-        <input id="role" type="hidden" value="common" />
 
         <p class="button-container"><button type="submit" class="btn">Cadastrar</button></p>
       </form>
 
-      <p class="medium">Já tem uma conta? <a href="../login/login-common.html" class="link">Login</a></p>
+      <p class="medium-letters">Já tem uma conta? <a href="/user/login" class="link">Login</a></p>
     </div>
   </section>
-  <script src="register.js"></script>
+  <script src="/registerpage/register.js"></script>
 </body>
 </html> 

@@ -9,6 +9,7 @@ import (
 type UserService interface {
 	RegisterUser(user model.User) error
 	GetUserDataByID(userID int) (model.User, error)
+	GetUserIDByEmail(email string) (int, error)
 	GetUserFavoritesByID(userID int) (*model.UserFavorites, error)
 	UpdateUserData(user model.User) error
 	AddEventToFavorites(userID int, event model.Event) error
@@ -38,6 +39,10 @@ func (s *userService) RegisterUser(user model.User) error {
 
 func (s *userService) GetUserDataByID(userID int) (model.User, error) {
 	return s.userRepository.FetchUserDataByID(userID)
+}
+
+func (s *userService) GetUserIDByEmail(email string) (int, error) {
+	return s.userRepository.FetchUserIDByEmail(email)
 }
 
 func (s *userService) GetUserFavoritesByID(userID int) (*model.UserFavorites, error) {

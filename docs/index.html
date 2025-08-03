@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brolê - Página Inicial</title>
+  <title>Cultural :) - User Type Selection</title>
   <link rel="icon" type="image/x-icon" href="logo.png" />
   <link rel="stylesheet" href="index.css" />
 </head>
@@ -13,14 +13,14 @@
       <img src="images/logo6.png" alt="Logo Cultural" class="logo-img">
       <div class="box">
         <h2>Bem-vindo(a)!</h2>
-        <!-- <form id="indexForm"> -->
-          <a href="/login" id="common" class="btn">Sou Usuário</a>
-          <a href="../loginpage/login.html" id="organizer" class="btn">Sou Organizador</a>
-        <!-- </form> -->
+          <form action="/user/select-type" method="post">
+            <button type="submit" name="userType" value="common" class="btn">Sou Usuário</button>
+            <button type="submit" name="userType" value="organizer" class="btn">Sou Organizador</button>
+          </form>
       </div>
       <img src="images/index-bottom.png" alt="Grupo de pessoas" class="footer-img">
     </div>
   </main>
-  <script src="index.js"></script>
+  <!-- <script src="index.js"></script> -->
 </body>
 </html>

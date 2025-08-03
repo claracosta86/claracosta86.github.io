@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-    log.Println("Servidor rodando em http://localhost:8080")
+    log.Println("Servidor rodando em http://localhost:8080/")
 
 	userRepo := repository.NewUserRepository()
 	eventRepo := repository.NewEventRepository()
