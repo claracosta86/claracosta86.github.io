@@ -123,6 +123,12 @@ body {
   text-decoration: none;
 }
 
+*/Erors */
+
+label.required {
+  content: " *";;
+}
+
 .error {
   font-style: italic;
   font-weight: bold;

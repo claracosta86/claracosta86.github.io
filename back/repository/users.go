@@ -2,61 +2,96 @@ package repository
 
 import (
 	"errors"
+	_ "embed"
+	"context"
+	"database/sql"
+	"log"
+
+    "github.com/nleof/goyesql"
 
 	"poc2/back/model"
 
 )
 
+var (
+	//go:embed queries/users.sql
+	userEmbed []byte
+	userQueries goyesql.Queries
+)
+
 type UserRepository interface {
-	SaveUserData(user model.User) error
-	FetchUserDataByID(userID int) (model.User, error)
-	FetchUserIDByEmail(email string) (int, error)
-	UpdateUserData(user model.User) error
-	AddEventToFavorites(userID int, event model.Event) error
-	AddAttractionToFavorites(userID int, attraction model.TouristAttraction) error
-	RemoveEventFromFavorites(userID int, eventID int) error
-	RemoveAttractionFromFavorites(userID int, attractionID int) error
-	DeleteUserByID(userID int) error
+	SaveUserData(ctx context.Context, user model.User) error
+	FetchUserDataByID(ctx context.Context, userID int) (model.User, error)
+	FetchUserIDByEmail(ctx context.Context, email string) (int, error)
+	UpdateUserData(ctx context.Context, user model.User) error
+	AddEventToFavorites(ctx context.Context, userID int, event model.Event) error
+	AddAttractionToFavorites(ctx context.Context, userID int, attraction model.TouristAttraction) error
+	RemoveEventFromFavorites(ctx context.Context, userID int, eventID int) error
+	RemoveAttractionFromFavorites(ctx context.Context, userID int, attractionID int) error
+	DeleteUserByID(ctx context.Context, userID int) error
 }
 
-type userRepository struct {}
-
-func NewUserRepository() UserRepository {
-	return &userRepository{}
+type userRepository struct {
+	db *sql.DB
 }
 
-func (r *userRepository) SaveUserData(user model.User) error {
-	return errors.New("not implemented")
+func init() {
+    userQueries = goyesql.MustParseBytes(userEmbed)
 }
 
-func (r *userRepository) FetchUserDataByID(userID int) (model.User, error) {
+func NewUserRepository(db *sql.DB) UserRepository {
+	return &userRepository{
+		db: db,
+	}
+}
+
+func (r *userRepository) SaveUserData(ctx context.Context, user model.User) error {
+	_, err := r.db.ExecContext(ctx, userQueries["register-user"],
+		user.Name,
+		user.Email,
+		user.Document,
+		user.CompanyName,
+		user.Type,
+		user.Password,
+	)
+	log.Println(err)
+	return err
+}
+
+func (r *userRepository) FetchUserDataByID(ctx context.Context, userID int) (model.User, error) {
 	return model.User{}, errors.New("not implemented")
 }
 
-func (r *userRepository) FetchUserIDByEmail(userEmail string) (int, error) {
-	return 0, errors.New("not implemented")
+func (r *userRepository) FetchUserIDByEmail(ctx context.Context, userEmail string) (int, error) {
+	var userID int
+	err := r.db.QueryRowContext(ctx, userQueries["fetch-user-id-by-email"], userEmail).Scan(&userID)
+	if err != nil {
+		log.Printf("Error fetching user ID by email: %v", err)
+		return 0, err
+	}
+	return userID, nil
 }
 
-func (r *userRepository) UpdateUserData(user model.User) error {
+func (r *userRepository) UpdateUserData(ctx context.Context, user model.User) error {
 	return errors.New("not implemented")
 }
 
-func (r *userRepository) AddEventToFavorites(userID int, event model.Event) error {
+func (r *userRepository) AddEventToFavorites(ctx context.Context, userID int, event model.Event) error {
 	return errors.New("not implemented")
 }
 
-func (r *userRepository) AddAttractionToFavorites(userID int, attraction model.TouristAttraction) error {
+func (r *userRepository) AddAttractionToFavorites(ctx context.Context, userID int, attraction model.TouristAttraction) error {
 	return errors.New("not implemented")
 }
 
-func (r *userRepository) RemoveEventFromFavorites(userID, eventID int) error {
+func (r *userRepository) RemoveEventFromFavorites(ctx context.Context, userID, eventID int) error {
 	return errors.New("not implemented")
 }
 
-func (r *userRepository) RemoveAttractionFromFavorites(userID, attractionID int) error {
+func (r *userRepository) RemoveAttractionFromFavorites(ctx context.Context, userID, attractionID int) error {
 	return errors.New("not implemented")
 }
 
-func (r *userRepository) DeleteUserByID(userID int) error {
+func (r *userRepository) DeleteUserByID(ctx context.Context, userID int) error {
 	return errors.New("not implemented")
 }

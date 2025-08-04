@@ -69,6 +69,11 @@ body {
   font-size: 14px;
 }
 
+label.required {
+  content: "*";
+  font-weight: bold;
+}
+
 /* Botão Login */
 .btn {
   display: block;
@@ -110,17 +115,15 @@ body {
 }
 
 /* Errors */
-.input-error {
-  border: 2px solid red;
-}
 
-.label-error {
+label.required::after {
+  content: " *";;
   color: red;
 }
 
-.error-message {
+.error {
+  font-style: italic;
+  font-weight: bold;
   color: red;
-  font-size: 0.9em;
+  font-size: 14px;
 }
-
-

@@ -17,9 +17,9 @@ type EventHandler struct {
 	eventService service.EventService
 }
 
-func NewEventHandler() *EventHandler {
+func NewEventHandler(es service.EventService) *EventHandler {
 	return &EventHandler{
-		eventService: service.NewEventService(),
+		eventService: es,
 	}
 }
 

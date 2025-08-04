@@ -1,12 +1,9 @@
 package errors
 
-import (
-	"fmt"
-
-)
+import "errors"
 
 var (
-	ErrUserNotFound          = fmt.Errorf("user not found")
-	ErrInvalidCredentials    = fmt.Errorf("invalid credentials")
-	ErrUserAlreadyExists     = fmt.Errorf("user already exists")
+	ErrUserNotFound          = errors.New("user not found")
+	ErrInvalidCredentials    = errors.New("invalid credentials")
+	ErrUserAlreadyExists     = errors.New("user already exists")
 )

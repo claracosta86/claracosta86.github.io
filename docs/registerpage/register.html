@@ -9,35 +9,39 @@
 <body>
   <section class="screen" id="tela-login">
     <a href="/">
-      <img src="../images/logo6.png" alt="Logo Cultural" class="logo-img">
+      <img src="/images/logo6.png" alt="Logo Cultural" class="logo-img">
     </a>
     <div class="login-box">
       <h2>Crie sua conta</h2>
       <form id="registerUser">
-        <label>Nome</label>
-        <input id="name" type="text" placeholder="Nome completo" />
+        <label for="name" class="required">Nome</label>
+        <input id="name" type="text"  placeholder="Nome completo" autocomplete="given-name" />
 
-        <label>Email</label>
-        <input id="email" type="email" placeholder="email@exemplo.com" />
+        <label for="email" class="required">Email</label>
+        <input id="email" type="email" placeholder="email@exemplo.com" autocomplete="email"/>
 
         {{if eq .UserType "organizer"}}
-          <label>CNPJ</label>
+          <label for="document" class="required">CNPJ</label>
             <input id="document" type="text" placeholder="CNPJ (apenas números)" />
         {{else}}
-          <label>CPF</label>
+          <label for="document" class="required">CPF</label>
             <input id="document" type="text" placeholder="CPF (apenas números)" />
         {{end}}
 
         {{if eq .UserType "organizer"}}
-          <label>Nome da Empresa</label>
+          <label for="companyName" class="required">Nome da Empresa</label>
           <input id="companyName" type="text" placeholder="Nome da empresa" />
         {{end}}
 
-        <label>Senha </label>
+        <label for="password" class="required">Senha</label>
         <input id="password" type="password" placeholder="Digite sua senha" />
 
-        <label>Confirme sua senha</label>
+        <label for="passwordConfirm" class="required">Confirme sua senha</label>
         <input id="passwordConfirm" type="password" placeholder="Repita sua senha" />
+        <span id="error-empty-field" class="error"></span>
+        <span id="error-password-mismatch" class="error"></span>
+
+        <input type="hidden" id="userType" value="{{.UserType}}" />
 
         <p class="button-container"><button type="submit" class="btn">Cadastrar</button></p>
       </form>

@@ -11,9 +11,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const documentNumber = document.getElementById('document').value;
     const companyNameElement = document.getElementById('companyName');
     const companyName = companyNameElement ? companyNameElement.value : "";
+    const type = document.getElementById('userType').value;
+
+    if (!name || !email || !password || !passwordConfirm || !documentNumber) {
+      error = document.getElementById('error-empty-field')
+      error.style.display = 'block';
+      error.textContent = "Por favor, preencha todos os campos obrigatórios.";
+      error.classList.add('error');
+      return;
+    }
+
+    if (password.length < 8) {
+      document.getElementById('error-empty-field').style.display = 'none';
+      errorPassword = document.getElementById('error-password-mismatch')
+      errorPassword.style.display = 'block';
+      errorPassword.textContent = "A senha deve ter pelo menos 8 caracteres.";
+      errorPassword.classList.add('error');
+      return;
+    }
 
     if (password !== passwordConfirm) {
-      alert("As senhas não coincidem.");
+      document.getElementById('error-empty-field').style.display = 'none';
+      errorPassword = document.getElementById('error-password-mismatch')
+      errorPassword.style.display = 'block';
+      errorPassword.textContent = "As senhas não coincidem.";
+      errorPassword.classList.add('error');
       return;
     }
     
@@ -21,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-          name, email, password, passwordConfirm, document: documentNumber, companyName
+          name, email, password, passwordConfirm, document: documentNumber, companyName, type
       }),
     })
     .then(res => {
@@ -30,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
           console.log("Cadastro realizado com sucesso!", data);
+          window.location.href = "/user/login";
         })
         .catch(err => {
           console.error("Erro:", err);

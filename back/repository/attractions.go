@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"database/sql"
 
 	"poc2/back/model"
 
@@ -17,12 +18,14 @@ type AttractionRepository interface {
 }
 
 type attractionRepository struct{
+	db *sql.DB
 	userRepository UserRepository
 }
 
-func NewAttractionRepository() AttractionRepository {
+func NewAttractionRepository(db *sql.DB, ur UserRepository) AttractionRepository {
 	return &attractionRepository{
-		userRepository: NewUserRepository(),
+		db: db,
+		userRepository: ur,
 	}
 }
 

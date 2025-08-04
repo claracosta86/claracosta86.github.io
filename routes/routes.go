@@ -20,8 +20,8 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	// Handlers Backend
 	
 	userHandler := api.NewUserHandler(userService, eventService, attractionService)
-	eventHandler := api.NewEventHandler()
-	attractionHandler := api.NewAttractionHandler()
+	eventHandler := api.NewEventHandler(eventService)
+	attractionHandler := api.NewAttractionHandler(attractionService)
 
 	// Rotas de usuário
 	r.Route("/users", func(r chi.Router) {

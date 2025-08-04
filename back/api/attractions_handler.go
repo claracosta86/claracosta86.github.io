@@ -17,9 +17,9 @@ type AttractionHandler struct {
 	attractionService service.AttractionService
 }
 
-func NewAttractionHandler() *AttractionHandler {
+func NewAttractionHandler(as service.AttractionService) *AttractionHandler {
 	return &AttractionHandler{
-		attractionService: service.NewAttractionService(),
+		attractionService: as,
 	}
 }
 

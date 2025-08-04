@@ -6,13 +6,13 @@ import (
     "net/http"
     "fmt"
     "strconv"   
+    stderrors "errors"
 
    chi  "github.com/go-chi/chi/v5"
 
     "poc2/back/lib/errors"
     "poc2/back/model"
     "poc2/back/service"
-    "poc2/back/lib/utils"
 
 )
 
@@ -39,6 +39,8 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
         return
     }   
     
+    ctx := r.Context()
+
     var user model.User
     err := json.NewDecoder(r.Body).Decode(&user)
     if err != nil {
@@ -47,18 +49,12 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     }
     fmt.Printf("Usuário recebido: %+v\n", user)
 
-    err = h.userService.RegisterUser(user)
+    err = h.userService.RegisterUser(ctx, user)
     if err != nil {
-        http.Error(w, errors.ErrUserAlreadyExists.Error(), http.StatusConflict)
+        http.Error(w, errors.ErrUserAlreadyExists.Error(), http.StatusInternalServerError)
         return
     }
     
-    err = utils.WriteUserToCSV(user)
-    if err != nil {
-        http.Error(w, "Erro ao salvar usuário", http.StatusInternalServerError)
-        return
-    }
-
     log.Printf("Usuário recebido: %+v\n", user)
 
     w.WriteHeader(http.StatusOK)
@@ -73,25 +69,27 @@ func (h *UserHandler) HandleUserLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    ctx := r.Context()
+
     var user model.User
     err := json.NewDecoder(r.Body).Decode(&user)
     if err != nil {
         http.Error(w, errors.ErrInvalidCredentials.Error(), http.StatusBadRequest)
         return
     }
-    // userID, _ := h.userService.GetUserIDByEmail(user.Email)
-    // if err.Error() == errors.ErrUserNotFound {
-    //     http.Error(w, errors.ErrUserNotFound, http.StatusBadRequest)
-    //     return
-    // } else if err != nil {
-    //     http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
-    //     return
-    // }
+    userID, err := h.userService.GetUserIDByEmail(ctx, user.Email)
+    if stderrors.Is(err, errors.ErrUserNotFound){
+        http.Error(w, errors.ErrUserNotFound.Error(), http.StatusNotFound)
+        return
+    } else if err != nil {
+        http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+        return
+    }
 
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)
     _ = json.NewEncoder(w).Encode(map[string]any{
-		"userID": 86,
+		"userID": userID,
 	})
 }
 
@@ -137,6 +135,8 @@ func (h *UserHandler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    ctx := r.Context()
+
     var user model.User
     err := json.NewDecoder(r.Body).Decode(&user)
     if err != nil {
@@ -144,7 +144,7 @@ func (h *UserHandler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    err = h.userService.UpdateUserData(user)
+    err = h.userService.UpdateUserData(ctx, user)
     if err != nil {
         http.Error(w, "Erro ao atualizar usuário", http.StatusInternalServerError)
         return
@@ -162,6 +162,8 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
         return
     }
 
+    ctx := r.Context()
+
     strUserID := chi.URLParam(r, "id")
     userID, err := strconv.Atoi(strUserID)
     if err != nil {
@@ -169,7 +171,7 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
         return
     }
 
-    favorites, err := h.userService.GetUserFavoritesByID(userID)
+    favorites, err := h.userService.GetUserFavoritesByID(ctx,userID)
     if err != nil {
         http.Error(w, "Erro ao buscar favoritos", http.StatusInternalServerError)
         return
@@ -187,6 +189,8 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    ctx := r.Context()
+
     strUserID := chi.URLParam(r, "id")
     userID, err := strconv.Atoi(strUserID)
     if err != nil {
@@ -194,7 +198,7 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    err = h.userService.DeleteUserByID(userID)
+    err = h.userService.DeleteUserByID(ctx, userID)
     if err != nil {
         http.Error(w, "Erro ao deletar usuário", http.StatusInternalServerError)
         return
@@ -213,6 +217,8 @@ func (h *UserHandler) HandleAddEventToFavorites(w http.ResponseWriter, r *http.R
         return
     }
 
+    ctx := r.Context()
+
     strUserID := chi.URLParam(r, "id")
     userID, err := strconv.Atoi(strUserID)
     if err != nil {
@@ -227,7 +233,7 @@ func (h *UserHandler) HandleAddEventToFavorites(w http.ResponseWriter, r *http.R
         return
     }
 
-    err = h.userService.AddEventToFavorites(userID, event)
+    err = h.userService.AddEventToFavorites(ctx, userID, event)
     if err != nil {
         http.Error(w, "Erro ao adicionar evento aos favoritos", http.StatusInternalServerError)
         return
@@ -244,6 +250,8 @@ func (h *UserHandler) HandleDeleteEventFromFavorites(w http.ResponseWriter, r *h
         return
     }
 
+    ctx := r.Context()
+
     strUserID := chi.URLParam(r, "id")
     userID, err := strconv.Atoi(strUserID)
     if err != nil {
@@ -258,7 +266,7 @@ func (h *UserHandler) HandleDeleteEventFromFavorites(w http.ResponseWriter, r *h
         return
     }
 
-    err = h.userService.DeleteEventFromFavorites(userID, eventID)
+    err = h.userService.DeleteEventFromFavorites(ctx,userID, eventID)
     if err != nil {
         http.Error(w, "Erro ao remover evento dos favoritos", http.StatusInternalServerError)
         return
@@ -276,6 +284,8 @@ func (h *UserHandler) HandleAddAttractionToFavorites(w http.ResponseWriter, r *h
         return
     }
 
+    ctx := r.Context()
+
     strUserID := chi.URLParam(r, "id")
     userID, err := strconv.Atoi(strUserID)
     if err != nil {
@@ -290,7 +300,7 @@ func (h *UserHandler) HandleAddAttractionToFavorites(w http.ResponseWriter, r *h
         return
     }
 
-    err = h.userService.AddAttractionToFavorites(userID, attraction)
+    err = h.userService.AddAttractionToFavorites(ctx,userID, attraction)
     if err != nil {
         http.Error(w, "Erro ao adicionar atração aos favoritos", http.StatusInternalServerError)
         return
@@ -307,6 +317,8 @@ func (h *UserHandler) HandleDeleteAttractionFromFavorites(w http.ResponseWriter,
         return
     }
 
+    ctx := r.Context()
+
     strUserID := chi.URLParam(r, "id")
     userID, err := strconv.Atoi(strUserID)
     if err != nil {
@@ -321,7 +333,7 @@ func (h *UserHandler) HandleDeleteAttractionFromFavorites(w http.ResponseWriter,
         return
     }
 
-    err = h.userService.DeleteAttractionFromFavorites(userID, attractionID)
+    err = h.userService.DeleteAttractionFromFavorites(ctx,userID, attractionID)
     if err != nil {
         http.Error(w, "Erro ao remover atração dos favoritos", http.StatusInternalServerError)
         return

@@ -18,9 +18,9 @@ type eventService struct {
 	eventRepository repository.EventRepository
 }
 
-func NewEventService() *eventService {
+func NewEventService(er repository.EventRepository) *eventService {
 	return &eventService{
-		eventRepository: repository.NewEventRepository(),
+		eventRepository: er,
 	}
 }
 

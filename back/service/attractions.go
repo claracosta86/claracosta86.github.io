@@ -18,9 +18,9 @@ type attractionService struct {
 	attractionRepository repository.AttractionRepository
 }
 
-func NewAttractionService() *attractionService {
+func NewAttractionService(ar repository.AttractionRepository) *attractionService {
 	return &attractionService{
-		attractionRepository: repository.NewAttractionRepository(),
+		attractionRepository: ar,
 	}
 }
 
