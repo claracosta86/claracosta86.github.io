@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
   registerForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
+    const errorElements = document.querySelectorAll('.error');
+    errorElements.forEach(err => {
+      err.style.display = 'none';
+      err.textContent = '';
+    });
+
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -12,11 +18,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const type = document.getElementById('userType').value;
     const companyName = type === "organizer" ? document.getElementById('companyName').value : "";
 
-    if (!name || !email || !password || !passwordConfirm || !documentNumber) {
+    if (!name || !email || !password || !passwordConfirm || !documentNumber || (type === "organizer" && !companyName) ) {
       error = document.getElementById('error-empty-field')
       error.style.display = 'block';
       error.textContent = "Por favor, preencha todos os campos obrigatórios.";
       error.classList.add('error');
+      return;
+    }
+
+    if (type === "organizer" && documentNumber.length !== 14) {
+      document.getElementById('error-wrong-document-number').style.display = 'none';
+      errorDocument = document.getElementById('error-wrong-document-number')
+      errorDocument.style.display = 'block';
+      errorDocument.textContent = "Por favor, insira um CNPJ válido.";
+      errorDocument.classList.add('error');
+      return;
+    }
+
+    if (type === "common" && documentNumber.length !== 11) {
+      document.getElementById('error-wrong-document-number').style.display = 'none';
+      errorDocument = document.getElementById('error-wrong-document-number')
+      errorDocument.style.display = 'block';
+      errorDocument.textContent = "Por favor, insira um CPF válido.";
+      errorDocument.classList.add('error');
       return;
     }
 
@@ -42,11 +66,17 @@ document.addEventListener('DOMContentLoaded', function () {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-          name, email, password, passwordConfirm, document: documentNumber, companyName, type
+          name, email, password, document: documentNumber, companyName, type
       }),
     })
     .then(res => {
-          if (!res.ok) throw new Error("Erro ao cadastrar");
+          if (res.status === 409) {
+            errorEmail = document.getElementById('error-email-exists')
+            errorEmail.style.display = 'block';
+            errorEmail.textContent = "Este e-mail já está cadastrado.";
+            errorEmail.classList.add('error');
+          }
+          if (!res.ok) throw new Error("Erro ao cadastrar usuário");
           return res.json();
         })
         .then(data => {
@@ -55,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(err => {
           console.error("Erro:", err);
-          alert("Erro ao cadastrar usuário.");
         });
   });
 });

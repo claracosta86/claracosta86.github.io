@@ -8,7 +8,14 @@
 </head>
 <body>
   <section class="screen" id="tela-profile">
-     <header class="top-bar">
+    {{ $headerClass := "" }}
+    {{if eq .UserType "organizer"}}
+        {{ $headerClass = "top-bar-organizer" }}
+    {{else if eq .UserType "common"}}
+        {{ $headerClass = "top-bar-common" }}
+    {{end}}
+
+    <header class="{{ $headerClass }}">
         <div class="logo-container">
             <a href="/home">
                 <img src="/images/logo6.png" alt="Logo Cultural" class="logo-img" /></a>
@@ -40,6 +47,11 @@
 
         <label for="email">E-mail</label>
         <input id="email" type="email"  placeholder="E-mail" autocomplete="email" />
+
+        {{if eq .UserType "organizer"}}
+            <label for="companyName">Nome da Empresa</label>
+            <input id="companyName" type="text"  placeholder="Nome da Empresa" autocomplete="organization" />
+        {{end}}
 
         <div class="profile-actions">
             <a href="/user/profile/edit" value="{{.UserType}}" class="btn">Editar Perfil</a>

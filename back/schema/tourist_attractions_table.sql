@@ -12,3 +12,5 @@ CREATE TABLE tourist_attractions (
     organizer_contact VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE tourist_attractions MODIFY COLUMN price VARCHAR(255);

@@ -5,6 +5,7 @@ import (
 
 	"poc2/back/model"
 	"poc2/back/repository"
+	"poc2/back/lib/errors"
 
 )
 
@@ -12,8 +13,10 @@ type UserService interface {
 	RegisterUser(ctx context.Context, user model.User) error
 	GetUserDataByID(ctx context.Context, userID int) (model.User, error)
 	GetUserIDByEmail(ctx context.Context, email string) (int, error)
+	VerifyUserPassword(ctx context.Context, userID int, password string) (bool, error)
 	GetUserFavoritesByID(ctx context.Context, userID int) (*model.UserFavorites, error)
-	UpdateUserData(ctx context.Context, user model.User) error
+	UpdateUserProfile(ctx context.Context, user model.User) error
+	UpdateUserPassword(ctx context.Context, userID int, passwordUpdate model.PasswordUpdate) error
 	AddEventToFavorites(ctx context.Context, userID int, event model.Event) error
 	AddAttractionToFavorites(ctx context.Context, userID int, attraction model.TouristAttraction) error
 	DeleteEventFromFavorites(ctx context.Context, userID int, eventID int) error
@@ -47,6 +50,10 @@ func (s *userService) GetUserIDByEmail(ctx context.Context, email string) (int, 
 	return s.userRepository.FetchUserIDByEmail(ctx, email)
 }
 
+func (s *userService) VerifyUserPassword(ctx context.Context, userID int, password string) (bool, error) {
+	return s.userRepository.CheckUserPassword(ctx, userID, password)
+}
+
 func (s *userService) GetUserFavoritesByID(ctx context.Context, userID int) (*model.UserFavorites, error) {
 	events, err := s.eventRepository.FetchUserFavoritesByID(userID)
 	if err != nil {
@@ -70,8 +77,21 @@ func (s *userService) GetUserFavoritesByID(ctx context.Context, userID int) (*mo
 	}, nil
 }
 
-func (s *userService) UpdateUserData(ctx context.Context, user model.User) error {
-	return s.userRepository.UpdateUserData(ctx, user)
+func (s *userService) UpdateUserProfile(ctx context.Context, user model.User) error {
+	return s.userRepository.UpdateUserProfile(ctx, user)
+}
+
+func (s *userService) UpdateUserPassword(ctx context.Context, userID int, passwordUpdate model.PasswordUpdate) error {
+	verifyPassword, err := s.userRepository.CheckUserPassword(ctx, userID, passwordUpdate.CurrentPassword)
+	if err != nil {
+		return err
+	}
+
+    if !verifyPassword {
+        return errors.ErrIncorrectPassword
+    }
+
+	return s.userRepository.UpdateUserPassword(ctx, userID, passwordUpdate.NewPassword)
 }
 
 func (s *userService) AddEventToFavorites(ctx context.Context, userID int, event model.Event) error {

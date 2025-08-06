@@ -39,8 +39,10 @@
         <label for="passwordConfirm" class="required">Confirme a Senha</label>
         <input id="passwordConfirm" type="password" placeholder="Repita sua senha" />
         <span id="error-empty-field" class="error"></span>
+        <span id="error-wrong-document-number" class="error"></span>
         <span id="error-password-mismatch" class="error"></span>
-
+        <span id="error-email-exists" class="error"></span>
+        
         <input type="hidden" id="userType" value="{{.UserType}}" />
 
         <p class="button-container"><button type="submit" value="{{.UserType}}" class="btn">Cadastrar</button></p>

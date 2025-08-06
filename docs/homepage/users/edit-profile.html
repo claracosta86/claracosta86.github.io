@@ -8,7 +8,14 @@
 </head>
 <body>
   <section class="screen" id="tela-profile">
-     <header class="top-bar">
+    {{ $headerClass := "" }}
+    {{if eq .UserType "organizer"}}
+        {{ $headerClass = "top-bar-organizer" }}
+    {{else if eq .UserType "common"}}
+        {{ $headerClass = "top-bar-common" }}
+    {{end}}
+    
+    <header class="{{ $headerClass }}">
         <div class="logo-container">
             <a href="/home">
                 <img src="/images/logo6.png" alt="Logo Cultural" class="logo-img" /></a>

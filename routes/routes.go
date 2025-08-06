@@ -27,7 +27,11 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/register", userHandler.HandleRegisterUser)
 		r.Post("/login", userHandler.HandleUserLogin)
-		r.Get("/fetch/{id}", userHandler.HandleGetUserData)
+		r.Route("/profile/{id}", func(r chi.Router) {
+			r.Get("/", userHandler.HandleGetUserProfile)
+			r.Put("/edit", userHandler.HandleEditUserProfile)
+			r.Put("/change-password", userHandler.HandleChangeUserPassword)
+		})
 		r.Route("/favorites", func (r chi.Router) {
 			r.Get("/{id}", userHandler.HandleGetUserFavorites)
 			r.Route("/{id}/event", func (r chi.Router) {
@@ -39,7 +43,6 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 				r.Delete("/delete", userHandler.HandleDeleteAttractionFromFavorites)
 			})
 		})
-		r.Put("/update", userHandler.HandleUpdateUser)
 		r.Delete("/delete/{id}", userHandler.HandleDeleteUser)
 
 	})

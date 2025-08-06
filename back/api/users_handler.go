@@ -7,6 +7,7 @@ import (
     "fmt"
     "strconv"   
     stderrors "errors"
+    "strings"
 
    chi  "github.com/go-chi/chi/v5"
 
@@ -32,6 +33,11 @@ func NewUserHandler(userService service.UserService, eventService service.EventS
 
 // @Register a new user handler
 // @Accept json
+// [405] Invalid HTTP method
+// [400] Invalid data
+// [409] Conflict - User already exists
+// [500] Internal Server Error
+// [201] User registered successfully
 // /users/register [POST]
 func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -50,18 +56,29 @@ func (h *UserHandler) HandleRegisterUser(w http.ResponseWriter, r *http.Request)
     fmt.Printf("Usuário recebido: %+v\n", user)
 
     err = h.userService.RegisterUser(ctx, user)
-    if err != nil {
-        http.Error(w, errors.ErrUserAlreadyExists.Error(), http.StatusInternalServerError)
+    if err != nil && strings.Contains(err.Error(), errors.ErrUserAlreadyExists.Error()) {
+        http.Error(w, errors.ErrUserAlreadyExists.Error(), http.StatusConflict)
+        return
+    } else if err != nil {
+        http.Error(w, "Erro ao salvar usuário", http.StatusInternalServerError)
         return
     }
     
     log.Printf("Usuário recebido: %+v\n", user)
 
-    w.WriteHeader(http.StatusOK)
+    w.WriteHeader(http.StatusCreated)
     w.Write([]byte(`{"status":"sucesso"}`))
 }
 
 // @Verify user login
+// @Accept json
+// [400] Invalid data
+// [401] Invalid credentials
+// [403] User not authorized
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] User logged in successfully
 // /users/login [POST]
 func (h *UserHandler) HandleUserLogin(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
@@ -77,12 +94,24 @@ func (h *UserHandler) HandleUserLogin(w http.ResponseWriter, r *http.Request) {
         http.Error(w, errors.ErrInvalidCredentials.Error(), http.StatusBadRequest)
         return
     }
+
     userID, err := h.userService.GetUserIDByEmail(ctx, user.Email)
     if stderrors.Is(err, errors.ErrUserNotFound){
         http.Error(w, errors.ErrUserNotFound.Error(), http.StatusNotFound)
         return
     } else if err != nil {
         http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+        return
+    }
+
+    verifyPassword, err := h.userService.VerifyUserPassword(ctx, userID, user.Password)
+    if err != nil {
+        http.Error(w, "Erro ao verificar senha", http.StatusInternalServerError)
+        return
+    }
+
+    if !verifyPassword {
+        http.Error(w, "Senha incorreta", http.StatusUnauthorized)
         return
     }
 
@@ -96,11 +125,11 @@ func (h *UserHandler) HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 
 // @Fetch user profile data
 // /users/fetch/:id [GET]
-func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) {
-    if r.Method != http.MethodGet {
-        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-        return
-    }
+// func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) {
+//     if r.Method != http.MethodGet {
+//         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+//         return
+//     }
 
     // strUserID := chi.URLParam(r, "id")
     // userID, err := strconv.Atoi(strUserID)
@@ -109,11 +138,11 @@ func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) 
     //     return
     // }
 
-    user := model.User{
-        ID: 86, // This should be replaced with actual user ID fetching logic
-        Name: "John Doe",
-        Email: "john.doe@example.com",
-    }
+    // user := model.User{
+    //     ID: 86, // This should be replaced with actual user ID fetching logic
+    //     Name: "John Doe",
+    //     Email: "john.doe@example.com",
+    // }
 
 
     // user, err := h.userService.GetUserDataByID(userID)
@@ -122,14 +151,59 @@ func (h *UserHandler) HandleGetUserData(w http.ResponseWriter, r *http.Request) 
     //     return
     // }
 
+//     w.Header().Set("Content-Type", "application/json")
+//     json.NewEncoder(w).Encode(user)
+// }
+
+// @Get user profile page
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] User data recovered successfully
+// /users/profile/:id/ [GET]
+func (h *UserHandler) HandleGetUserProfile(w http.ResponseWriter, r *http.Request) {    
+    if r.Method != http.MethodGet {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    user, err := h.userService.GetUserDataByID(r.Context(), userID)
+    if err != nil {
+        if stderrors.Is(err, errors.ErrUserNotFound) {
+            http.Error(w, "Usuário não encontrado", http.StatusNotFound)
+            return
+        }
+        http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+        return
+    }
+
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(user)
+    w.WriteHeader(http.StatusOK)
+    _ = json.NewEncoder(w).Encode(map[string]any{
+        "userName": user.Name,
+        "userEmail": user.Email,
+        "userID": user.ID,
+        "userType": user.Type,
+    })
 }
 
-// @Update user profile data
+// @Change user name or email
 // @Accept json
-// /users/update [PUT]
-func (h *UserHandler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [204] User profile edited in successfully
+// /users/profile/:id/edit [PUT]
+func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPut {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
@@ -137,22 +211,75 @@ func (h *UserHandler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
 
     ctx := r.Context()
 
-    var user model.User
-    err := json.NewDecoder(r.Body).Decode(&user)
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    var userUpdates model.User
+    err = json.NewDecoder(r.Body).Decode(&userUpdates)
     if err != nil {
         http.Error(w, "Dados inválidos", http.StatusBadRequest)
         return
     }
 
-    err = h.userService.UpdateUserData(ctx, user)
+    userUpdates.ID = userID
+
+    err = h.userService.UpdateUserProfile(ctx, userUpdates)
     if err != nil {
-        http.Error(w, "Erro ao atualizar usuário", http.StatusInternalServerError)
+        http.Error(w, "Erro ao atualizar perfil", http.StatusInternalServerError)
         return
     }
 
-    w.WriteHeader(http.StatusOK)
-    w.Write([]byte(`{"status":"usuário atualizado com sucesso"}`))
+    w.WriteHeader(http.StatusNoContent)
 }
+
+// @Change user password
+// @Accept json
+// [400] Invalid data
+// [401] Incorrect password
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [204] User password edited in successfully
+// /users/profile/:id/change-password [PUT]
+func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Request){
+    if r.Method != http.MethodPut {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
+
+    ctx := r.Context()
+
+    strUserID := chi.URLParam(r, "id")
+    userID, err := strconv.Atoi(strUserID)
+    if err != nil {
+        http.Error(w, "ID inválido", http.StatusBadRequest)
+        return
+    }
+
+    var passwordUpdate model.PasswordUpdate
+    err = json.NewDecoder(r.Body).Decode(&passwordUpdate)
+    if err != nil {
+        http.Error(w, "Dados inválidos", http.StatusBadRequest)
+        return
+    }
+
+    err = h.userService.UpdateUserPassword(ctx, userID, passwordUpdate)
+    if err != nil {
+        if stderrors.Is(err, errors.ErrIncorrectPassword) {
+            http.Error(w, "Senha inválida", http.StatusUnauthorized)
+            return
+        }
+        http.Error(w, "Erro ao atualizar senha", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
+}
+
 
 // @Get users favorites events and attractions
 // /users/favorites/:id [GET]

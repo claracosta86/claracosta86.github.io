@@ -13,3 +13,5 @@ CREATE TABLE events (
     organizer_contact VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE events MODIFY COLUMN price VARCHAR(255);

@@ -28,17 +28,25 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto; /* ⬅️ permite rolagem */
 }
 
 /* Top Bar */
 
-.top-bar {
+.top-bar-organizer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   gap: 10px 80px;
+  margin-top: 25px;
+}
+
+.top-bar-common {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 10px 150px;
   margin-top: 25px;
 }
 
@@ -71,22 +79,22 @@ a {
 }
 
 .add-btn {
-box-sizing: border-box;
-display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-padding: 10.1119px;
-gap: 3.16px;
-text-align: center;
-width: 112px;
-height: 28px;
-background: #FFD54A;
-border: black 1px solid;
-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-border-radius: 5.05596px;
-font-weight: bold;
-font-size: 11px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10.1119px;
+  gap: 3.16px;
+  text-align: center;
+  width: 112px;
+  height: 28px;
+  background: #FFD54A;
+  border: black 1px solid;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5.05596px;
+  font-weight: bold;
+  font-size: 11px;
 }
 
 
@@ -167,11 +175,11 @@ font-size: 11px;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 13.7259px;
+    padding: 8px;
     gap: 4.29px;
     color: black;
     min-width: 120px;
-    height: 24px;
+    height: 36px;
     background: #d1d5db;
     border-radius: 6.86294px;  
     text-decoration: none;

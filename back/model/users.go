@@ -5,27 +5,12 @@ type User struct {
 	Name string `json:"name"`
 	Email    string `json:"email"`
 	Document      string `json:"document"` // enum: [CPF, CNPJ]
-	CompanyName string `json:"company_name"`
-	Password string `json:"password,omitempty"` // Omit password in JSON responses
-	PasswordConfirm string `json:"password_confirm,omitempty"` // Omit password confirm in JSON responses
+	CompanyName string `json:"companyName"`
+	Password string `json:"password"`
 	Type     string `json:"type"` //  enum: ["organizer", "common"]
 }
 
 type UserCollection []User
-
-
-func (u User) IsValid() bool {
-	 if u.Name == "" || u.Email == "" || u.Password == "" ||
-        u.Type == "" || u.Document == "" || (u.PasswordConfirm != u.Password) {
-        return false
-    }
-
-    if u.Type == "organizer" && u.CompanyName == "" {
-        return false
-    }
-
-    return true
-}
 
 func (u *UserCollection) IsEmpty() bool {
 	if u == nil || len(*u) == 0 {
@@ -36,10 +21,15 @@ func (u *UserCollection) IsEmpty() bool {
 
 type UserFavorites struct {
 	Events              EventCollection              `json:"events"`
-	TouristAttractions   TouristAttractionCollection   `json:"tourist_attractions"`
+	TouristAttractions   TouristAttractionCollection   `json:"touristAttractions"`
 }
 
 type Organizer struct {
 	ID      int    `json:"id"`
 	Contact string `json:"contact"` // Contact information for the organizer
+}
+
+type PasswordUpdate struct {
+	CurrentPassword string `json:"currentPassword"`
+	NewPassword     string `json:"newPassword"`
 }

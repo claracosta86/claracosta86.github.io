@@ -7,3 +7,5 @@ CREATE TABLE users (
     type VARCHAR(50) NOT NULL,
     password VARCHAR(100) NOT NULL
 );
+
+ALTER TABLE users ADD COLUMN document_type ENUM('CPF', 'CNPJ') NOT NULL DEFAULT 'CPF';
