@@ -13,6 +13,11 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
+a {
+    text-decoration: none;
+    color: inherit; /* herda a cor do elemento pai */
+}
+
 .screen {
   width: 360px;
   min-height: 740px;
@@ -33,7 +38,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  gap: 10px 150px;
+  gap: 10px 80px;
+  margin-top: 25px;
 }
 
 .icons {
@@ -42,7 +48,7 @@ body {
 }
 
 .icon {
-  height: 24px;
+  height: 28px;
   cursor: pointer;
 }
 
@@ -52,7 +58,6 @@ body {
   gap: 8px; /* espaço entre botão e ícones */
   margin-left: 2px;
 }
-
 
 .logo-container {
   display: flex;
@@ -64,6 +69,26 @@ body {
   margin-top: 10px;
   margin-bottom: 40px;
 }
+
+.add-btn {
+box-sizing: border-box;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10.1119px;
+gap: 3.16px;
+text-align: center;
+width: 112px;
+height: 28px;
+background: #FFD54A;
+border: black 1px solid;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 5.05596px;
+font-weight: bold;
+font-size: 11px;
+}
+
 
 /* Caixa de Perfil */
 .profile-box {
@@ -146,6 +171,7 @@ body {
     gap: 4.29px;
     color: black;
     min-width: 120px;
+    height: 24px;
     background: #d1d5db;
     border-radius: 6.86294px;  
     text-decoration: none;

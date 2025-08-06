@@ -38,3 +38,8 @@ type UserFavorites struct {
 	Events              EventCollection              `json:"events"`
 	TouristAttractions   TouristAttractionCollection   `json:"tourist_attractions"`
 }
+
+type Organizer struct {
+	ID      int    `json:"id"`
+	Contact string `json:"contact"` // Contact information for the organizer
+}

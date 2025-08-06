@@ -13,6 +13,11 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
+a {
+    text-decoration: none;
+    color: inherit; /* herda a cor do elemento pai */
+}
+
 /* Moldura de celular */
 .screen {
   width: 360px;

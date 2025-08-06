@@ -93,7 +93,12 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 		r.Get("/login", templatesHandler.HandleLogin)
 		r.Get("/register/", templatesHandler.HandleRegistry)
 		r.Get("/password-recovery", templatesHandler.HandleForgottenPassword)
-		r.Get("/profile", templatesHandler.HandleProfile)
+		r.Route("/profile", func(r chi.Router) {
+			r.Get("/", templatesHandler.HandleProfile)
+			r.Get("/edit", templatesHandler.HandleEditProfile)
+			r.Get("/change-password", templatesHandler.HandleChangePassword)
+			r.Get("/favorites", templatesHandler.HandleViewFavorites)
+		})
 	})
 	r.Get("/home", templatesHandler.HandleHome)
 

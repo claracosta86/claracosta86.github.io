@@ -38,8 +38,14 @@ func (h *TemplatesHandler) HandleUserTypeSelection(w http.ResponseWriter, r *htt
 
 // /users/login [GET]
 func (h *TemplatesHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
+	sess, _ := session.Store.Get(r, sessionName)
+	userType, _ := sess.Values[userTypeKey].(string)
+	if userType != "organizer" {
+		userType = "common"
+	}
+
 	tmpl := template.Must(template.ParseFiles("./docs/loginpage/login.html"))
-	_ = tmpl.Execute(w, nil)
+	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
 }
 
 // /users/register [GET]
@@ -67,12 +73,53 @@ func (h *TemplatesHandler) HandleProfile(w http.ResponseWriter, r *http.Request)
 	if userType != "organizer" {
 		userType = "common"
 	}
+
 	tmpl := template.Must(template.ParseFiles("./docs/homepage/users/profile.html"))
-	_ = tmpl.Execute(w, nil)
+	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
+}
+
+// /users/profile/edit [GET]
+func (h *TemplatesHandler) HandleEditProfile(w http.ResponseWriter, r *http.Request)	{
+	sess, _ := session.Store.Get(r, sessionName)
+	userType, _ := sess.Values[userTypeKey].(string)
+	if userType != "organizer" {
+		userType = "common"
+	}
+
+	tmpl := template.Must(template.ParseFiles("./docs/homepage/users/edit-profile.html"))
+	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
+}
+
+func (h *TemplatesHandler) HandleChangePassword(w http.ResponseWriter, r *http.Request)	{
+	sess, _ := session.Store.Get(r, sessionName)
+	userType, _ := sess.Values[userTypeKey].(string)
+	if userType != "organizer" {
+		userType = "common"
+	}
+
+	tmpl := template.Must(template.ParseFiles("./docs/homepage/users/change-password.html"))
+	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
+}
+
+func (h *TemplatesHandler) HandleViewFavorites(w http.ResponseWriter, r *http.Request) {
+	sess, _ := session.Store.Get(r, sessionName)
+	userType, _ := sess.Values[userTypeKey].(string)
+	if userType != "organizer" {
+		userType = "common"
+	}
+
+	tmpl := template.Must(template.ParseFiles("./docs/homepage/users/favorites.html"))
+	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
 }
 
 // /home [GET]
 func (h *TemplatesHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
+	sess, _ := session.Store.Get(r, sessionName)
+	userType, _ := sess.Values[userTypeKey].(string)
+	if userType != "organizer" {
+		userType = "common"
+	}
+	
 	tmpl := template.Must(template.ParseFiles("./docs/homepage/home.html"))
-	_ = tmpl.Execute(w, nil)
+	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
 }

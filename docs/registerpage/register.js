@@ -9,9 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('passwordConfirm').value;
     const documentNumber = document.getElementById('document').value;
-    const companyNameElement = document.getElementById('companyName');
-    const companyName = companyNameElement ? companyNameElement.value : "";
     const type = document.getElementById('userType').value;
+    const companyName = type === "organizer" ? document.getElementById('companyName').value : "";
 
     if (!name || !email || !password || !passwordConfirm || !documentNumber) {
       error = document.getElementById('error-empty-field')

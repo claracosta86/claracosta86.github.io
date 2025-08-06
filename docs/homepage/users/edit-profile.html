@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cultural :) - User Profile</title>
+  <title>Cultural :) - Edit Profile</title>
   <link rel="stylesheet" href="/homepage/users/profile.css" />
 </head>
 <body>
@@ -12,9 +12,9 @@
         <div class="logo-container">
             <a href="/home">
                 <img src="/images/logo6.png" alt="Logo Cultural" class="logo-img" /></a>
-            </a>
+            </a>        
         </div>
-
+        
         <div class="right-section">
             <div class="icons">
                 {{if eq .UserType "organizer"}}
@@ -30,26 +30,25 @@
 
     <div class="profile-box ">
         <div class="header-title">
-            <a href="/home">
+            <a href="/user/profile">
                 <img src="/images/goback.png" alt="Go Back Arrow" class="goback-img">
             </a>
-            <h2>Seu Perfil</h2>
+            <h2>Editar Perfil</h2>
         </div>
-        <label for="name">Nome do Usuário</label>
-        <input id="name" type="text"  placeholder="Nome completo" autocomplete="given-name" />
+        <label for="new-name">Nome do Usuário</label>
+        <input id="new-name" type="text" placeholder="Nome completo" autocomplete="given-name" />
 
-        <label for="email">E-mail</label>
-        <input id="email" type="email"  placeholder="E-mail" autocomplete="email" />
+        <label for="new-email">E-mail</label>
+        <input id="new-email" type="email" placeholder="Novo e-mail" autocomplete="email" />
+        
+        {{if eq .UserType "organizer"}}
+            <label for="new-company-name">Nome da Empresa</label>
+            <input id="new-company-name" type="text" placeholder="Nome da empresa" autocomplete="organization" />
+        {{end}}
 
         <div class="profile-actions">
-            <a href="/user/profile/edit" value="{{.UserType}}" class="btn">Editar Perfil</a>
-            <a href="/user/profile/change-password" value="{{.UserType}}" class="btn">Alterar Senha</a>
-            <a href="/user/profile/favorites" value="{{.UserType}}" class="btn">Meus Favoritos</a>
+            <button class="btn">Alterar Perfil</button>
         </div>
-    </div>
-
-    <div class="logout-container">
-        <a href="/" class="logout-btn">Log Out</a>
     </div>
   </section>
     <!-- <script src="/homepage/users/profile.js"></script> -->

@@ -4,19 +4,19 @@ type TouristAttraction struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Date        string `json:"date"` // YYYY-MM-DD
+	OpenDays    string `json:"open_days"`
+	OpenTime    string `json:"open_time"` // Time in HH:MM format
 	Location    string `json:"location"`
 	Price      float64 `json:"price"` // Price in R$
-	DurationTime    string `json:"duration_time"` // HH:MM 
 	IsAccessible bool   `json:"is_accessible"` 
-	Contact string `json:"contact"` 
-	Image string `json:"image"`
+	Organizer   Organizer `json:"organizer"` // Contact information for the attraction
+	Image      string `json:"image"`
 }
 
 type TouristAttractionCollection []TouristAttraction 
 
 func (t TouristAttraction) IsValid() bool {
-	return t.ID > 0 && t.Title != "" && t.Description != "" && t.Date != "" && t.Location != "" && t.Price >= 0 && t.DurationTime != ""
+	return t.ID > 0 && t.Title != "" && t.Description != "" && t.OpenDays != "" && t.Location != "" && t.Price >= 0 && t.OpenTime != ""
 }
 
 func (t *TouristAttractionCollection) IsEmpty() bool {

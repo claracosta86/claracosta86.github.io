@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cultural :) - User Profile</title>
+  <title>Cultural :) - User Favorites</title>
   <link rel="stylesheet" href="/homepage/users/profile.css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
         <div class="logo-container">
             <a href="/home">
                 <img src="/images/logo6.png" alt="Logo Cultural" class="logo-img" /></a>
-            </a>
+            </a>        
         </div>
 
         <div class="right-section">
@@ -27,30 +27,6 @@
             </div>
         </div>
     </header>
-
-    <div class="profile-box ">
-        <div class="header-title">
-            <a href="/home">
-                <img src="/images/goback.png" alt="Go Back Arrow" class="goback-img">
-            </a>
-            <h2>Seu Perfil</h2>
-        </div>
-        <label for="name">Nome do Usuário</label>
-        <input id="name" type="text"  placeholder="Nome completo" autocomplete="given-name" />
-
-        <label for="email">E-mail</label>
-        <input id="email" type="email"  placeholder="E-mail" autocomplete="email" />
-
-        <div class="profile-actions">
-            <a href="/user/profile/edit" value="{{.UserType}}" class="btn">Editar Perfil</a>
-            <a href="/user/profile/change-password" value="{{.UserType}}" class="btn">Alterar Senha</a>
-            <a href="/user/profile/favorites" value="{{.UserType}}" class="btn">Meus Favoritos</a>
-        </div>
-    </div>
-
-    <div class="logout-container">
-        <a href="/" class="logout-btn">Log Out</a>
-    </div>
   </section>
     <!-- <script src="/homepage/users/profile.js"></script> -->
 </body>

@@ -36,14 +36,14 @@
         <label for="password" class="required">Senha</label>
         <input id="password" type="password" placeholder="Digite sua senha" />
 
-        <label for="passwordConfirm" class="required">Confirme sua senha</label>
+        <label for="passwordConfirm" class="required">Confirme a Senha</label>
         <input id="passwordConfirm" type="password" placeholder="Repita sua senha" />
         <span id="error-empty-field" class="error"></span>
         <span id="error-password-mismatch" class="error"></span>
 
         <input type="hidden" id="userType" value="{{.UserType}}" />
 
-        <p class="button-container"><button type="submit" class="btn">Cadastrar</button></p>
+        <p class="button-container"><button type="submit" value="{{.UserType}}" class="btn">Cadastrar</button></p>
       </form>
 
       <p class="medium-letters">Já tem uma conta? <a href="/user/login" class="link">Login</a></p>
