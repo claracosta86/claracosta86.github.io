@@ -17,10 +17,8 @@ type UserService interface {
 	GetUserFavoritesByID(ctx context.Context, userID int) (*model.UserFavorites, error)
 	UpdateUserProfile(ctx context.Context, user model.User) error
 	UpdateUserPassword(ctx context.Context, userID int, passwordUpdate model.PasswordUpdate) error
-	AddEventToFavorites(ctx context.Context, userID int, event model.Event) error
-	AddAttractionToFavorites(ctx context.Context, userID int, attraction model.TouristAttraction) error
-	DeleteEventFromFavorites(ctx context.Context, userID int, eventID int) error
-	DeleteAttractionFromFavorites(ctx context.Context, userID int, attractionID int) error
+	AddToFavorites(ctx context.Context, userID int, favorite model.UserFavorite) error
+	DeleteFromFavorites(ctx context.Context, userID int, favoriteID int) error
 	DeleteUserByID(ctx context.Context, userID int) error
 }
 
@@ -94,20 +92,12 @@ func (s *userService) UpdateUserPassword(ctx context.Context, userID int, passwo
 	return s.userRepository.UpdateUserPassword(ctx, userID, passwordUpdate.NewPassword)
 }
 
-func (s *userService) AddEventToFavorites(ctx context.Context, userID int, event model.Event) error {
-	return s.userRepository.AddEventToFavorites(ctx, userID, event)
+func (s *userService) AddToFavorites(ctx context.Context, userID int, favorite model.UserFavorite) error {
+	return s.userRepository.AddToFavorites(ctx, userID, favorite)
 }
 
-func (s *userService) AddAttractionToFavorites(ctx context.Context, userID int, attraction model.TouristAttraction) error {
-	return s.userRepository.AddAttractionToFavorites(ctx, userID, attraction)
-}
-
-func (s *userService) DeleteEventFromFavorites(ctx context.Context, userID, eventID int) error {
-	return s.userRepository.RemoveEventFromFavorites(ctx, userID, eventID)
-}
-
-func (s *userService) DeleteAttractionFromFavorites(ctx context.Context, userID, attractionID int) error {
-	return s.userRepository.RemoveAttractionFromFavorites(ctx, userID, attractionID)
+func (s *userService) DeleteFromFavorites(ctx context.Context, userID, favoriteID int) error {
+	return s.userRepository.RemoveFromFavorites(ctx, userID, favoriteID)
 }
 
 func (s *userService) DeleteUserByID(ctx context.Context, userID int) error {

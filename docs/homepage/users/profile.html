@@ -25,12 +25,10 @@
         <div class="right-section">
             <div class="icons">
                 {{if eq .UserType "organizer"}}
-                    <a href="#" class="add-btn">Adicionar Espaço</a>
+                    <a href="#" class="add-btn">Adicionar Cultural</a>
                 {{end}}
                 <img src="/images/notifications-icon.png" alt="Notificações" class="icon" />
-                <a href="/user/profile">
-                    <img src="/images/user-icon.png" alt="Usuário" class="icon">
-                </a>
+                <img src="/images/user-icon.png" alt="Usuário" class="icon">
             </div>
         </div>
     </header>
@@ -56,7 +54,7 @@
         <div class="profile-actions">
             <a href="/user/profile/edit" value="{{.UserType}}" class="btn">Editar Perfil</a>
             <a href="/user/profile/change-password" value="{{.UserType}}" class="btn">Alterar Senha</a>
-            <a href="/user/profile/favorites" value="{{.UserType}}" class="btn">Meus Favoritos</a>
+            <a href="/user/favorites" value="{{.UserType}}" class="btn">Meus Favoritos</a>
         </div>
     </div>
 

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/homepage/home.css">
 </head>
 <body>
-  <section class="screen" id="tela-home">
+  <section class="screen" id="tela-home">    
     {{ $headerClass := "" }}
     {{if eq .UserType "organizer"}}
         {{ $headerClass = "top-bar-organizer" }}
@@ -23,19 +23,22 @@
         <div class="right-section">
             <div class="icons">
                 {{if eq .UserType "organizer"}}
-                    <a href="#" class="add-btn">Adicionar Espaço</a>
+                    <a href="#" class="add-btn">Adicionar Cultural</a>
                 {{end}}
-                <img src="/images/notifications-icon.png" alt="Notificações" class="icon" />
-                <a href="/user/profile" value="{{.UserType}}">
-                    <img src="/images/user-icon.png" alt="Usuário" class="icon">
-                </a>
+                <img src="/images/notifications-icon.png" id="notifications-icon" alt="Notificações" class="icon" />
+                <form id="user-icon-form">
+                    <input type="hidden" id="userID" value="{{.UserID}}" />
+                    <button type="submit" class="icon">
+                        <img src="/images/user-icon.png" id="user-icon" alt="Usuário" class="icon" />
+                    </button>
+                </form>
             </div>
         </div>
     </header>
 
     <section class="search-bar">
         <img src="/images/search-icon.png" alt="Buscar" class="search-icon" />
-        <input type="text" placeholder="Buscar..." />
+        <input id="search-input" type="text" placeholder="Buscar..." />
     </section>
 
     <main class="home-container">        

@@ -31,37 +31,16 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
         })
-            .then(res => {
-                console.log("Response:", res.status);
-                if (!res.ok) throw new Error("Erro ao fazer login");
-                return res.json();
-            })
-            .then(data => {
-                const userID = data.userID; 
-                
-                fetch("http://localhost:8080/users/fetch/" + userID, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                })
-                    .then(res2 => {
-                        if (!res2.ok) throw new Error("Erro ao buscar dados do usuário.")
-                        return res2.json();
-                    })
-                    .then(userData => {
-                        console.log("Login OK:", userData);
-                        window.location.href = "/home";
-                    })
-                .catch(err => {
-                    console.error(err);
-                    if (err.status === 404) {
-                        errorLogin = document.getElementById('error-login')
-                        errorLogin.style.display = 'block';
-                        errorLogin.textContent = "Por favor, insira sua senha.";
-                        errorLogin.classList.add('error');
-                        return;
-                    }
-                });
-            })
+        .then(res => {
+            console.log("Response:", res.status);
+            if (!res.ok) throw new Error("Erro ao fazer login");
+            return res.json();
+        })
+        .then(data => {
+            console.log("Login OK:", data.userID);
+            localStorage.setItem("userID", data.userID);
+            window.location.href = "/home";
+        })
         .catch(err => {   
             console.error("Erro:", err);
             if (err.status === 404) {

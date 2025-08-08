@@ -27,27 +27,24 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/register", userHandler.HandleRegisterUser)
 		r.Post("/login", userHandler.HandleUserLogin)
-		r.Route("/profile/{id}", func(r chi.Router) {
-			r.Get("/", userHandler.HandleGetUserProfile)
-			r.Put("/edit", userHandler.HandleEditUserProfile)
-			r.Put("/change-password", userHandler.HandleChangeUserPassword)
-		})
-		r.Route("/favorites", func (r chi.Router) {
-			r.Get("/{id}", userHandler.HandleGetUserFavorites)
-			r.Route("/{id}/event", func (r chi.Router) {
-				r.Post("/add", userHandler.HandleAddEventToFavorites)
-				r.Delete("/delete", userHandler.HandleDeleteEventFromFavorites)
+		r.Route("/{id}", func(r chi.Router) {
+			r.Route("/profile", func (r chi.Router) {
+				r.Get("/", userHandler.HandleGetUserProfile)
+				r.Put("/edit", userHandler.HandleEditUserProfile)
+				r.Put("/change-password", userHandler.HandleChangeUserPassword)
 			})
-			r.Route("/{id}/attraction", func (r chi.Router) {
-				r.Post("/add", userHandler.HandleAddAttractionToFavorites)
-				r.Delete("/delete", userHandler.HandleDeleteAttractionFromFavorites)
+			r.Route("/favorites", func (r chi.Router) {
+				r.Get("/", userHandler.HandleGetUserFavorites)
+				r.Route("/{type}/{typeID}", func (r chi.Router) {
+					r.Post("/add", userHandler.HandleAddToFavorites)
+					r.Delete("/delete", userHandler.HandleDeleteFromFavorites)
+				})
 			})
 		})
 		r.Delete("/delete/{id}", userHandler.HandleDeleteUser)
-
 	})
 
-	// Rotas de eventos
+	// Rotas de eventos e atrações
 	r.Route("/events", func(r chi.Router) {
 		r.Post("/register", eventHandler.HandleRegisterEvent)
 		r.Get("/all", eventHandler.HandleGetAllEvents)
@@ -100,8 +97,8 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 			r.Get("/", templatesHandler.HandleProfile)
 			r.Get("/edit", templatesHandler.HandleEditProfile)
 			r.Get("/change-password", templatesHandler.HandleChangePassword)
-			r.Get("/favorites", templatesHandler.HandleViewFavorites)
 		})
+		r.Get("/favorites", templatesHandler.HandleViewFavorites)
 	})
 	r.Get("/home", templatesHandler.HandleHome)
 

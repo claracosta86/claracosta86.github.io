@@ -44,8 +44,13 @@ func (h *TemplatesHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		userType = "common"
 	}
 
+	userID, _ := sess.Values["userID"].(string)
+	if userID == "" {
+		userID = "0" 
+	}
+
 	tmpl := template.Must(template.ParseFiles("./docs/loginpage/login.html"))
-	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
+	_ = tmpl.Execute(w, model.LoginPageData{UserID: userID, UserType: userType})
 }
 
 // /users/register [GET]
@@ -74,8 +79,12 @@ func (h *TemplatesHandler) HandleProfile(w http.ResponseWriter, r *http.Request)
 		userType = "common"
 	}
 
+	userID, _ := sess.Values["userID"].(string)
+	if userID == "" {
+		userID = "0" 
+	}
 	tmpl := template.Must(template.ParseFiles("./docs/homepage/users/profile.html"))
-	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
+	_ = tmpl.Execute(w, model.LoginPageData{UserID: userID, UserType: userType})
 }
 
 // /users/profile/edit [GET]
@@ -119,7 +128,9 @@ func (h *TemplatesHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 	if userType != "organizer" {
 		userType = "common"
 	}
+
+	userID, _ := sess.Values["userID"].(string)
 	
 	tmpl := template.Must(template.ParseFiles("./docs/homepage/home.html"))
-	_ = tmpl.Execute(w, model.RegisterPageData{UserType: userType})
+	_ = tmpl.Execute(w, model.LoginPageData{UserID: userID, UserType: userType})
 }

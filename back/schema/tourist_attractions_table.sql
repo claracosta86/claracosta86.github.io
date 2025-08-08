@@ -14,3 +14,5 @@ CREATE TABLE tourist_attractions (
 );
 
 ALTER TABLE tourist_attractions MODIFY COLUMN price VARCHAR(255);
+
+ALTER TABLE tourist_attractions MODIFY COLUMN id SERIAL;

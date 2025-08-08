@@ -24,6 +24,11 @@ type UserFavorites struct {
 	TouristAttractions   TouristAttractionCollection   `json:"touristAttractions"`
 }
 
+type UserFavorite struct {
+	ID		int    `json:"id"`
+	Type    string `json:"type"` // enum: ["event", "attraction"]
+}
+
 type Organizer struct {
 	ID      int    `json:"id"`
 	Contact string `json:"contact"` // Contact information for the organizer
