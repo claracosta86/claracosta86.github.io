@@ -16,3 +16,6 @@ ALTER TABLE user_favorites DROP COLUMN event_id;
 ALTER TABLE user_favorites DROP COLUMN attraction_id;
 ALTER TABLE user_favorites ADD COLUMN favorite_type ENUM('event', 'attraction') NOT NULL DEFAULT 'event';
 ALTER TABLE user_favorites ADD COLUMN favorite_id BIGINT UNSIGNED NOT NULL;
+ALTER TABLE user_favorites ADD COLUMN cultural_id BIGINT UNSIGNED NOT NULL;
+
+ALTER TABLE user_favorites DROP COLUMN cultural_id;

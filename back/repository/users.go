@@ -128,8 +128,13 @@ func (r *userRepository) AddToFavorites(ctx context.Context, userID int, favorit
 	return err
 }
 
-func (r *userRepository) RemoveFromFavorites(ctx context.Context, userID, favoriteID int) error {
-	return stderrors.New("not implemented")
+func (r *userRepository) RemoveFromFavorites(ctx context.Context, userID, favoriteID, culturalID int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["remove-from-favorites"],
+		userID,
+		favoriteID,
+		culturalID,
+	)
+	return err
 }
 
 func (r *userRepository) DeleteUserByID(ctx context.Context, userID int) error {
