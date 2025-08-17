@@ -1,4 +1,4 @@
-package routes
+package router
 
 import (
 	"net/http"
@@ -7,8 +7,6 @@ import (
 
 	"poc2/back/infrastructure/container"
 	"poc2/back/lib/logging"
-	h "poc2/front/http"
-
 )
 
 func SetupRoutes(container *container.Container) *chi.Mux {
@@ -38,22 +36,10 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 			// 	})
 			// })
 		})
-	})
-
-	// Event and attraction routes will be implemented later
-	// For now, we're focusing on the user domain
-
-
-	// Handlers Frontend
-
-	templatesHandler := h.NewTemplatesHandler()
-
-	// Rotas dos templates
-	r.Route("/user", func(r chi.Router) {
-		r.Post("/select-type", templatesHandler.HandleUserTypeSelection)
-		r.Get("/get-type", templatesHandler.HandleGetUserType)
-		r.Post("/set-information", templatesHandler.HandleSetUserInformation)
-		r.Get("/get-information", templatesHandler.HandleGetUserInformation)
+		r.Post("/select-type", userHandler.HandleUserTypeSelection)
+		r.Get("/get-type", userHandler.HandleGetUserType)
+		r.Post("/set-information", userHandler.HandleSetUserInformation)
+		r.Get("/get-information", userHandler.HandleGetUserInformation)
 	})
 	
 	return r

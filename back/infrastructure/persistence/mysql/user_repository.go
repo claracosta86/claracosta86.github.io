@@ -10,7 +10,6 @@ import (
 
 	"poc2/back/domain/user"
 	"poc2/back/lib/errors"
-
 )
 
 var (
@@ -104,7 +103,7 @@ func (r *userRepository) Update(ctx context.Context, user *user.User) error {
 
 func (r *userRepository) Delete(ctx context.Context, id int) error {
 	// First delete user favorites
-	_, err := r.db.ExecContext(ctx, userQueries["delete-user-favorites"], id)
+	_, err := r.db.ExecContext(ctx, userQueries["delete-user-favorites-by-id"], id)
 	if err != nil {
 		return err
 	}

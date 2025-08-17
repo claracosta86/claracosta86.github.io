@@ -122,7 +122,7 @@ const UserRegisterPage = () => {
           </p>
         </form>
 
-        <p className="medium-letters">Já tem uma conta? <Link to="/user/login" className="link">Login</Link></p>
+        <p className="medium-letters">Já tem uma conta? <Link to="/user/login" state={{ userType }} className="link">Login</Link></p>
       </div>
     </section>
   );

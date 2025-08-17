@@ -8,24 +8,47 @@ The application follows a layered DDD architecture with clear separation of conc
 
 ```
 back/
-├── domain/           # Domain Layer - Core business logic
-│   └── user/        # User domain
-│       ├── entity.go        # User entity with business rules
-│       ├── value_objects.go # Value objects (Email, Password, etc.)
-│       ├── repository.go    # Repository interface
-│       └── service.go       # Domain service
 ├── application/      # Application Layer - Use cases
+│   ├── cultural/        # Events/Tourist Attractions use cases
+│   │   └── use_case.go      # Application use cases
 │   └── user/        # User use cases
 │       └── use_case.go      # Application use cases
+├── cmd/     
+│   └── api/        
+│       └── main.go 
+├── domain/          # Domain Layer - Core business logic
+│   ├── cultural/        # Events/Tourist Attractions domain
+│   │   ├── entity.go        # Events/Tourist Attractions entity with business rules
+│   │   ├── value_objects.go # Value objects
+│   │   ├── repository.go    # Repository interface
+│   │   └── service.go       # Domain service
+│   └── user/        # User domain
+│       ├── entity.go        # User entity with business rules
+│       ├── value_objects.go # Value objects 
+│       ├── repository.go    # Repository interface
+│       └── service.go       # Domain service
 ├── infrastructure/   # Infrastructure Layer - External concerns
 │   ├── persistence/ # Data persistence
 │   │   └── mysql/   # MySQL implementation
+│   │       ├── queries 
+│   │       │   ├── cultural.sql
+│   │       │   └── user.sql
+│   │       ├── cultural_repository.go
 │   │       └── user_repository.go
 │   └── container/   # Dependency injection
 │       └── container.go
-└── interface/       # Interface Layer - HTTP handlers
-    └── http/        # HTTP interface
-        └── user_handler.go
+├── interface/       # Interface Layer - HTTP handlers
+│   └── http/        # HTTP interface
+│       ├── handlers
+│       │   └── cultural_handler.go 
+│       │   └── user_handler.go
+│       ├── middlewares
+│       │    └── session.go
+│       └── model
+│           └── cultural.go
+│           └──  user.go
+├── go.mod
+└── go.sum
 ```
 
 ## Layer Responsibilities
@@ -61,6 +84,12 @@ back/
 5. **Domain Focus**: Business logic is centralized and protected
 
 ## Implementation Details
+
+### Cultural Domain
+- **Entity**: `Cultural` with business validation rules
+- **Value Objects**: 
+- **Repository**: Interface for data persistence
+- **Service**: Business logic for user operations
 
 ### User Domain
 - **Entity**: `User` with business validation rules

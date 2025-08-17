@@ -1,5 +1,4 @@
 // src/components/FavoritesPage.jsx
-import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './styles/profile.css';
 import logo from '../assets/logo.png';
@@ -8,25 +7,10 @@ import userIcon from '../assets/user-icon.png';
 import gobackIcon from '../assets/goback.png';
 
 const FavoritesPage = () => {
-  const [userType, setUserType] = useState('common');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserType = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/user/get-user-type", {
-          credentials: 'include'
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserType(data.userType);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar o tipo de usuário:", error);
-      }
-    };
-    fetchUserType();
-  }, []);
+  const location = useLocation();
+  const userType = location.state?.userType || 'common';
 
   const headerClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
 

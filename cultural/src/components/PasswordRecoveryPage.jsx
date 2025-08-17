@@ -16,7 +16,7 @@ const PasswordRecoveryPage = () => {
         <button className="btn">Enviar link de recuperação</button>
 
         <p className="small-letters">
-          Lembrou sua senha? <Link to="/user/login" className="link">Login</Link>
+          Lembrou sua senha? <Link to="/user/login" state={{ userType }} className="link">Login</Link>
         </p>
       </div>
     </section>

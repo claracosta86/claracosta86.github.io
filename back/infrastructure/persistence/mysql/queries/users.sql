@@ -41,7 +41,7 @@ WHERE id = ?;
 DELETE FROM user_favorites WHERE user_id = ? AND favorite_id = ?;
 
 -- name: delete-user-favorites-by-id
-DELETE FROM user_favorites WHERE user_id = ?;
+DELETE FROM user_favorites WHERE user_id = ? AND user_id != NULL;
 
 -- name: delete-user-by-id
 DELETE FROM users WHERE id = ?;

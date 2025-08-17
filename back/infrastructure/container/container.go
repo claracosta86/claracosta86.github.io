@@ -6,8 +6,7 @@ import (
 	userCase "poc2/back/application/user"
 	userService "poc2/back/domain/user"
 	"poc2/back/infrastructure/persistence/mysql"
-	"poc2/back/interface/http"
-
+	http "poc2/back/interface/http/handlers"
 )
 
 // Container holds all the dependencies for the application

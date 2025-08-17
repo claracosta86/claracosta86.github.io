@@ -45,3 +45,14 @@ type ChangePasswordRequest struct {
 	CurrentPassword string `json:"currentPassword"`
 	NewPassword     string `json:"newPassword"`
 }
+
+// Type represents the type of user for the application
+type Type struct {
+	Type string `json:"userType"`
+}
+
+// Information represents the user information for the application
+type Information struct {
+	Type  string `json:"userType"`
+	ID    string `json:"userID"`
+}

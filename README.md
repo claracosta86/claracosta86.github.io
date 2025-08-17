@@ -77,7 +77,8 @@ POCII < back/schema/tourist_attractions_table.sql
 - Em terminais diferentes rode os seguintes comandos:
 
 ```
-go run main.go
+cd back
+go run cmd/api/main.go
 ```
 
 ```

@@ -18,7 +18,7 @@ const LoginPage = () => {
   useEffect(() => {
     const fetchUserType = async () => {
       try {
-        const response = await fetch("http://localhost:8080/user/get-type", {
+        const response = await fetch("http://localhost:8080/users/get-type", {
              credentials: 'include'
         }); 
         if (response.ok) {
@@ -84,7 +84,7 @@ const LoginPage = () => {
         formData.append('userID', data.userID);
 
         try {
-            const response = await fetch("http://localhost:8080/user/set-information", {
+            const response = await fetch("http://localhost:8080/users/set-information", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/x-www-form-urlencoded"

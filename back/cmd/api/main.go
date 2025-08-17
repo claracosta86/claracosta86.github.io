@@ -7,7 +7,7 @@ import (
 
     _ "github.com/go-sql-driver/mysql"
 
-    "poc2/routes"
+    "poc2/back/interface/http/router"
     "poc2/back/infrastructure/container"
 )
 
@@ -31,7 +31,7 @@ func main() {
 	container := container.NewContainer(db)
 
 	// Setup routes with the new DDD structure
-	router := routes.SetupRoutes(container)
+	router := router.SetupRoutes(container)
 
 	http.ListenAndServe(":8080", router)
 }

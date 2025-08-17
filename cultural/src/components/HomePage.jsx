@@ -26,7 +26,7 @@ const HomePage = () => {
   useEffect(() => {
       const fetchUserType = async () => {
         try {
-          const response = await fetch("http://localhost:8080/user/get-type", {
+          const response = await fetch("http://localhost:8080/users/get-type", {
                credentials: 'include'
           });
           if (response.ok) {

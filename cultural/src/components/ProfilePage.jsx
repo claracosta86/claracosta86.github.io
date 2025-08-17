@@ -19,7 +19,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/user/get-information", {
+        const response = await fetch("http://localhost:8080/users/get-information", {
           credentials: 'include'
         });
         if (response.ok) {

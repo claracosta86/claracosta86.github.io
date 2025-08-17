@@ -53,7 +53,7 @@ const LandingPage = () => {
 
   const handleUserTypeSelection = async (userType) => {
     try {
-      const response = await fetch("http://localhost:8080/user/select-type", {
+      const response = await fetch("http://localhost:8080/users/select-type", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
