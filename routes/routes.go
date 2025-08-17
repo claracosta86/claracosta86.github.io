@@ -5,23 +5,19 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"poc2/back/api"
-	"poc2/back/service"
+	"poc2/back/infrastructure/container"
 	"poc2/back/lib/logging"
 	"poc2/front/handlers"
 
 )
 
-func SetupRoutes(userService service.UserService, eventService service.EventService, attractionService service.AttractionService) *chi.Mux {
+func SetupRoutes(container *container.Container) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(enableCors, logging.LoggingMiddleware)
 
-	// Handlers Backend
-	
-	userHandler := api.NewUserHandler(userService, eventService, attractionService)
-	eventHandler := api.NewEventHandler(eventService)
-	attractionHandler := api.NewAttractionHandler(attractionService)
+	// Use handlers from the container
+	userHandler := container.UserHandler
 
 	// Rotas de usuário
 	r.Route("/users", func(r chi.Router) {
@@ -33,34 +29,19 @@ func SetupRoutes(userService service.UserService, eventService service.EventServ
 				r.Put("/edit", userHandler.HandleEditUserProfile)
 				r.Put("/change-password", userHandler.HandleChangeUserPassword)
 			})
-			r.Route("/favorites", func (r chi.Router) {
-				r.Get("/", userHandler.HandleGetUserFavorites)
-				r.Route("/{type}/{typeID}", func (r chi.Router) {
-					r.Post("/add", userHandler.HandleAddToFavorites)
-					r.Delete("/delete", userHandler.HandleDeleteFromFavorites)
-				})
-			})
+			// r.Route("/favorites", func (r chi.Router) {
+			// 	r.Get("/", userHandler.HandleGetUserFavorites)
+			// 	r.Route("/{type}/{typeID}", func (r chi.Router) {
+			// 		r.Post("/add", userHandler.HandleAddToFavorites)
+			// 		r.Delete("/delete", userHandler.HandleDeleteFromFavorites)
+			// 	})
+			// })
 		})
 		r.Delete("/delete/{id}", userHandler.HandleDeleteUser)
 	})
 
-	// Rotas de eventos e atrações
-	r.Route("/events", func(r chi.Router) {
-		r.Post("/register", eventHandler.HandleRegisterEvent)
-		r.Get("/all", eventHandler.HandleGetAllEvents)
-		r.Get("/{id}", eventHandler.HandleGetEventByID)
-		r.Put("/update", eventHandler.HandleUpdateEvent)
-		r.Delete("/delete/{id}", eventHandler.HandleDeleteEvent)
-	})
-
-	// Rotas de atrações
-	r.Route("/attractions", func(r chi.Router) {
-		r.Post("/register", attractionHandler.HandleRegisterAttraction)
-		r.Get("/all", attractionHandler.HandleGetAllAttractions)
-		r.Get("/{id}", attractionHandler.HandleGetAttractionByID)
-		r.Put("/update", attractionHandler.HandleUpdateAttraction)
-		r.Delete("/delete/{id}", attractionHandler.HandleDeleteAttraction)
-	})
+	// Event and attraction routes will be implemented later
+	// For now, we're focusing on the user domain
 
 
 	// Handlers Frontend

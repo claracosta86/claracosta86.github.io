@@ -8,15 +8,11 @@ import (
     _ "github.com/go-sql-driver/mysql"
 
     "poc2/routes"
-    "poc2/back/repository"
-    "poc2/back/service"
-
+    "poc2/back/infrastructure/container"
 )
 
-var db *sql.DB
-
 func main() {
-    log.Println("Servidor rodando em http://localhost:8080/")
+    log.Println("Server running at http://localhost:8080/")
 
 	dsn := "claracosta86:sua_senha@tcp(127.0.0.1:3306)/POCII"
 	db, err := sql.Open("mysql", dsn)
@@ -25,21 +21,17 @@ func main() {
 	}
 	defer db.Close()
 
-	// Verifica se está conectado
+	// Check connection
 	err = db.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	userRepo := repository.NewUserRepository(db)
-	eventRepo := repository.NewEventRepository()
-	attractionRepo := repository.NewAttractionRepository(db, userRepo)
+	// Create dependency injection container
+	container := container.NewContainer(db)
 
-	userService := service.NewUserService(userRepo, eventRepo, attractionRepo)
-	eventService := service.NewEventService(eventRepo)
-	attractionService := service.NewAttractionService(attractionRepo)
-
-	router := routes.SetupRoutes(userService, eventService, attractionService)
+	// Setup routes with the new DDD structure
+	router := routes.SetupRoutes(container)
 
 	http.ListenAndServe(":8080", router)
 }

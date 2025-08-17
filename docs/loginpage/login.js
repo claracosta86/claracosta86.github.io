@@ -32,7 +32,13 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify({ email, password }),
         })
         .then(res => {
-            console.log("Response:", res.status);
+            if (res.status === 404 || res.status === 401) {
+                errorLogin = document.getElementById('error-login')
+                errorLogin.style.display = 'block';
+                errorLogin.textContent = "Seu usuário ou senha estão incorretos.";
+                errorLogin.classList.add('error');
+                return;
+            }
             if (!res.ok) throw new Error("Erro ao fazer login");
             return res.json();
         })
@@ -43,13 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(err => {   
             console.error("Erro:", err);
-            if (err.status === 404) {
-                errorLogin = document.getElementById('error-login')
-                errorLogin.style.display = 'block';
-                errorLogin.textContent = "Seu usuário ou senha estão incorretos.";
-                errorLogin.classList.add('error');
-                return;
-            }
         });
     });
 });

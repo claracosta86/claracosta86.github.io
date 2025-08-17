@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log("Usuário logado:", userID);
 
-        fetch("http://localhost:8080/users/profile/" + userID, {
+        fetch("http://localhost:8080/users/" + userID + "/profile/", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         })

@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  background-color: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.phone {
+  width: 360px; 
+  height: 740px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  background-color: #f7d75e;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 20px;
+}
+
+.logo {
+  width: 120px; 
+  margin-top: 50px;
+  margin-bottom: 20px; 
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.box {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 30px 20px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.box h2 {
+  margin-bottom: 20px;
+}
+
+.btn {
+  display: block;
+  text-align: center;
+  background-color: #346aff;
+  color: white;
+  padding: 10px 0;            /* altura menor */
+  margin-top: 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  width: 80%;                 /* mais largo */
+  max-width: 300px;           /* largura máxima */
+  margin-left: auto;          /* centraliza horizontalmente */
+  margin-right: auto;
+}
+
+.btn:hover {
+  background-color: #2653cc;
+}
+
+.footer-img {
+  width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}

@@ -3,6 +3,7 @@ package handlers
 import (
 	"html/template"
 	"net/http"
+	"fmt"
 
 	"poc2/front/session"
 	"poc2/front/model"
@@ -44,13 +45,8 @@ func (h *TemplatesHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		userType = "common"
 	}
 
-	userID, _ := sess.Values["userID"].(string)
-	if userID == "" {
-		userID = "0" 
-	}
-
 	tmpl := template.Must(template.ParseFiles("./docs/loginpage/login.html"))
-	_ = tmpl.Execute(w, model.LoginPageData{UserID: userID, UserType: userType})
+	_ = tmpl.Execute(w, model.LoginPageData{UserType: userType})
 }
 
 // /users/register [GET]
@@ -130,7 +126,7 @@ func (h *TemplatesHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID, _ := sess.Values["userID"].(string)
-	
+	fmt.Println("UserID:", userID, userType)
 	tmpl := template.Must(template.ParseFiles("./docs/homepage/home.html"))
 	_ = tmpl.Execute(w, model.LoginPageData{UserID: userID, UserType: userType})
 }
