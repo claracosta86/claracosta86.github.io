@@ -97,6 +97,9 @@ a {
   font-size: 11px;
 }
 
+.add-btn:hover {
+  color: #346AFF;
+}
 
 /* Caixa de Perfil */
 .profile-box {

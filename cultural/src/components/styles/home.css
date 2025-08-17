@@ -213,6 +213,9 @@ button {
   font-size: 11px;
 }
 
+.add-btn:hover {
+  color: #346AFF;
+}
 /* Search Bar */
 
 .search-bar {

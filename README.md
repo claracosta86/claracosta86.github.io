@@ -82,6 +82,7 @@ go run cmd/api/main.go
 ```
 
 ```
+cd cultural
 npm run dev
 ```
 
