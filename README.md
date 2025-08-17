@@ -1,10 +1,10 @@
-## Cultural :)
+# Cultural :)
 
-# Configurações iniciais:
+## Configurações iniciais:
 
 > [!NOTE]
 > É preciso fazer o clone do repositório primeiro e ter as seguintes instalaçãos em sua máquina local:
-> 1. [go](https://go.dev/) 
+> 1. [go](https://go.dev/);
 > 2. node.js
 
 
@@ -20,13 +20,13 @@ go mod tidy
 sudo apt-get node
 ```
 > [!TIP]
-> Confira se é a versão mais recente do node
+> Confira se é a versão mais recente do node.
 
 ```
 npm install react-router-dom
 ``` 
 
-# Banco de dados:
+**Banco de dados:**
 
 ```
 docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=senha -p 3306:3306 -d mysql:latest
@@ -36,7 +36,7 @@ sudo apt install mysql-server
 ```
 
 > [!TIP]
-> Se a instalação via docker não funcionar, faça direto do [site](https://dev.mysql.com/downloads/mysql/)
+> Se a instalação via docker não funcionar, faça direto do [site](https://dev.mysql.com/downloads/mysql/).
 
 - Inicie o _ mysql_ como **root**
 ``` 
@@ -72,7 +72,7 @@ POCII < back/schema/events_table.sql
 POCII < back/schema/tourist_attractions_table.sql
 ```
 
-# Rodando o projeto: 
+## Rodando o projeto: 
 
 ```
 go run main.go
