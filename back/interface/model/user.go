@@ -29,8 +29,8 @@ type GetUserProfileResponse struct {
 	UserID      int    `json:"userID"`
 	Name        string `json:"name"`
 	Email       string `json:"email"`
-	Type        string `json:"type"`
 	CompanyName string `json:"companyName"`
+	Type        string `json:"type"`
 }
 
 // UpdateUserProfileRequest represents the request for updating user profile

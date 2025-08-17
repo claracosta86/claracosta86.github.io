@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 
 )
 
@@ -59,10 +58,7 @@ func (s *service) RegisterUser(ctx context.Context, name, email, document, compa
 func (s *service) AuthenticateUser(ctx context.Context, email, password string) (*User, error) {
 	// Find user by email
 	user, err := s.repository.FindByEmail(ctx, email)
-	fmt.Println(email, password)
 	if err != nil {
-			fmt.Println("hew")
-
 		return nil, errors.New("user not found")
 	}
 	
@@ -105,15 +101,11 @@ func (s *service) UpdateUserProfile(ctx context.Context, id int, name, email, co
 }
 
 func (s *service) ChangeUserPassword(ctx context.Context, id int, currentPassword, newPassword string) error {
-	// Get existing user
-	user, err := s.repository.FindByID(ctx, id)
-	if err != nil {
-		return errors.New("user not found")
-	}
-	
 	// Change password
-	if err := user.ChangePassword(currentPassword, newPassword); err != nil {
+	if valid, err := s.repository.CheckPassword(ctx, id, currentPassword); err != nil {
 		return err
+	} else if !valid {
+		return errors.New("current password is incorrect")
 	}
 	
 	// Save changes

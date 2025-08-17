@@ -67,7 +67,6 @@ func (uc *useCase) LoginUser(ctx context.Context, request model.LoginUserRequest
 	
 	return &model.LoginUserResponse{
 		UserID: user.ID,
-		Name:   user.Name,
 		Type:   user.Type,
 	}, nil
 }
@@ -83,8 +82,8 @@ func (uc *useCase) GetUserProfile(ctx context.Context, userID int) (*model.GetUs
 		UserID:      user.ID,
 		Name:        user.Name,
 		Email:       user.Email,
-		Type:        user.Type,
 		CompanyName: user.CompanyName,
+		Type:        user.Type,
 	}, nil
 }
 

@@ -14,8 +14,7 @@ FROM users WHERE id = ?;
 -- name: fetch-user-by-email
 SELECT 
     id,
-    type,
-    name
+    type
 FROM users 
 WHERE email = ?;
 
@@ -29,7 +28,7 @@ UPDATE users
 SET 
     name = ?, 
     email = ?, 
-    company_name = ?, 
+    company_name = ? 
 WHERE id = ?;
 
 -- name: update-user-password

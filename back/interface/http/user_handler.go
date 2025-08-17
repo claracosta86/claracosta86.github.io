@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"fmt"
 
 	chi "github.com/go-chi/chi/v5"
 
@@ -108,7 +109,7 @@ func (h *UserHandler) HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [200] User data recovered successfully
-// /users/profile/:id/ [GET]
+// /users/{userID}/profile/ [GET]
 // HandleGetUserProfile retrieves user profile information
 func (h *UserHandler) HandleGetUserProfile(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -116,7 +117,7 @@ func (h *UserHandler) HandleGetUserProfile(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	userIDStr := chi.URLParam(r, "id")
+	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
@@ -145,7 +146,7 @@ func (h *UserHandler) HandleGetUserProfile(w http.ResponseWriter, r *http.Reques
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User profile edited in successfully
-// /users/profile/:id/edit [PUT]
+// /users/{userID}/profile/edit [PUT]
 // HandleEditUserProfile updates user profile information
 func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
@@ -153,7 +154,7 @@ func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	userIDStr := chi.URLParam(r, "id")
+	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
@@ -187,7 +188,7 @@ func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Reque
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User password edited in successfully
-// /users/profile/:id/change-password [PUT]
+// /users/{userID}/profile/change-password [PUT]
 // HandleChangeUserPassword changes user password
 func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
@@ -195,7 +196,7 @@ func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	userIDStr := chi.URLParam(r, "id")
+	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
@@ -204,6 +205,7 @@ func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Re
 
 	var request userModel.ChangePasswordRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		fmt.Println(request)
 		http.Error(w, "Invalid request data", http.StatusBadRequest)
 		return
 	}
@@ -231,7 +233,7 @@ func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Re
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [200] User deleted successfully
-// /users/profile/:id/delete [DELETE]
+// /users/{userID}/profile/delete [DELETE]
 // HandleDeleteUser removes a user account
 func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
@@ -239,7 +241,7 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIDStr := chi.URLParam(r, "id")
+	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)

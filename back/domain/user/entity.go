@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"strings"
+
 )
 
 // User represents the core user entity in the domain
@@ -135,10 +136,6 @@ func (u *User) ChangePassword(currentPassword, newPassword string) error {
 
 	if strings.TrimSpace(newPassword) == "" {
 		return errors.New("new password cannot be empty")
-	}
-
-	if len(newPassword) < 6 {
-		return errors.New("new password must be at least 6 characters")
 	}
 
 	u.Password = newPassword

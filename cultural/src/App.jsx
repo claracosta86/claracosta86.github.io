@@ -1,28 +1,31 @@
-import { useState } from 'react'
-import indexBottom from '/index-bottom.png'
-import logo from './assets/logo.png'
-import './App.css'
+import './styles/App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+import LoginPage from './components/LoginPage'; 
+import UserRegisterPage from './components/UserRegisterPage';
+import PasswordRecoveryPage from './components/PasswordRecoveryPage';
+import HomePage from './components/HomePage';
+import ProfilePage from './components/ProfilePage';
+import EditProfilePage from './components/EditProfilePage';
+import ChangePasswordPage from './components/ChangePasswordPage';
+import FavoritesPage from './components/FavoritesPage';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <main className="phone">
-        <div className="screen">
-          <img src={logo} alt="Logo Cultural" className="logo-img"></img>
-          <div className="box">
-            <h2>Bem-vindo!</h2>
-              <form action="/user/select-type" method="post">
-                <button type="submit" name="userType" value="common" className="btn">Sou Usuário</button>
-                <button type="submit" name="userType" value="organizer" className="btn">Sou Organizador</button>
-              </form>
-          </div>
-          <img src={indexBottom} alt="Grupo de pessoas" className="footer-img"></img>
-        </div>
-      </main>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/user/login" element={<LoginPage />} />
+        <Route path="/user/register" element={<UserRegisterPage />} />
+        <Route path="/user/password-recovery" element={<PasswordRecoveryPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/user/profile" element={<ProfilePage />} />
+        <Route path="/user/profile/edit" element={<EditProfilePage />} />
+        <Route path="/user/profile/change-password" element={<ChangePasswordPage />} />
+        <Route path="/user/favorites" element={<FavoritesPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

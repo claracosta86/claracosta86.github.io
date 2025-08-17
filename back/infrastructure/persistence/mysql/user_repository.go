@@ -79,7 +79,6 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*user.U
 	var u user.User
 	err := r.db.QueryRowContext(ctx, userQueries["fetch-user-by-email"], email).Scan(
 		&u.ID,
-		&u.Name,
 		&u.Type,
 	)
 	
