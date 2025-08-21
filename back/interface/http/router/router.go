@@ -16,6 +16,7 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 
 	// Use handlers from the container
 	userHandler := container.UserHandler
+	notificationHandler := container.NotificationHandler
 
 	// Rotas de usuário
 	r.Route("/users", func(r chi.Router) {
@@ -41,6 +42,8 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 		r.Post("/set-information", userHandler.HandleSetUserInformation)
 		r.Get("/get-information", userHandler.HandleGetUserInformation)
 	})
+
+	r.Get("/notifications/{userID:[0-9]+}", notificationHandler.HandleGetUserNotifications)
 	
 	return r
 }

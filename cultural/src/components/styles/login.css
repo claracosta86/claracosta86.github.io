@@ -79,10 +79,48 @@ body {
   font-size: 12px;
   color: #346aff;
   text-decoration: none;
-  margin-top: -18px;
+  margin-top: 5px;
   margin-bottom: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.login-box .password-container input {
+  width: 100%;
+  padding-right: 45px;
+  box-sizing: border-box; 
+}
+
+.password-toggle {
+  position: absolute;
+  bottom: 10px; 
+  right: 12px;  
+  
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle img {
+  width: 20px; 
+  height: auto; 
+}
+
+.password-toggle:focus {
+  outline: none;
+}
+
+.toggle-btn{
+  background: none;
+  border: none;
 }
 
 /* Botão Login */

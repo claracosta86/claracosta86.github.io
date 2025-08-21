@@ -20,7 +20,6 @@ type LoginUserRequest struct {
 // LoginUserResponse represents the response for user login
 type LoginUserResponse struct {
 	UserID int    `json:"userID"`
-	Name   string `json:"name"`
 	Type   string `json:"type"`
 }
 

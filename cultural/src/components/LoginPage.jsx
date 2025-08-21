@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './styles/login.css';
 import logo from '../assets/logo.png';
+import visiblePassword from '../assets/visiblepassword-icon.png';
+import invisiblePassword from '../assets/invisiblepassword-icon.png';
 import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -14,6 +16,11 @@ const LoginPage = () => {
 
   const [error, setError] = useState('');
   const [isTypeError, setIsTypeError] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   useEffect(() => {
     const fetchUserType = async () => {
@@ -93,7 +100,7 @@ const LoginPage = () => {
                 credentials: 'include'
             });
             if (response.ok) {
-                navigate('/home');
+                navigate('/home',  { state: {userID: data.userID} });
             } else {
                 console.error("Erro ao selecionar o tipo de usuário no backend.");
             }
@@ -126,17 +133,21 @@ const LoginPage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <label htmlFor="password">
-            Senha <a href="/user/password-recovery" type="button" className="link-recovery">Esqueceu?</a>
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Digite sua senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
+          <div className="password-container">
+            <label htmlFor="password">
+              Senha <a href="/user/password-recovery" type="button" className="link-recovery">Esqueceu?</a>
+            </label>
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Digite sua senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            <button type="button" className="password-toggle" onClick={togglePasswordVisibility}>
+              <img className="toggle-btn" src={showPassword ? visiblePassword : invisiblePassword} alt="Toggle password visibility" />
+            </button>
+          </div>
           {error && <span className="error">{error}</span>}
 
           <p className="button-container">

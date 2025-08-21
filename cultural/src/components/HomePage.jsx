@@ -1,6 +1,6 @@
 // src/components/HomePage.jsx
-import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './styles/home.css'; // Importa o CSS da página home
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -18,10 +18,51 @@ import mercadoAttraction from '../assets/thumb-size/mercado-attraction.png';
 import mangabeirasAttraction from '../assets/thumb-size/mangabeiras-attraction.png';
 
 
+const NotificationModal = ({ isOpen, onClose, notifications }) => {
+  if (!isOpen) return null;
+
+  return (
+     <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-container" onClick={e => e.stopPropagation()}>
+        <h2 className="modal-title">
+          Notificações
+        </h2>
+
+        <div className="modal-content">
+          {notifications.length === 0 ? (
+            <p>Você não tem novas notificações.</p>
+          ) : (
+            notifications.map((notif, index) => (
+              <div key={index} className="notification-item">
+                <p> Veja as atualizações de {notif.Name}</p>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="modal-actions">
+          <button
+            onClick={onClose}
+            className="modal-close-btn"
+          >
+            Entendi
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const HomePage = () => {
   const navigate = useNavigate();
 
   const [userType, setUserType] = useState('common');
+  const [notification, setNotification] = useState([]);
+  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+  
+  const location = useLocation();
+  const userID = location.state?.userID || '';
 
   useEffect(() => {
       const fetchUserType = async () => {
@@ -39,15 +80,41 @@ const HomePage = () => {
       };
       fetchUserType();
     }, []);
-  
+
+  useEffect(() => {
+    if (userID) {
+      console.log("UserID recebido da página de login:", userID);
+    }
+  }, [userID]);
 
   const handleUserIconClick = async () => {
     navigate('/user/profile');
   };
 
+  const handleNotificationIconClick = async () => {
+    const fetchNewNotifications = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
+               credentials: 'include'
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setNotification(data.culturals);
+            console.log("Notificações recebidas:", data.culturals);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar por novas notificações:", error);
+        }
+      };
+      fetchNewNotifications();
+    setNotificationModalOpen(true, notification);
+  };
+
   const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
 
   return (
+    <>
+    <NotificationModal isOpen={isNotificationModalOpen} onClose={() => setNotificationModalOpen(false)} notifications={notification} />
     <section className="screen" id="tela-home">
       <header className={topBarClass}>
         <div className="logo-container">
@@ -60,7 +127,9 @@ const HomePage = () => {
             {userType === 'organizer' && (
               <a href="#" className="add-btn">Adicionar Cultural</a>
             )}
-            <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
+            <div onClick={handleNotificationIconClick} className="icon-button-container">
+              <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
+            </div>
             <div onClick={handleUserIconClick} className="icon-button-container">
                 <img src={userIcon} id="user-icon" alt="Usuário" className="icon" />
             </div>
@@ -128,6 +197,7 @@ const HomePage = () => {
         </section>
       </main>
     </section>
+    </>
   );
 };
 

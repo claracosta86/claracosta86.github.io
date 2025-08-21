@@ -10,21 +10,6 @@ type Email struct {
 	value string
 }
 
-// NewEmail creates a new email value object
-func NewEmail(email string) (*Email, error) {
-	email = strings.ToLower(strings.TrimSpace(email))
-	
-	if email == "" {
-		return nil, errors.New("email cannot be empty")
-	}
-	
-	if !isValidEmailFormat(email) {
-		return nil, errors.New("invalid email format")
-	}
-	
-	return &Email{value: email}, nil
-}
-
 // String returns the email as a string
 func (e *Email) String() string {
 	return e.value

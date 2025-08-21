@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-
 )
 
 // Service defines the business logic for user operations
@@ -39,7 +38,7 @@ func NewService(repository Repository) Service {
 }
 
 func (s *service) RegisterUser(ctx context.Context, name, email, document, companyName, password string, userType UserType) error {
-	// Create a new user with validation
+	// Create a new user
 	user, err := NewUser(name, email, document, companyName, password, userType)
 	if err != nil {
 		return err
@@ -89,11 +88,6 @@ func (s *service) UpdateUserProfile(ctx context.Context, id int, name, email, co
 	user, err := s.repository.FindByID(ctx, id)
 	if err != nil {
 		return errors.New("user not found")
-	}
-	
-	// Update profile
-	if err := user.UpdateProfile(name, email, companyName); err != nil {
-		return err
 	}
 	
 	// Save changes
