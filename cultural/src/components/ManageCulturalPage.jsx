@@ -1,4 +1,4 @@
-// src/components/FavoritesPage.jsx
+// src/components/ManageCulturalPage.jsx
 import { useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './styles/profile.css';
@@ -7,7 +7,7 @@ import notificationsIcon from '../assets/notifications-icon.png';
 import userIcon from '../assets/user-icon.png';
 import gobackIcon from '../assets/goback.png';
 
-const FavoritesPage = () => {
+const ManageCulturalPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -51,7 +51,7 @@ const FavoritesPage = () => {
           <Link to="/user/profile" state={{ userType, userID }}>
             <img src={gobackIcon} alt="Go Back Arrow" className="goback-img" />
           </Link>
-          <h2>Meus Favoritos</h2>
+          <h2>Meus Culturais</h2>
         </div>
         {/* Aqui você pode adicionar a lógica para listar os favoritos */}
       </div>
@@ -59,4 +59,4 @@ const FavoritesPage = () => {
   );
 };
 
-export default FavoritesPage;
+export default ManageCulturalPage;

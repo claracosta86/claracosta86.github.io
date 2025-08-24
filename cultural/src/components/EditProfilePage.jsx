@@ -17,8 +17,17 @@ const EditProfilePage = () => {
     const [error, setError] = useState('');
   
     const location = useLocation();
-    const userType = location.state?.userType || 'common';
     const userID = location.state?.userID || '';
+    const userType = location.state?.userType || 'common';
+    
+    useEffect(() => {
+      if (userID) {
+        console.log("UserID recebido:", userID);
+      }
+      if (userType) {
+        console.log("UserType recebido:", userType);
+      }
+    }, [userID, userType]);
 
     useEffect(() => {
       const fetchUserData = async () => {
@@ -127,7 +136,7 @@ const EditProfilePage = () => {
       </header>
       <div className="profile-box">
         <div className="header-title">
-          <Link to="/user/profile">
+          <Link to="/user/profile" state={{ userType, userID }}>
             <img src={gobackIcon} alt="Go Back Arrow" className="goback-img" />
           </Link>
           <h2>Editar Perfil</h2>

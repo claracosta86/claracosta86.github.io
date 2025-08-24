@@ -1,7 +1,7 @@
 // src/components/HomePage.jsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import './styles/home.css'; // Importa o CSS da página home
+import './styles/home.css'; 
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import userIcon from '../assets/user-icon.png';
@@ -21,6 +21,11 @@ import mangabeirasAttraction from '../assets/thumb-size/mangabeiras-attraction.p
 const NotificationModal = ({ isOpen, onClose, notifications }) => {
   if (!isOpen) return null;
 
+  
+  const handleLinkClick = (culturalID) =>  async () => {
+    navigate(`/card/${culturalID}`);
+  };
+  
   return (
      <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={e => e.stopPropagation()}>
@@ -34,7 +39,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
           ) : (
             notifications.map((notif, index) => (
               <div key={index} className="notification-item">
-                <p> Veja as atualizações de {notif.Name}</p>
+                <p> Veja as atualizações de <button onClick={() => handleLinkClick(notif.ID)}>{notif.Title}</button></p>
               </div>
             ))
           )}
@@ -57,38 +62,35 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
 const HomePage = () => {
   const navigate = useNavigate();
 
-  const [userType, setUserType] = useState('common');
+  const bienalEventID = '2';
+  const mcrEventID = '3';
+  const dccWeekEventID = '4';
+  const iwnbEventID = '1';
+  const cruEventID = '5';
+  const liberdadeAttractionID = '6';
+  const igrejinhaAttractionID = '7';
+  const pseteAttractionID = '8';
+  const mercadoAttractionID = '9';
+  const mangabeirasAttractionID = '10';
+
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   
   const location = useLocation();
   const userID = location.state?.userID || '';
-
-  useEffect(() => {
-      const fetchUserType = async () => {
-        try {
-          const response = await fetch("http://localhost:8080/users/get-type", {
-               credentials: 'include'
-          });
-          if (response.ok) {
-            const data = await response.json();
-            setUserType(data.userType);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar o tipo de usuário:", error);
-        }
-      };
-      fetchUserType();
-    }, []);
+  const userType = location.state?.userType || '';
 
   useEffect(() => {
     if (userID) {
       console.log("UserID recebido da página de login:", userID);
     }
-  }, [userID]);
+    if (userType) {
+      console.log("UserType recebido da página de login:", userType);
+    }
+  }, [userID, userType]);
 
   const handleUserIconClick = async () => {
-    navigate('/user/profile');
+    navigate('/user/profile',  { state: {userID: userID, userType: userType} });
   };
 
   const handleNotificationIconClick = async () => {
@@ -149,23 +151,23 @@ const HomePage = () => {
             <div className="card-events">
               <div className="card">
                 <p className="title">Bienal do Livro</p>
-                <img src={bienalEvent} alt="Bienal do livro" />
+                <Link to={`/card/${bienalEventID}`} state={{userID, userType}}><img src={bienalEvent} alt="Bienal do livro" /></Link>
               </div>
               <div className="card">
                 <p className="title">My Chemical Romance Ao Vivo</p>
-                <img src={mcrEvent} alt="MCR Ao Vivo" />
+                <Link to={`/card/${mcrEventID}`} state={{userID, userType}}><img src={mcrEvent} alt="MCR Ao Vivo" /></Link>
               </div>
               <div className="card">
                 <p className="title">DCC Week</p>
-                <img src={dccWeekEvent} alt="DCC Week" />
+                <Link to={`/card/${dccWeekEventID}`} state={{userID, userType}}><img src={dccWeekEvent} alt="DCC Week" /></Link>
               </div>
               <div className="card">
                 <p className="title">I Wanna Be Tour</p>
-                <img src={iwnbEvent} alt="I Wanna Be Tour" />
+                <Link to={`/card/${iwnbEventID}`} state={{userID, userType}}><img src={iwnbEvent} alt="I Wanna Be Tour" /></Link>
               </div>
               <div className="card">
                 <p className="title">Jogo do Cruzeiro</p>
-                <img src={cruEvent} alt="Jogo do Cruzeiro" />
+                <Link to={`/card/${cruEventID}`} state={{userID, userType}}><img src={cruEvent} alt="Jogo do Cruzeiro" /></Link>
               </div>
             </div>
           </div>
@@ -174,23 +176,23 @@ const HomePage = () => {
             <div className="card-attractions">
               <div className="card">
                 <p className="title">Praça Liberdade</p>
-                <img src={liberdadeAttraction} alt="Praça da Liberdade" />
+                <Link to={`/card/${liberdadeAttractionID}`} state={{userID, userType}}><img src={liberdadeAttraction} alt="Praça da Liberdade" /></Link>
               </div>
               <div className="card">
                 <p className="title">Igreja da Pampulha</p>
-                <img src={igrejinhaAttraction} alt="Igreja da Pampulha" />
+                <Link to={`/card/${igrejinhaAttractionID}`} state={{userID, userType}}><img src={igrejinhaAttraction} alt="Igreja da Pampulha" /></Link>
               </div>
               <div className="card">
                 <p className="title">Pirulito da Praça Sete</p>
-                <img src={pseteAttraction} alt="Pirulito da Praça Sete" />
+                <Link to={`/card/${pseteAttractionID}`} state={{userID, userType}}><img src={pseteAttraction} alt="Pirulito da Praça Sete" /></Link>
               </div>
               <div className="card">
                 <p className="title">Mercado Central</p>
-                <img src={mercadoAttraction} alt="Mercado Central" />
+                <Link to={`/card/${mercadoAttractionID}`} state={{userID, userType}}><img src={mercadoAttraction} alt="Mercado Central" /></Link>
               </div>
               <div className="card">
                 <p className="title">Parque das Mangabeiras</p>
-                <img src={mangabeirasAttraction} alt="Parque das Mangabeiras" />
+                <Link to={`/card/${mangabeirasAttractionID}`} state={{userID, userType}}><img src={mangabeirasAttraction} alt="Parque das Mangabeiras" /></Link>
               </div>
             </div>
           </div>

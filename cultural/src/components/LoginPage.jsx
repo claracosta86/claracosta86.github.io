@@ -100,7 +100,7 @@ const LoginPage = () => {
                 credentials: 'include'
             });
             if (response.ok) {
-                navigate('/home',  { state: {userID: data.userID} });
+                navigate('/home',  { state: {userID: data.userID, userType: data.type} });
             } else {
                 console.error("Erro ao selecionar o tipo de usuário no backend.");
             }

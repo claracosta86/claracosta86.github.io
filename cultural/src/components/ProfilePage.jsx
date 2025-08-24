@@ -1,6 +1,6 @@
 // src/components/ProfilePage.jsx
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './styles/profile.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -10,30 +10,22 @@ import gobackIcon from '../assets/goback.png';
 const ProfilePage = () => {
   const navigate = useNavigate();
 
-  const [userType, setUserType] = useState('');
-  const [userID, setUserID] = useState('');
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [companyName, setCompanyName] = useState('');
-  
+
+  const location = useLocation();
+  const userID = location.state?.userID || '';
+  const userType = location.state?.userType || '';
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/users/get-information", {
-          credentials: 'include'
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserType(data.userType);
-          setUserID(data.userID); 
-        }
-      } catch (error) {
-        console.error("Erro ao buscar dados do usuário:", error);
-        setUserType('common'); 
-      }
-    };
-    fetchUserData();
-  }, []);
+    if (userID) {
+      console.log("UserID recebido:", userID);
+    }
+    if (userType) {
+      console.log("UserType recebido:", userType);
+    }
+  }, [userID, userType]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -86,7 +78,7 @@ const ProfilePage = () => {
 
       <div className="profile-box">
         <div className="header-title">
-          <Link to="/home">
+          <Link to="/home" state={{ userType, userID }}>
             <img src={gobackIcon} alt="Go Back Arrow" className="goback-img" />
           </Link>
           <h2>Seu Perfil</h2>
@@ -108,6 +100,9 @@ const ProfilePage = () => {
           <Link to="/user/profile/edit" state={{ userType, userID }} className="profile-btn">Editar Perfil</Link>
           <Link to="/user/profile/change-password" state={{ userType, userID }} className="profile-btn">Alterar Senha</Link>
           <Link to="/user/favorites" state={{ userType, userID }} className="profile-btn">Meus Favoritos</Link>
+          { userType === 'organizer' && (
+            <Link to="/user/profile/manage-cultural" state={{ userType, userID }} className="profile-btn">Meus Culturais</Link>
+          )}
         </div>
       </div>
 

@@ -47,7 +47,7 @@ a {
   justify-content: space-between;
   padding: 0 20px;
   gap: 10px 150px;
-  margin-top: 25px;
+  margin-top: 15px;
 }
 
 .icons {
@@ -164,9 +164,9 @@ a {
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
-  min-width: 120px;
+  min-width: 110px;
   text-align: center;
   transition: background 0.2s;
 }
@@ -183,12 +183,13 @@ a {
     padding: 8px;
     gap: 4.29px;
     color: black;
-    min-width: 120px;
+    min-width: 100px;
     height: 36px;
     background: #d1d5db;
     border-radius: 6.86294px;  
     text-decoration: none;
     margin-top: 10px;
+    font-size: 12px;
 }
 
 .logout-btn:hover {

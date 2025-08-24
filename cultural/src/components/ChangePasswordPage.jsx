@@ -1,5 +1,5 @@
 // src/components/ChangePasswordPage.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './styles/profile.css';
 import logo from '../assets/logo.png';
@@ -10,15 +10,24 @@ import gobackIcon from '../assets/goback.png';
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const userType = location.state?.userType || 'common';
-  const userID = location.state?.userID || '';
-
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirmation, setNewPasswordConfirmation] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
 
   const [error, setError] = useState('');
+
+  const location = useLocation();
+  const userID = location.state?.userID || '';
+  const userType = location.state?.userType || 'common';
+  
+  useEffect(() => {
+    if (userID) {
+      console.log("UserID recebido:", userID);
+    }
+    if (userType) {
+      console.log("UserType recebido:", userType);
+    }
+  }, [userID, userType]);
   
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -92,7 +101,7 @@ const ChangePasswordPage = () => {
       </header>
       <div className="profile-box">
         <div className="header-title">
-          <Link to="/user/profile">
+          <Link to="/user/profile" state={{ userType, userID }}>
             <img src={gobackIcon} alt="Go Back Arrow" className="goback-img" />
           </Link>
           <h2>Alterar Senha</h2>

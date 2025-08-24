@@ -9,6 +9,8 @@ import ProfilePage from './components/ProfilePage';
 import EditProfilePage from './components/EditProfilePage';
 import ChangePasswordPage from './components/ChangePasswordPage';
 import FavoritesPage from './components/FavoritesPage';
+import ManageCulturalPage from './components/ManageCulturalPage';
+import CardPage from './components/CardPage';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/user/profile/edit" element={<EditProfilePage />} />
         <Route path="/user/profile/change-password" element={<ChangePasswordPage />} />
         <Route path="/user/favorites" element={<FavoritesPage />} />
+        <Route path="/user/profile/manage-cultural" element={<ManageCulturalPage />} />
+        <Route path="/card/:id" element={<CardPage />} />
       </Routes>
     </Router>
   );
