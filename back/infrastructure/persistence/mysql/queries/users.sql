@@ -37,11 +37,20 @@ SET
     password = ?
 WHERE id = ?;
 
--- name: remove-from-favorites
-DELETE FROM user_favorites WHERE user_id = ? AND favorite_id = ?;
-
 -- name: delete-user-favorites-by-id
 DELETE FROM user_favorites WHERE user_id = ? AND user_id != NULL;
 
 -- name: delete-user-by-id
 DELETE FROM users WHERE id = ?;
+
+-- name: delete-users-favorites-by-event-id
+DELETE FROM user_favorites WHERE favorite_type = 'event' AND favorite_id IN (%s);
+
+-- name: delete-users-favorites-by-tourist-attraction-id
+DELETE FROM user_favorites WHERE favorite_type = 'tourist_attraction' AND favorite_id IN (%s);
+
+-- name: add-user-favorite
+INSERT INTO user_favorites (user_id, favorite_type, favorite_id, created_at) VALUES (?, ?, ?, NOW());
+
+-- name: remove-user-favorite
+DELETE FROM user_favorites WHERE user_id = ? AND favorite_type = ? AND favorite_id = ?;

@@ -86,7 +86,7 @@ export const userAPI = {
 
   updateProfile: async (userData) => {
     return apiRequest(API_ENDPOINTS.UPDATE_PROFILE, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(userData),
     });
   },

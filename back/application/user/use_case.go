@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"poc2/back/domain/user"
+	"poc2/back/domain/cultural"
 	"poc2/back/interface/model"
-
 )
 
 // UseCase defines the application use cases for user operations
@@ -26,17 +26,22 @@ type UseCase interface {
 	ChangePassword(ctx context.Context, userID int, request model.ChangePasswordRequest) error
 
 	// DeleteUser removes a user account
-	DeleteUser(ctx context.Context, userID int) error
+	DeleteUser(ctx context.Context, userID int, userType string) error
+
+	// ToggleFavorite adds or removes a cultural item from user's favorites
+	ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error
 }
 
 type useCase struct {
-	userService user.Service
+	userService    user.Service
+	culturalService cultural.Service
 }
 
 // NewUseCase creates a new user use case
-func NewUseCase(userService user.Service) UseCase {
+func NewUseCase(userService user.Service, culturalService cultural.Service) UseCase {
 	return &useCase{
-		userService: userService,
+		userService:    userService,
+		culturalService: culturalService,
 	}
 }
 
@@ -109,6 +114,38 @@ func (uc *useCase) ChangePassword(ctx context.Context, userID int, request model
 }
 
 // DeleteUser removes a user account
-func (uc *useCase) DeleteUser(ctx context.Context, userID int) error {
+func (uc *useCase) DeleteUser(ctx context.Context, userID int, userType string) error {
+	if userType == "organizer" {
+		eventsIDs, err := uc.culturalService.GetEventsIDsByOrganizer(ctx, userID); 
+		if err != nil {
+			return err
+		}
+
+		attractionsIDs, err := uc.culturalService.GetTouristAttractionsIDsByOrganizer(ctx, userID);
+		if err != nil {
+			return err
+		}
+
+		// Delete events
+		if len(eventsIDs) > 0 {
+			if err := uc.userService.RemoveEventFromAllUsers(ctx, eventsIDs); err != nil {
+				return err
+			}
+		}
+
+		// Delete attractions
+		if len(attractionsIDs) > 0 {
+			if err := uc.userService.RemoveTouristAttractionFromAllUsers(ctx, attractionsIDs); err != nil {
+				return err
+			}
+		}
+	}
+
 	return uc.userService.DeleteUser(ctx, userID)
 }
+
+// ToggleFavorite adds or removes a cultural item from user's favorites
+func (uc *useCase) ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error {
+	return uc.userService.ToggleFavorite(ctx, userID, request.CulturalType, request.CulturalID, request.IsFavorite)
+}
+

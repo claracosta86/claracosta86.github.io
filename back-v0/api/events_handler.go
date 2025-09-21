@@ -80,9 +80,9 @@ func (h *EventHandler) HandleGetEventByID(w http.ResponseWriter, r *http.Request
 
 // @ Updates an event
 // @ Accepts JSON
-// /events/update [PUT]
+// /events/update [PATCH]
 func (h *EventHandler) HandleUpdateEvent(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
+	if r.Method != http.MethodPatch {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		return
 	}

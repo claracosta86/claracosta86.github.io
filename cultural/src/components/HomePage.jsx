@@ -127,7 +127,7 @@ const HomePage = () => {
         <div className="right-section">
           <div className="icons">
             {userType === 'organizer' && (
-              <a href="#" className="add-btn">Adicionar Cultural</a>
+              <a href="" className="add-btn">Adicionar Cultural</a>
             )}
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
@@ -140,8 +140,8 @@ const HomePage = () => {
       </header>
 
       <section className="search-bar">
-        <img src={searchIcon} alt="Buscar" className="search-icon" />
-        <input id="search-input" type="text" placeholder="Buscar..." />
+          <img src={searchIcon} alt="Buscar" className="search-icon" />
+          <input id="search-input" type="text" placeholder="Buscar..." />
       </section>
 
       <main className="home-container">
@@ -149,51 +149,49 @@ const HomePage = () => {
           <div className="category-box">
             <h2>Principais Eventos</h2>
             <div className="card-events">
-              <div className="card">
+              <Link to={`/card/${bienalEventID}`} state={{userID, userType, "event":true}}><div className="card">
                 <p className="title">Bienal do Livro</p>
-                <Link to={`/card/${bienalEventID}`} state={{userID, userType}}><img src={bienalEvent} alt="Bienal do livro" /></Link>
-              </div>
-              <div className="card">
+                <img src={bienalEvent} alt="Bienal do livro" />
+              </div></Link>
+               <Link to={`/card/${mcrEventID}`} state={{userID, userType, "event":true}}><div className="card">
                 <p className="title">My Chemical Romance Ao Vivo</p>
-                <Link to={`/card/${mcrEventID}`} state={{userID, userType}}><img src={mcrEvent} alt="MCR Ao Vivo" /></Link>
-              </div>
-              <div className="card">
+               <img src={mcrEvent} alt="MCR Ao Vivo" />
+              </div></Link>
+              <Link to={`/card/${dccWeekEventID}`} state={{userID, userType, "event":true}}><div className="card">
                 <p className="title">DCC Week</p>
-                <Link to={`/card/${dccWeekEventID}`} state={{userID, userType}}><img src={dccWeekEvent} alt="DCC Week" /></Link>
-              </div>
-              <div className="card">
+                <img src={dccWeekEvent} alt="DCC Week" />
+              </div></Link>
+              <Link to={`/card/${iwnbEventID}`} state={{userID, userType, "event":true}}><div className="card">
                 <p className="title">I Wanna Be Tour</p>
-                <Link to={`/card/${iwnbEventID}`} state={{userID, userType}}><img src={iwnbEvent} alt="I Wanna Be Tour" /></Link>
-              </div>
-              <div className="card">
+                <img src={iwnbEvent} alt="I Wanna Be Tour" />
+              </div></Link>
+              <Link to={`/card/${cruEventID}`} state={{userID, userType, "event":true}}><div className="card">
                 <p className="title">Jogo do Cruzeiro</p>
-                <Link to={`/card/${cruEventID}`} state={{userID, userType}}><img src={cruEvent} alt="Jogo do Cruzeiro" /></Link>
-              </div>
+                <img src={cruEvent} alt="Jogo do Cruzeiro" />
+              </div></Link>
             </div>
-          </div>
-          <div className="category-box">
             <h2>Principais Pontos Turísticos</h2>
             <div className="card-attractions">
-              <div className="card">
+              <Link to={`/card/${liberdadeAttractionID}`} state={{userID, userType, "event":false}}><div className="card">
                 <p className="title">Praça Liberdade</p>
-                <Link to={`/card/${liberdadeAttractionID}`} state={{userID, userType}}><img src={liberdadeAttraction} alt="Praça da Liberdade" /></Link>
-              </div>
-              <div className="card">
+                <img src={liberdadeAttraction} alt="Praça da Liberdade" />
+              </div></Link>
+              <Link to={`/card/${igrejinhaAttractionID}`} state={{userID, userType, "event":false}}><div className="card">
                 <p className="title">Igreja da Pampulha</p>
-                <Link to={`/card/${igrejinhaAttractionID}`} state={{userID, userType}}><img src={igrejinhaAttraction} alt="Igreja da Pampulha" /></Link>
-              </div>
-              <div className="card">
+                <img src={igrejinhaAttraction} alt="Igreja da Pampulha" />
+              </div></Link>
+              <Link to={`/card/${pseteAttractionID}`} state={{userID, userType, "event":false}}><div className="card">
                 <p className="title">Pirulito da Praça Sete</p>
-                <Link to={`/card/${pseteAttractionID}`} state={{userID, userType}}><img src={pseteAttraction} alt="Pirulito da Praça Sete" /></Link>
-              </div>
-              <div className="card">
+                <img src={pseteAttraction} alt="Pirulito da Praça Sete" />
+              </div></Link>
+              <Link to={`/card/${mercadoAttractionID}`} state={{userID, userType, "event":false}}><div className="card">
                 <p className="title">Mercado Central</p>
-                <Link to={`/card/${mercadoAttractionID}`} state={{userID, userType}}><img src={mercadoAttraction} alt="Mercado Central" /></Link>
-              </div>
-              <div className="card">
+                <img src={mercadoAttraction} alt="Mercado Central" />
+              </div></Link>
+              <Link to={`/card/${mangabeirasAttractionID}`} state={{userID, userType, "event":false}}><div className="card">
                 <p className="title">Parque das Mangabeiras</p>
-                <Link to={`/card/${mangabeirasAttractionID}`} state={{userID, userType}}><img src={mangabeirasAttraction} alt="Parque das Mangabeiras" /></Link>
-              </div>
+                <img src={mangabeirasAttraction} alt="Parque das Mangabeiras" />
+              </div></Link>
             </div>
           </div>
         </section>

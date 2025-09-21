@@ -55,3 +55,16 @@ type Information struct {
 	Type  string `json:"userType"`
 	ID    string `json:"userID"`
 }
+
+// Organizer represents the organizer information for cultural events
+type Organizer struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	ID    int    `json:"id"`
+}
+
+type FavoriteRequest struct {
+	CulturalType string `json:"culturalType"` // "event" or "tourist_attraction"
+	CulturalID   int    `json:"culturalID"`   // ID of the event or tourist attraction
+	IsFavorite   bool   `json:"isFavorite"`   // true to add to favorites, false to remove from favorites
+}

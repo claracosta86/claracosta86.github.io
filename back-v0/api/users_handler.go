@@ -170,9 +170,9 @@ func (h *UserHandler) HandleGetUserProfile(w http.ResponseWriter, r *http.Reques
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User profile edited in successfully
-// /users/profile/:id/edit [PUT]
+// /users/profile/:id/edit [PATCH]
 func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Request) {
-    if r.Method != http.MethodPut {
+    if r.Method != http.MethodPatch {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
     }
@@ -212,9 +212,9 @@ func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Reque
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User password edited in successfully
-// /users/profile/:id/change-password [PUT]
+// /users/profile/:id/change-password [PATCH]
 func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Request){
-    if r.Method != http.MethodPut {
+    if r.Method != http.MethodPatch {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
     }

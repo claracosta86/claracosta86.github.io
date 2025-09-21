@@ -94,7 +94,7 @@ const API_BASE_URL = 'http://localhost:8080'; // ← SUA PORTA AQUI
 Os endpoints estão configurados para seguir o padrão REST:
 - `GET /api/events` - Listar eventos
 - `POST /api/users/login` - Fazer login
-- `PUT /api/users/profile` - Atualizar perfil
+- `PATCH /api/users/profile` - Atualizar perfil
 
 ## 📱 PÁGINAS FUNCIONANDO
 

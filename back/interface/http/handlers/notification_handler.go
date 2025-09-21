@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-"fmt"
 
 	chi "github.com/go-chi/chi/v5"
 
@@ -43,7 +42,6 @@ func (h *NotificationHandler) HandleGetUserNotifications(w http.ResponseWriter, 
 
 	notifications, err := h.notificationUseCase.GetNotifications(r.Context(), userID)
 	if err != nil {
-		fmt.Println("Error retrieving notifications:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -1,0 +1,141 @@
+.screen {
+    background-color: #f7d75e;
+}
+
+/* --- ESTILOS PRINCIPAIS PARA O CARD --- */
+.home-container {
+    padding: 20px;
+    background-color: var(--background-light-gray);
+    flex: 1; /* Faz o container ocupar o espaço disponível */
+    overflow-y: auto; /* Adiciona scroll se o conteúdo passar da tela */
+}
+
+.logo-tiny {
+  width: 48px !important;
+  margin-bottom: 5px;
+}
+
+/* --- CABEÇALHO COM TÍTULO E ÍCONES --- */
+.header-details {
+    display: flex;
+    align-items: center; /* Mantém tudo alinhado verticalmente */
+    justify-content: center; /* Centraliza o título por padrão */
+    padding: 10px 0; /* Adiciona um pouco de espaço vertical */
+    margin-bottom: 16px;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.goback-img {
+    width: 28px;
+    height: 24px;
+    margin-top: 15px;
+}
+
+.cultural-title {
+    flex-grow: 1; /* Faz o título ocupar o espaço central */
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.favorite-icon {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+/* --- IMAGEM PRINCIPAL DO EVENTO --- */
+.event-image {
+    width: 80%;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    margin-left: auto;  /* 2. Adiciona margem automática à esquerda */
+    margin-right: auto;
+    display: block;     /* 3. Define o display como block */
+}
+
+/* --- CAIXA DE INFORMAÇÕES --- */
+.info-box {
+    background-color: #faebc0;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-box p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.info-box p:last-child {
+    margin-bottom: 0;
+}
+
+.info-box .description {
+    margin-top: 15px;
+    border-top: 1px solid var(--border-light);
+    padding-top: 15px;
+}
+
+.info-icon {
+    margin-right: 8px;
+    vertical-align: middle; /* Alinha o ícone com o texto */
+}
+
+/* --- SEÇÃO DE COMENTÁRIOS --- */
+.comments-section {
+    text-align: center;
+}
+
+.comments-section h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.comment-box {
+    background-color: #faebc0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: left;
+    min-height: 100px; /* Altura mínima para parecer com o card */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilo para quando não há comentários */
+.comment-box:empty::before {
+    content: "Seja o primeiro a comentar!";
+    color: var(--text-light);
+    font-style: italic;
+}
+
+.add-comment-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: #346aff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-comment-btn:hover {
+    background-color: #0056b3;
+}

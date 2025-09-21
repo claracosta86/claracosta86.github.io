@@ -22,8 +22,17 @@ type Service interface {
 	// ChangeUserPassword changes a user's password
 	ChangeUserPassword(ctx context.Context, id int, currentPassword, newPassword string) error
 	
+	// RemoveEventFromAllUsers removes an event from all users' favorites
+	RemoveEventFromAllUsers(ctx context.Context, eventIDs []int) error
+
+	// RemoveTouristAttractionFromAllUsers removes a tourist attraction from all users' favorites
+	RemoveTouristAttractionFromAllUsers(ctx context.Context, attractionIDs []int) error
+
 	// DeleteUser removes a user from the system
 	DeleteUser(ctx context.Context, id int) error
+
+	// ToggleFavorite adds or removes a cultural item from user's favorites
+	ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error
 }
 
 type service struct {
@@ -106,13 +115,40 @@ func (s *service) ChangeUserPassword(ctx context.Context, id int, currentPasswor
 	return s.repository.UpdatePassword(ctx, id, newPassword)
 }
 
+func (s *service) RemoveEventFromAllUsers(ctx context.Context, eventIDs []int) error {
+	return s.repository.RemoveEvent(ctx, eventIDs)
+}
+
+func (s *service) RemoveTouristAttractionFromAllUsers(ctx context.Context, attractionIDs []int) error {
+	return s.repository.RemoveTouristAttraction(ctx, attractionIDs)
+}
+
 func (s *service) DeleteUser(ctx context.Context, id int) error {
 	// Check if user exists
 	_, err := s.repository.FindByID(ctx, id)
 	if err != nil {
 		return errors.New("user not found")
 	}
-	
+
+	// Delete user favorites
+	if err := s.repository.DeleteUserFavorites(ctx, id); err != nil {
+		return err
+	}
+
 	// Delete user
-	return s.repository.Delete(ctx, id)
+	return s.repository.DeleteUser(ctx, id)
+}
+
+func (s *service) ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error {
+	// Check if user exists
+	_, err := s.repository.FindByID(ctx, userID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	if isFavorite {
+		return s.repository.AddFavorite(ctx, userID, culturalType, culturalID)
+	} else {
+		return s.repository.RemoveFavorite(ctx, userID, culturalType, culturalID)
+	}
 }

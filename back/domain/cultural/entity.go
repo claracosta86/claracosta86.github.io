@@ -14,7 +14,8 @@ type TouristAttraction struct {
 	Location    string `json:"location"`
 	Price      float64 `json:"price"` // Price in R$
 	IsAccessible bool   `json:"is_accessible"` 
-	Organizer   Organizer `json:"organizer"` // Contact information for the attraction
+	OrganizerID int  `json:"organizerID"`
+	OrganizerEmail string   `json:"organizerEmail"`
 	Image      string `json:"image"`
 }
 
@@ -30,7 +31,8 @@ type Event struct {
 	Location     string    `json:"location"`
 	Price       float64    `json:"price"` // Price in R$
 	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
-	Organizer    Organizer  `json:"organizer"` // Contact information for the event
+	OrganizerID int  `json:"organizerID"`
+	OrganizerEmail string   `json:"organizerEmail"`
 	Image       string     `json:"image"` // Image associated with the event
 }
 

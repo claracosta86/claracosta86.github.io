@@ -86,9 +86,9 @@ func (h *AttractionHandler) HandleGetAttractionByID(w http.ResponseWriter, r *ht
 
 // @ Updates a tourist attraction information
 // @ Accept json
-// /attractions/update [PUT]
+// /attractions/update [PATCH]
 func (h *AttractionHandler) HandleUpdateAttraction(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
+	if r.Method != http.MethodPatch {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		return
 	}

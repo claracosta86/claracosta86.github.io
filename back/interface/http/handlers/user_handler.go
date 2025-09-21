@@ -152,10 +152,10 @@ func (h *UserHandler) HandleGetUserProfile(w http.ResponseWriter, r *http.Reques
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User profile edited in successfully
-// /users/{userID}/profile/edit [PUT]
+// /users/{userID}/profile/edit [PATCH]
 // HandleEditUserProfile updates user profile information
 func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
+	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -194,10 +194,10 @@ func (h *UserHandler) HandleEditUserProfile(w http.ResponseWriter, r *http.Reque
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User password edited in successfully
-// /users/{userID}/profile/change-password [PUT]
+// /users/{userID}/profile/change-password [PATCH]
 // HandleChangeUserPassword changes user password
 func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
+	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -234,7 +234,6 @@ func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// @Accept json
 // [404] User not found
 // [405] Invalid HTTP method
 // [500] Internal Server Error
@@ -247,6 +246,7 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userType := chi.URLParam(r, "userType")
 	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
@@ -254,7 +254,7 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userUseCase.DeleteUser(r.Context(), userID)
+	err = h.userUseCase.DeleteUser(r.Context(), userID, userType)
 	if err != nil {
 		if strings.Contains(err.Error(), "user not found") {
 			http.Error(w, "User not found", http.StatusNotFound)
@@ -339,4 +339,39 @@ func (h *UserHandler) HandleGetUserInformation(w http.ResponseWriter, r *http.Re
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(userModel.Information{Type: userType, ID: userID})
+}
+
+// /users/{userID}/profile/favorites [PATCH]
+func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPatch {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userIDStr := chi.URLParam(r, "userID")
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	var request userModel.FavoriteRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "Invalid request data", http.StatusBadRequest)
+		return
+	}
+
+	err = h.userUseCase.ToggleFavorite(r.Context(), userID, request)
+	if err != nil {
+		if strings.Contains(err.Error(), "user not found") {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		log.Printf("Error updating favorites: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "favorites updated successfully"})
 }

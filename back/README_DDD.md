@@ -18,7 +18,7 @@ back/
 │       └── main.go 
 ├── domain/          # Domain Layer - Core business logic
 │   ├── cultural/        # Events/Tourist Attractions domain
-│   │   ├── entity.go        # Events/Tourist Attractions entity with business rules
+│   │   ├── entity.go        # Events/Tourist Attractions entity with business 
 │   │   ├── value_objects.go # Value objects
 │   │   ├── repository.go    # Repository interface
 │   │   └── service.go       # Domain service
@@ -40,12 +40,12 @@ back/
 ├── interface/       # Interface Layer - HTTP handlers
 │   └── http/        # HTTP interface
 │       ├── handlers
-│       │   └── cultural_handler.go 
+│       │   ├── cultural_handler.go 
 │       │   └── user_handler.go
 │       ├── middlewares
 │       │    └── session.go
 │       └── model
-│           └── cultural.go
+│           ├── cultural.go
 │           └──  user.go
 ├── go.mod
 └── go.sum

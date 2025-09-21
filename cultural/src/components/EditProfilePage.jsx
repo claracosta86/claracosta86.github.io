@@ -58,7 +58,7 @@ const EditProfilePage = () => {
 
     try {
         const response = await fetch(`http://localhost:8080/users/${userID}/profile/edit`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, companyName }),
         credentials: 'include'

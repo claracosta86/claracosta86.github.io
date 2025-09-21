@@ -144,18 +144,18 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 10px;
   gap: 10px 80px;
-  margin-top: 25px;
+  margin-top: 5px;
 }
 
 .top-bar-common {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 10px;
   gap: 10px 150px;
-  margin-top: 25px;
+  margin-top: 5px;
 }
 
 .icons {
@@ -181,8 +181,7 @@ button {
 }
 
 .logo-img {
-  width: 75px;
-  margin-top: 10px;
+  width: 70%;
   margin-bottom: 40px;
 }
 

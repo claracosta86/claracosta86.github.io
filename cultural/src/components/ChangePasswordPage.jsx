@@ -46,7 +46,7 @@ const ChangePasswordPage = () => {
 
     try {
         const response = await fetch(`http://localhost:8080/users/${userID}/profile/change-password`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword }),
         credentials: 'include'

@@ -101,15 +101,13 @@ func (r *userRepository) Update(ctx context.Context, user *user.User) error {
 	return err
 }
 
-func (r *userRepository) Delete(ctx context.Context, id int) error {
-	// First delete user favorites
-	_, err := r.db.ExecContext(ctx, userQueries["delete-user-favorites-by-id"], id)
-	if err != nil {
-		return err
-	}
+func (r *userRepository) DeleteUserFavorites(ctx context.Context, userID int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["delete-user-favorites-by-id"], userID)
+	return err
+}
 
-	// Then delete the user
-	_, err = r.db.ExecContext(ctx, userQueries["delete-user-by-id"], id)
+func (r *userRepository) DeleteUser(ctx context.Context, id int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["delete-user-by-id"], id)
 	return err
 }
 
@@ -126,6 +124,34 @@ func (r *userRepository) UpdatePassword(ctx context.Context, userID int, newPass
 	_, err := r.db.ExecContext(ctx, userQueries["update-user-password"],
 		newPassword,
 		userID,
+	)
+	return err
+}
+
+func (r *userRepository) RemoveEvent(ctx context.Context, eventIDs []int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["delete-users-favorites-by-event-id"], eventIDs)
+	return err
+}
+
+func (r *userRepository) RemoveTouristAttraction(ctx context.Context, touristAttractionIDs []int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["delete-users-favorites-by-tourist-attraction-id"], touristAttractionIDs)
+	return err
+}
+
+func (r *userRepository) AddFavorite(ctx context.Context, userID int, culturalType string, culturalID int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["add-user-favorite"],
+		userID,
+		culturalType,
+		culturalID,
+	)
+	return err
+}
+
+func (r *userRepository) RemoveFavorite(ctx context.Context, userID int, culturalType string, culturalID int) error {
+	_, err := r.db.ExecContext(ctx, userQueries["remove-user-favorite"],
+		userID,
+		culturalType,
+		culturalID,
 	)
 	return err
 }
