@@ -75,7 +75,7 @@ const CardPage = () => {
    const fetchCulturalDetails = async () => {
             try {
               console.log(`Fetching cultural details for type: ${type}, id: ${id}`);
-                const response = await fetch(`http://localhost:8080/cultural/${type}/${id}`);
+                const response = await fetch(`http://localhost:8080/culturais/${type}/${id}`);
                 const data = await response.json();
                 setCulturalData(data);
             } catch (error) {
@@ -133,6 +133,7 @@ const CardPage = () => {
   }
   
   const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
+  console.log("Cultural Data:", culturalData);
 
 
     return (
@@ -174,10 +175,21 @@ const CardPage = () => {
 
                   <div className="info-box">
                       <p><img src={locationIcon} alt="Localização" className="info-icon" /><strong>Endereço:</strong> {culturalData.location}</p>
-                      <p><img src={clockIcon} alt="Horário" className="info-icon" /><strong>Horário de Funcionamento:</strong> {culturalData.duration}</p>
+                      <p><img src={clockIcon} alt="Horário" className="info-icon" />
+                       {type === 'event' 
+                          ? <strong>Data e Horário:</strong> 
+                          : <strong>Horário de Funcionamento:</strong>
+                      }
+                      {type === 'event' && culturalData.event && (
+                        ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`
+                      )}
+                      {type !== 'event' && culturalData.tourist_attraction && (
+                          ` ${culturalData.tourist_attraction.open_days} de ${culturalData.tourist_attraction.open_time}`
+                      )}
+                      </p>
                       <p><img src={priceIcon} alt="Preço" className="info-icon" /><strong>Preço: R$</strong> {culturalData.price}</p>
                       <p><img src={accessibleIcon} alt="Acessível" className="info-icon" /><strong>Acessível:</strong> {culturalData.accessible ? 'Sim' : 'Não'}</p>
-                      <p><img src={mailIcon} alt="Contato" className="info-icon" /><strong>Contato:</strong> {culturalData.organizer.email}</p>
+                      <p><Link to={`/organizer/${culturalData.organizer.id}`}><img src={mailIcon} alt="Contato" className="info-icon" /><strong>Contato:</strong> {culturalData.organizer.email}</Link></p>
                       <p className="description"><strong>Descrição:</strong> {culturalData.description}</p>
                   </div>
               </div>

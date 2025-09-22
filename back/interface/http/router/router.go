@@ -29,8 +29,8 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 				r.Patch("/edit", userHandler.HandleEditUserProfile)
 				r.Patch("/change-password", userHandler.HandleChangeUserPassword)
 				r.Delete("/delete", userHandler.HandleDeleteUser)
-				r.Patch("/favorites", userHandler.HandleFavorites)
 			})
+			r.Patch("/favorites", userHandler.HandleFavorites)
 			// r.Route("/favorites", func (r chi.Router) {
 			// 	r.Get("/", userHandler.HandleGetUserFavorites)
 			// 	r.Route("/{type}/{typeID}", func (r chi.Router) {
@@ -46,7 +46,7 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 		// r.Get("/get-organizer", userHandler.HandleGetOrganizer)
 	})
 
-	r.Route("/cultural", func(r chi.Router) {
+	r.Route("/culturais", func(r chi.Router) {
 		r.Post("/", culturalHandler.HandleCreateCultural)
 		r.Get("/{type}/{id:[0-9]+}", culturalHandler.HandleGetCultural)
 		r.Patch("/{type}/{id:[0-9]+}", culturalHandler.HandleUpdateCultural)

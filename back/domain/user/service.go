@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"fmt"
 )
 
 // Service defines the business logic for user operations
@@ -143,6 +144,7 @@ func (s *service) ToggleFavorite(ctx context.Context, userID int, culturalType s
 	// Check if user exists
 	_, err := s.repository.FindByID(ctx, userID)
 	if err != nil {
+		fmt.Println(err)
 		return errors.New("user not found")
 	}
 

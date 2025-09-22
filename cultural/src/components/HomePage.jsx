@@ -127,7 +127,7 @@ const HomePage = () => {
         <div className="right-section">
           <div className="icons">
             {userType === 'organizer' && (
-              <a href="" className="add-btn">Adicionar Cultural</a>
+              <Link to="/create-cultural" state={{ userID, userType }} className="add-btn">Adicionar Cultural</Link>
             )}
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />

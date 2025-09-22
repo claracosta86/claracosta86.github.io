@@ -45,7 +45,7 @@ func (uc *culturalUseCase) CreateCultural(ctx context.Context, data model.Create
 	switch data.Type {
 	case CulturalTypeEvent:
 		return uc.culturalService.CreateEvent(ctx, data.Title, data.Description, data.Location,
-			data.Event.StartDate, data.Event.FinishDate, data.Event.DurationTime, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
+			data.Event.StartDate, data.Event.EndDate, data.Event.DurationTime, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
 	case CulturalTypeTouristAttraction:
 		return uc.culturalService.CreateTouristAttraction(ctx, data.Title, data.Description, data.Location,
 			data.TouristAttraction.OpenDays, data.TouristAttraction.OpenTime, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
@@ -71,7 +71,7 @@ func (uc *culturalUseCase) GetCultural(ctx context.Context, id int, culturalType
 			Image: event.Image,
 			Event: model.EventDateInformation{	
 				StartDate:   event.StartDate,
-				FinishDate:  event.FinishDate,
+				EndDate:     event.EndDate,
 				DurationTime: event.DurationTime,
 			},
 		}, err
@@ -102,7 +102,7 @@ func (uc *culturalUseCase) UpdateCultural(ctx context.Context, id int, data mode
 	switch data.Type {
 	case CulturalTypeEvent:
 		return uc.culturalService.UpdateEventByID(ctx, id, data.Title, data.Description, data.Location,
-			data.Event.StartDate, data.Event.FinishDate, data.Event.DurationTime, data.Price, data.IsAccessible, data.OrganizerID, data.Image)
+			data.Event.StartDate, data.Event.EndDate, data.Event.DurationTime, data.Price, data.IsAccessible, data.OrganizerID, data.Image)
 	case CulturalTypeTouristAttraction:
 		return uc.culturalService.UpdateTouristAttractionByID(ctx, id, data.Title, data.Description, data.Location,
 			data.TouristAttraction.OpenDays, data.TouristAttraction.OpenTime, data.Price, data.IsAccessible, data.OrganizerID, data.Image)

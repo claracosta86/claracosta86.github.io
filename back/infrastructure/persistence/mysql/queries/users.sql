@@ -50,7 +50,7 @@ DELETE FROM user_favorites WHERE favorite_type = 'event' AND favorite_id IN (%s)
 DELETE FROM user_favorites WHERE favorite_type = 'tourist_attraction' AND favorite_id IN (%s);
 
 -- name: add-user-favorite
-INSERT INTO user_favorites (user_id, favorite_type, favorite_id, created_at) VALUES (?, ?, ?, NOW());
+INSERT INTO user_favorites (user_id, favorite_type, favorite_id, favorited_at, last_seen_at) VALUES (?, ?, ?, NOW(), NOW());
 
 -- name: remove-user-favorite
 DELETE FROM user_favorites WHERE user_id = ? AND favorite_type = ? AND favorite_id = ?;

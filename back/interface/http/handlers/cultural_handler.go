@@ -9,7 +9,7 @@ import (
 	chi "github.com/go-chi/chi/v5"
 
 	"poc2/back/application/cultural"
-	// culturalModel "poc2/back/interface/model"
+	culturalModel "poc2/back/interface/model"
 
 )
 
@@ -23,8 +23,53 @@ func NewCulturalHandler(culturalUseCase cultural.UseCase) *CulturalHandler {
 	}
 }
 
+// [400] Invalid data
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [201] Cultural created successfully
+// /cultural [POST]
+// HandleCreateCultural creates a new cultural entry
 func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Request) {
-	// Implementation for creating cultural content
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseMultipartForm(10 << 20) // Limite de 10MB para o formulário
+	if err != nil {
+		http.Error(w, "Error parsing form data: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	data := r.FormValue("data")
+	if data == "" {
+		http.Error(w, "Missing data field", http.StatusBadRequest)
+		return
+	}
+	var createReq culturalModel.CreateCulturalRequest
+	err = json.Unmarshal([]byte(data), &createReq)
+	if err != nil {
+		http.Error(w, "Error parsing JSON data: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	file, _, err := r.FormFile("image")
+	if err == nil {
+		defer file.Close()
+		// Processar o arquivo da imagem conforme necessário
+		// Por exemplo, salvar em um serviço de armazenamento ou banco de dados
+		// Aqui, apenas simulamos que a imagem foi processada
+		createReq.Image = "processed_image_path_or_url"
+	}
+
+	err = h.culturalUseCase.CreateCultural(r.Context(), createReq)
+	if err != nil {
+		http.Error(w, "Error creating cultural: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Cultural created successfully"))
 }
 
 // [400] Invalid data

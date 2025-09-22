@@ -341,6 +341,11 @@ func (h *UserHandler) HandleGetUserInformation(w http.ResponseWriter, r *http.Re
     json.NewEncoder(w).Encode(userModel.Information{Type: userType, ID: userID})
 }
 
+// // [400] Invalid data
+// // [404] User not found
+// // [405] Invalid HTTP method
+// // [500] Internal Server Error
+// // [200] User favorites recovered successfully
 // /users/{userID}/profile/favorites [PATCH]
 func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
@@ -354,6 +359,7 @@ func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
 		return
 	}
+	log.Printf("UserID: %d", userID)
 
 	var request userModel.FavoriteRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -363,6 +369,7 @@ func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 
 	err = h.userUseCase.ToggleFavorite(r.Context(), userID, request)
 	if err != nil {
+		log.Printf("Error in ToggleFavorite: %v", err)
 		if strings.Contains(err.Error(), "user not found") {
 			http.Error(w, "User not found", http.StatusNotFound)
 			return

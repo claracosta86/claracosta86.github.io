@@ -11,6 +11,7 @@ import ChangePasswordPage from './components/ChangePasswordPage';
 import FavoritesPage from './components/FavoritesPage';
 import ManageCulturalPage from './components/ManageCulturalPage';
 import CardPage from './components/CardPage';
+import CreateCulturalPage from './components/CreateCulturalPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/user/favorites" element={<FavoritesPage />} />
         <Route path="/user/profile/manage-cultural" element={<ManageCulturalPage />} />
         <Route path="/card/:id" element={<CardPage />} />
+        <Route path="/create-cultural" element={<CreateCulturalPage />} />
       </Routes>
     </Router>
   );

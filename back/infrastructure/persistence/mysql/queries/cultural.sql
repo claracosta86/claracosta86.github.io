@@ -10,7 +10,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 
 -- name: fetch-event-by-id
 SELECT 
-    e.id,  e.title, e.description, e.location, e.start_date, e.end_date, e.price, e.is_accessible, IFNULL(e.organizer_id, 0), IFNULL(u.email, ''), e.image
+    e.id,  e.title, e.description, e.location, e.start_date, e.end_date, e.duration, e.price, e.is_accessible, IFNULL(e.organizer_id, 0), IFNULL(u.email, ''), e.image
 FROM events e
 LEFT JOIN users u ON e.organizer_id = u.id
 WHERE e.id = ?
