@@ -155,3 +155,28 @@ func (r *userRepository) RemoveFavorite(ctx context.Context, userID int, cultura
 	)
 	return err
 }
+
+func (r *userRepository) GetFavoritesByUserID(ctx context.Context, userID int) ([]user.FavoriteCulturalList, error) {
+	rows, err := r.db.QueryContext(ctx, userQueries["fetch-user-favorites-by-id"], userID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var favorites []user.FavoriteCulturalList
+	for rows.Next() {
+		var favorite user.FavoriteCulturalList
+		if err := rows.Scan(&favorite.ID, &favorite.Title, &favorite.Type); err != nil {
+			return nil, err
+		}
+
+		favorites = append(favorites, favorite)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return favorites, nil
+}

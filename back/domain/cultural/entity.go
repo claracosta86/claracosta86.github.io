@@ -12,7 +12,7 @@ type TouristAttraction struct {
 	OpenDays    string `json:"open_days"`
 	OpenTime    string `json:"open_time"` // Time in HH:MM format
 	Location    string `json:"location"`
-	Price      float64 `json:"price"` // Price in R$
+	Price      string `json:"price"` // Price in R$
 	IsAccessible bool   `json:"is_accessible"` 
 	OrganizerID int  `json:"organizerID"`
 	OrganizerEmail string   `json:"organizerEmail"`
@@ -29,7 +29,7 @@ type Event struct {
 	EndDate     string    `json:"end_date"`   // YYYY-MM-DD HH:MM
 	DurationTime string    `json:"duration_time"` // HH:MM
 	Location     string    `json:"location"`
-	Price       float64    `json:"price"` // Price in R$
+	Price       string    `json:"price"` // Price in R$
 	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
 	OrganizerID int  `json:"organizerID"`
 	OrganizerEmail string   `json:"organizerEmail"`

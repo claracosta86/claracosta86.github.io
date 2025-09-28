@@ -68,3 +68,8 @@ type FavoriteRequest struct {
 	CulturalID   int    `json:"culturalID"`   // ID of the event or tourist attraction
 	IsFavorite   bool   `json:"isFavorite"`   // true to add to favorites, false to remove from favorites
 }
+
+type FavoriteCulturalList struct {
+	ID    int    `json:"id"`
+	Type   string `json:"type"`
+}

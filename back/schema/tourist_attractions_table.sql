@@ -24,3 +24,5 @@ ALTER TABLE tourist_attractions MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRE
 ALTER TABLE tourist_attractions MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
 
 ALTER TABLE tourist_attractions DROP COLUMN organizer_contact;
+
+ALTER TABLE tourist_attractions MODIFY COLUMN price VARCHAR(255) NOT NULL DEFAULT 'R$0,00';

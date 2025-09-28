@@ -39,4 +39,7 @@ type Repository interface {
 
 	// RemoveFavorite removes a cultural item from user's favorites
 	RemoveFavorite(ctx context.Context, userID int, culturalType string, culturalID int) error
+
+	// GetFavoritesByUserID retrieves all favorite cultural items of a user
+	GetFavoritesByUserID(ctx context.Context, userID int) ([]FavoriteCulturalList, error)
 }

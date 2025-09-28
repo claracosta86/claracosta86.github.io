@@ -9,11 +9,11 @@ type Repository interface {
 
 	// SaveEvent saves a new cultural event
 	SaveEvent(ctx context.Context, title, description, location string,
-		startDate, finishDate, duration string, price float64, isAccessible bool, organizerID int, image string) error
+		startDate, finishDate, duration string, price string, isAccessible bool, organizerID int, image string) (int, error)
 
 	// SaveTouristAttraction saves a new cultural tourist attraction
 	SaveTouristAttraction(ctx context.Context, title, description, location, openDays, openTime string,
-		price float64, isAccessible bool, organizerID int, image string) error
+		price string, isAccessible bool, organizerID int, image string) (int, error)
 
 	// FindEventByID retrieves a cultural event by its ID
 	FindEventByID(ctx context.Context, id int) (Event, error)
@@ -23,11 +23,11 @@ type Repository interface {
 
 	// UpdateEventByID updates a cultural event by its ID
 	UpdateEventByID(ctx context.Context, id int, title, description, location string,
-		startDate, finishDate, duration string, price float64, isAccessible bool, organizerID int, image string) error
+		startDate, finishDate, duration string, price string, isAccessible bool, organizerID int, image string) error
 
 	// UpdateTouristAttractionByID updates a cultural tourist attraction by its ID
 	UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, openDays, openTime string,
-		price float64, isAccessible bool, organizerID int, image string) error
+		price string, isAccessible bool, organizerID int, image string) error
 
 	// DeleteEventByID deletes a cultural event by its ID
 	DeleteEventByID(ctx context.Context, id int) error

@@ -4,4 +4,7 @@ package notification
 type NotificationCulturalList struct {
 	ID    int    `json:"id"`
 	Title string `json:"title"`
+	CulturalType  string `json:"culturalType"`
+	CulturalID   int    `json:"culturalID"`
+	Type         string `json:"type"`
 }

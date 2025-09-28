@@ -45,7 +45,7 @@ func NewContainer(db *sql.DB) *Container {
 
 	// Application layer - use cases
 	culturalUseCase := culturalCase.NewUseCase(culturalService, userService)
-	notificationUseCase := notificationCase.NewUseCase(notificationService)
+	notificationUseCase := notificationCase.NewUseCase(notificationService, userService)
 	userUseCase := userCase.NewUseCase(userService, culturalService)
 
 	// Interface layer - HTTP handlers

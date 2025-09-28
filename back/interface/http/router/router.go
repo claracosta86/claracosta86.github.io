@@ -31,6 +31,7 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 				r.Delete("/delete", userHandler.HandleDeleteUser)
 			})
 			r.Patch("/favorites", userHandler.HandleFavorites)
+			r.Get("/favorites", userHandler.HandleGetUserFavorites)
 			// r.Route("/favorites", func (r chi.Router) {
 			// 	r.Get("/", userHandler.HandleGetUserFavorites)
 			// 	r.Route("/{type}/{typeID}", func (r chi.Router) {
@@ -54,6 +55,7 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 	})
 
 	r.Get("/notifications/{userID:[0-9]+}", notificationHandler.HandleGetUserNotifications)
+	r.Patch("/notifications/{userID:[0-9]+}", notificationHandler.HandleMarkNotificationsAsSeen)
 	
 	return r
 }

@@ -4,7 +4,7 @@ price, is_accessible, organizer_id, image, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 
 -- name: create-tourist-attraction
-INSERT INTO tourist_attractions (title, description, location, open_days, open_time, entrance_fee, is_accessible, organizer_id, image, created_at)
+INSERT INTO tourist_attractions (title, description, location, open_days, open_time, price, is_accessible, organizer_id, image, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 
 
@@ -17,7 +17,7 @@ WHERE e.id = ?
 
 -- name: fetch-tourist-attraction-by-id
 SELECT 
-    ta.id, ta.title, ta.description, ta.location, ta.open_days, ta.open_time, ta.entrance_fee, ta.is_accessible, IFNULL(ta.organizer_id, 0), IFNULL(u.email, ''), ta.image
+    ta.id, ta.title, ta.description, ta.location, ta.open_days, ta.open_time, ta.price, ta.is_accessible, IFNULL(ta.organizer_id, 0), IFNULL(u.email, ''), ta.image
 FROM tourist_attractions ta
 LEFT JOIN users u ON ta.organizer_id = u.id
 WHERE ta.id = ?
@@ -32,7 +32,7 @@ WHERE id = ?
 -- name: update-tourist-attraction
 UPDATE tourist_attractions
 SET title = ?, description = ?, location = ?, open_days = ?, open_time = ?,
-entrance_fee = ?, is_accessible = ?, organizer_id = ?, image = ?,
+price = ?, is_accessible = ?, organizer_id = ?, image = ?,
 updated_at = NOW()
 WHERE id = ?
 

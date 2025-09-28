@@ -1,16 +1,33 @@
 -- name: fetch-notifications-by-user-id
 SELECT 
-    uf.favorite_id,
-    e.title
-FROM user_favorites uf
-INNER JOIN events e ON uf.favorite_id = e.id
-WHERE uf.user_id = ? AND uf.favorite_type = "event" AND e.updated_at > uf.last_seen_at
+    n.id,
+    n.title,
+    n.cultural_type,
+    n.cultural_id,
+    n.type
+FROM notifications n
+WHERE n.user_id = ? 
+AND n.cultural_id IN ( %s )
+AND n.cultural_type = 'event'
+AND n.seen = 0;
+
 
 UNION ALL
 
 SELECT 
-    uf.favorite_id,
-    ta.title
-FROM user_favorites uf
-INNER JOIN tourist_attractions ta ON uf.favorite_id = ta.id
-WHERE uf.user_id = ? AND uf.favorite_type = "tourist_attraction" AND ta.updated_at > uf.last_seen_at;
+    n.id,
+    n.title,
+    n.cultural_type,
+    n.cultural_id,
+    n.type
+FROM notifications n
+WHERE n.user_id = ? 
+AND n.cultural_id IN ( %s )
+AND n.cultural_type = 'tourist_attraction'
+AND n.seen = 0;
+
+-- name: mark-notifications-as-seen
+UPDATE notifications
+SET seen = 1
+WHERE user_id = ?
+AND id IN ( %s )

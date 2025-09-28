@@ -9,9 +9,26 @@ import userIcon from '../assets/user-icon.png';
 const NotificationModal = ({ isOpen, onClose, notifications }) => {
   if (!isOpen) return null;
 
-  const handleLinkClick = (culturalID) =>  async () => {
-    navigate(`/card/${culturalID}`);
+  const handleLinkClick = (culturalID, culturalType) =>  async () => {
+    let isEvent = culturalType === 'event' ? true : false
+    navigate(`/card/${culturalID}`, { state: {userID, userType, isEvent } });
   };
+
+  const renderNotificationContent = (notif) => {
+  switch (notif.NotificationType) {
+    case "updated":
+      return <p>Veja as atualizações de <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button></p>;
+    case "canceled":
+      return <p>O cultural <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button> foi cancelado.</p>;
+    case "closed":
+      return <p>O cultural <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button> foi encerrado.</p>;
+    case "commented":
+      return <p>Veja os novos comentários de <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button>.</p>;
+    default:
+      return null;
+  }
+};
+
   
   return (
      <div className="modal-overlay" onClick={onClose}>
@@ -25,8 +42,8 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
             <p>Você não tem novas notificações.</p>
           ) : (
             notifications.map((notif, index) => (
-              <div key={index} className="notification-item">
-                <p> Veja as atualizações de <button onClick={() => handleLinkClick(notif.ID)}>{notif.Title}</button></p>
+              <div key={notif.ID} className="notification-item">
+                {renderNotificationContent(notif)}
               </div>
             ))
           )}
@@ -37,7 +54,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
             onClick={onClose}
             className="modal-close-btn"
           >
-            Entendi
+            Fechar
           </button>
         </div>
       </div>
@@ -60,22 +77,22 @@ const CreateCulturalPage = () => {
     title: '',
     description: '',
     location: '',
-    price: 0,
-    isAccessible: false,
-    startDate: '',
-    endDate: '',
-    durationTime: '',
-    openDays: [],
-    openTime: '',
+    price: 'R$0,00',
+    is_accessible: false,
+    start_date: '',
+    end_date: '',
+    duration_time: '',
+    open_days: [],
+    open_time: '',
   });
 
   const handleTypeChange = (event) => {
     setCulturalType(event.target.value);
     // Limpa os dados ao trocar o tipo para evitar enviar dados errados
     setFormData({
-      title: '', description: '', location: '', price: 'R$0,00', isAccessible: false,
-      startDate: '', endDate: '', durationTime: '',
-      openDays: [], openTime: '',
+      title: '', description: '', location: '', price: 'R$0,00', is_accessible: false,
+      start_date: '', end_date: '', duration_time: '',
+      open_days: [], open_time: '',
     });
   };
 
@@ -88,11 +105,11 @@ const CreateCulturalPage = () => {
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
     setFormData(prevData => {
-      const currentDays = prevData.openDays;
+      const currentDays = prevData.open_days;
       if (checked) {
-        return { ...prevData, openDays: [...currentDays, value] };
+        return { ...prevData, open_days: [...currentDays, value] };
       } else {
-        return { ...prevData, openDays: currentDays.filter(day => day !== value) };
+        return { ...prevData, open_days: currentDays.filter(day => day !== value) };
       }
     });
   };
@@ -108,28 +125,29 @@ const CreateCulturalPage = () => {
     }
     
     let finalPayload = {
-      Title: formData.title,
-      Type: culturalType,
-      Description: formData.description,
-      Price: parseFloat(formData.price),
-      IsAccessible: formData.isAccessible,
-      Organizer: {
-        ID: userID
+      // Use as chaves exatas do seu `json tag` no Go
+      title: formData.title,
+      type: culturalType,
+      description: formData.description,
+      price: formData.price, 
+      is_accessible: formData.is_accessible,
+      organizer: {
+        id: userID
       },
     };
 
     if (culturalType === 'event') {
-      finalPayload.Location = formData.location;
-      finalPayload.Event = {
-        StartDate: formData.startDate,
-        EndDate: formData.endDate,
-        DurationTime: formData.durationTime,
+      finalPayload.location = formData.location;
+      finalPayload.event = {
+        start_date: formData.start_date,
+        end_date: formData.end_date,
+        duration_time: formData.duration_time,
       };
-    } else if (culturalType === 'tourist_attraction') {
-      finalPayload.Location = formData.location; 
-      finalPayload.TouristAttraction = {
-        OpenDays: formData.openDays.join(', '),
-        OpenTime: formData.openTime,
+    } else if (culturalType === 'attraction') {
+      finalPayload.location = formData.location; 
+      finalPayload.tourist_attraction = {
+        open_days: formData.open_days.join(', '),
+        open_time: formData.open_time,
       };
     }
     
@@ -146,8 +164,9 @@ const CreateCulturalPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert('Item cultural criado com sucesso!');
-        navigate(`/card/${result.ID}`, { state: { userID, userType } });
+console.log('Cultural criado com sucesso:', result);        
+        let isEvent = result.type === 'event' ? true : false
+        navigate(`/card/${result.id}`, { state: { userID, userType, "event": isEvent } });
       } else {
         const errorData = await response.json();
         console.error('Erro da API:', errorData);
@@ -156,8 +175,7 @@ const CreateCulturalPage = () => {
       }
     } catch (err) {
       console.error('Erro de rede:', err);
-      setError('Não foi possível se conectar ao servidor.');
-      alert('Não foi possível se conectar ao servidor.');
+      setError('Não foi possível criar seu cultural no momento, tente novamente mais tarde :(');
     }
   };
 
@@ -187,7 +205,7 @@ const CreateCulturalPage = () => {
     setNotificationModalOpen(true, notification);
   };
   
-  const daysOfWeek = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+  const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
   return (
     <>
@@ -227,8 +245,8 @@ const CreateCulturalPage = () => {
                 <label htmlFor="event">Evento</label>
             </div>
             <div className="radio-option">
-                <input type="radio" id="tourist_attraction" name="culturalType" value="tourist_attraction" checked={culturalType === 'tourist_attraction'} onChange={handleTypeChange}/>
-                <label htmlFor="tourist_attraction">Ponto Turístico</label>
+                <input type="radio" id="attraction" name="culturalType" value="attraction" checked={culturalType === 'attraction'} onChange={handleTypeChange}/>
+                <label htmlFor="attraction">Ponto Turístico</label>
             </div>
           </fieldset>
           
@@ -242,14 +260,14 @@ const CreateCulturalPage = () => {
 
               {culturalType === 'event' ? (
                 <>
-                  <label htmlFor="startDate" className="required">Data e Hora de Início</label>
-                  <input type="datetime-local" id="startDate" name="startDate" value={formData.startDate} onChange={handleInputChange} required />
+                  <label htmlFor="start_date" className="required">Data e Hora de Início</label>
+                  <input type="datetime-local" id="start_date" name="start_date" value={formData.start_date} onChange={handleInputChange} required />
 
-                  <label htmlFor="endDate" className="required">Data e Hora de Fim</label>
-                  <input type="datetime-local" id="endDate" name="endDate" value={formData.endDate} onChange={handleInputChange} required />
+                  <label htmlFor="end_date" className="required">Data e Hora de Fim</label>
+                  <input type="datetime-local" id="end_date" name="end_date" value={formData.end_date} onChange={handleInputChange} required />
 
-                  <label htmlFor="durationTime" className="required">Duração</label>
-                  <input type="text" id="durationTime" name="durationTime" placeholder="HH:MM" value={formData.durationTime} onChange={handleInputChange} required />
+                  <label htmlFor="duration_time" className="required">Duração</label>
+                  <input type="text" id="duration_time" name="duration_time" placeholder="HH:MM" value={formData.duration_time} onChange={handleInputChange} required />
                 </>
               ) : (
                 <>
@@ -257,14 +275,14 @@ const CreateCulturalPage = () => {
                   <div className="checkbox-group">
                     {daysOfWeek.map(day => (
                       <div key={day} className="checkbox-option">
-                        <input type="checkbox" id={day} value={day} checked={formData.openDays.includes(day)} onChange={handleCheckboxChange} />
+                        <input type="checkbox" id={day} value={day} checked={formData.open_days.includes(day)} onChange={handleCheckboxChange} />
                         <label htmlFor={day}>{day}</label>
                       </div>
                     ))}
                   </div>
 
-                  <label htmlFor="openTime" className="required">Horário de Funcionamento</label>
-                  <input type="text" id="openTime" name="openTime" placeholder="ex: 09:00 às 17:00" value={formData.openTime} onChange={handleInputChange} required />
+                  <label htmlFor="open_time" className="required">Horário de Funcionamento</label>
+                  <textarea id="open_time" name="open_time" placeholder="ex: Dom - Sab 09:00 às 17:00" value={formData.open_time} onChange={handleInputChange} required />
                 </>
               )}
 
@@ -276,8 +294,8 @@ const CreateCulturalPage = () => {
               
               <label htmlFor="accessibility">Acessibilidade</label>
               <div className="checkbox-option accessibility-option">
-                <input type="checkbox" id="isAccessible" name="isAccessible" checked={formData.isAccessible} onChange={handleInputChange} />
-                <label htmlFor="isAccessible">Possui estrutura de acessibilidade</label>
+                <input type="checkbox" id="is_accessible" name="is_accessible" checked={formData.is_accessible} onChange={handleInputChange} />
+                <label htmlFor="is_accessible">Possui estrutura de acessibilidade</label>
               </div>
 
               <label htmlFor="image">Imagem do Cultural</label>

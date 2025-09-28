@@ -34,6 +34,9 @@ type Service interface {
 
 	// ToggleFavorite adds or removes a cultural item from user's favorites
 	ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error
+
+	// GetUserFavorites retrieves a user's favorite cultural items
+	GetUserFavorites(ctx context.Context, userID int) ([]FavoriteCulturalList, error)
 }
 
 type service struct {
@@ -153,4 +156,13 @@ func (s *service) ToggleFavorite(ctx context.Context, userID int, culturalType s
 	} else {
 		return s.repository.RemoveFavorite(ctx, userID, culturalType, culturalID)
 	}
+}
+
+func (s *service) GetUserFavorites(ctx context.Context, userID int) ([]FavoriteCulturalList, error) {
+	_, err := s.repository.FindByID(ctx, userID)
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+	
+	return s.repository.GetFavoritesByUserID(ctx, userID)
 }

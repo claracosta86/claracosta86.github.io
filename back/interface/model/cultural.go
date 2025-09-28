@@ -8,7 +8,7 @@ type CreateCulturalRequest struct {
 	Event      EventDateInformation     `json:"event"`
 	TouristAttraction TouristAttractionHours `json:"tourist_attraction"`
 	Location     string    `json:"location"`
-	Price       float64    `json:"price"` // Price in R$
+	Price       string    `json:"price"` // Price in R$
 	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
 	Organizer   Organizer  `json:"organizer"` // Contact information for the event
 	Image       string     `json:"image"` // Image associated with the event
@@ -32,7 +32,7 @@ type CulturalResponse struct {
 	Event      EventDateInformation     `json:"event"`
 	TouristAttraction TouristAttractionHours `json:"tourist_attraction"`
 	Location     string    `json:"location"`
-	Price       float64    `json:"price"` // Price in R$
+	Price       string    `json:"price"` // Price in R$
 	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
 	Organizer   Organizer  `json:"organizer"` // Contact information for the event
 	Image       string     `json:"image"` // Image associated with the event
@@ -46,8 +46,13 @@ type UpdateCulturalRequest struct {
 	Event      EventDateInformation     `json:"event"`
 	TouristAttraction TouristAttractionHours `json:"tourist_attraction"`
 	Location     string    `json:"location"`
-	Price       float64    `json:"price"` // Price in R$
+	Price       string    `json:"price"` // Price in R$
 	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
 	OrganizerID    int  `json:"organizer_id"` // Contact information for the event
 	Image       string     `json:"image"` // Image associated with the event
+}
+
+type CreateCulturalResponse struct {
+	ID int `json:"id"`
+	Type string `json:"type"`
 }

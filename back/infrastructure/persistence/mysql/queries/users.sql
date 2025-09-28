@@ -51,6 +51,26 @@ DELETE FROM user_favorites WHERE favorite_type = 'tourist_attraction' AND favori
 
 -- name: add-user-favorite
 INSERT INTO user_favorites (user_id, favorite_type, favorite_id, favorited_at, last_seen_at) VALUES (?, ?, ?, NOW(), NOW());
+ON DUPLICATE KEY UPDATE last_seen_at = NOW();
 
 -- name: remove-user-favorite
 DELETE FROM user_favorites WHERE user_id = ? AND favorite_type = ? AND favorite_id = ?;
+
+-- name: fetch-user-favorites-by-id
+SELECT 
+    uf.favorite_id,
+    e.title,
+    uf.favorite_type
+FROM user_favorites uf
+INNER JOIN events e ON uf.favorite_id = e.id
+WHERE uf.user_id = ? AND uf.favorite_type = "event"
+
+UNION ALL
+
+SELECT 
+    uf.favorite_id,
+    ta.title,
+    uf.favorite_type
+FROM user_favorites uf
+INNER JOIN tourist_attractions ta ON uf.favorite_id = ta.id
+WHERE uf.user_id = ? AND uf.favorite_type = "tourist_attraction";

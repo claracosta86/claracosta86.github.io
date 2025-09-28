@@ -17,7 +17,7 @@ const (
 
 type UseCase interface {
 	// CreateCultural creates a new cultural entry
-	CreateCultural(ctx context.Context, data model.CreateCulturalRequest) error
+	CreateCultural(ctx context.Context, data model.CreateCulturalRequest) (model.CreateCulturalResponse, error)
 
 	// GetCultural retrieves a cultural entry by ID
 	GetCultural(ctx context.Context, id int, culturalType string) (model.CulturalResponse, error)
@@ -41,16 +41,30 @@ func NewUseCase(culturalService cultural.Service, userService user.Service) UseC
 	}
 }
 
-func (uc *culturalUseCase) CreateCultural(ctx context.Context, data model.CreateCulturalRequest) error {
+func (uc *culturalUseCase) CreateCultural(ctx context.Context, data model.CreateCulturalRequest) (model.CreateCulturalResponse, error) {
 	switch data.Type {
 	case CulturalTypeEvent:
-		return uc.culturalService.CreateEvent(ctx, data.Title, data.Description, data.Location,
+		id, err := uc.culturalService.CreateEvent(ctx, data.Title, data.Description, data.Location,
 			data.Event.StartDate, data.Event.EndDate, data.Event.DurationTime, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
+		if err != nil {
+			return model.CreateCulturalResponse{}, err
+		}
+		return model.CreateCulturalResponse{
+			ID:   id,
+			Type: CulturalTypeEvent,
+		}, nil
 	case CulturalTypeTouristAttraction:
-		return uc.culturalService.CreateTouristAttraction(ctx, data.Title, data.Description, data.Location,
+		id, err := uc.culturalService.CreateTouristAttraction(ctx, data.Title, data.Description, data.Location,
 			data.TouristAttraction.OpenDays, data.TouristAttraction.OpenTime, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
+		if err != nil {
+			return model.CreateCulturalResponse{}, err
+		}
+		return model.CreateCulturalResponse{
+			ID:   id,
+			Type: CulturalTypeTouristAttraction,
+		}, nil
 	}
-	return errors.New("invalid cultural type")
+	return model.CreateCulturalResponse{}, errors.New("invalid cultural type")
 }
 
 func (uc *culturalUseCase) GetCultural(ctx context.Context, id int, culturalType string) (model.CulturalResponse, error) {

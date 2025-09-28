@@ -72,18 +72,30 @@ const CardPage = () => {
   }
 
   useEffect(() => {
-   const fetchCulturalDetails = async () => {
+    const fetchCulturalDataAndFavorites = async () => {
             try {
               console.log(`Fetching cultural details for type: ${type}, id: ${id}`);
-                const response = await fetch(`http://localhost:8080/culturais/${type}/${id}`);
-                const data = await response.json();
-                setCulturalData(data);
+                const culturalResponse = await fetch(`http://localhost:8080/culturais/${type}/${id}`);
+                const cultural = await culturalResponse.json();
+
+                console.log(`Fetching favorites for userID: ${userID}`);
+                const favoritesResponse = await fetch(`http://localhost:8080/users/${userID}/favorites`);
+                const favoritesData = await favoritesResponse.json(); 
+
+                const isFav = favoritesData.some(fav => fav.id == cultural.id);
+                console.log("Cultural details fetched:", cultural);
+                console.log("User favorites fetched:", favoritesData);
+                console.log(`Is favorite: ${isFav}`);
+                setCulturalData({
+                ...cultural,
+                  isFavorite: isFav 
+              });
             } catch (error) {
-                console.error("Erro ao buscar detalhes do evento:", error);
+              console.error("Erro ao buscar detalhes ou favoritos:", error);
             }
         };
-        fetchCulturalDetails();
-    }, [id, type]); 
+        fetchCulturalDataAndFavorites();
+    }, [id, type, userID]); 
 
     const handleNotificationIconClick = async () => {
     const fetchNewNotifications = async () => {
@@ -114,7 +126,7 @@ const CardPage = () => {
       const response = await fetch(`http://localhost:8080/users/${userID}/favorites`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isFavorite: !culturalData.isFavorite, culturalType: type, culturalID: culturalData.ID }),
+        body: JSON.stringify({ isFavorite: !culturalData.isFavorite, culturalType: type, culturalID: culturalData.id }),
         credentials: 'include'
       });
       if (response.ok) {
@@ -131,10 +143,8 @@ const CardPage = () => {
   if (!culturalData) {
     return <div>Carregando...</div>;
   }
-  
-  const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
-  console.log("Cultural Data:", culturalData);
 
+  const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
 
     return (
       <>
@@ -149,7 +159,7 @@ const CardPage = () => {
           <div className="right-section">
             <div className="icons">
               {userType === 'organizer' && (
-                <a href="" className="add-btn">Adicionar Cultural</a>
+                <Link to="/create-cultural" state={{ userID, userType }} className="add-btn">Adicionar Cultural</Link>
               )}
               <div onClick={handleNotificationIconClick} className="icon-button-container">
                 <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
@@ -184,7 +194,7 @@ const CardPage = () => {
                         ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`
                       )}
                       {type !== 'event' && culturalData.tourist_attraction && (
-                          ` ${culturalData.tourist_attraction.open_days} de ${culturalData.tourist_attraction.open_time}`
+                          ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`
                       )}
                       </p>
                       <p><img src={priceIcon} alt="Preço" className="info-icon" /><strong>Preço: R$</strong> {culturalData.price}</p>

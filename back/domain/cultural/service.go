@@ -9,11 +9,11 @@ import (
 type Service interface {
 	// CreateEvent creates a new cultural event
 	CreateEvent(ctx context.Context, title, description, location string,
-		startDate, finishDate, duration string, price float64, isAccessible bool, organizerID int, image string) error
+		startDate, finishDate, duration string, price string, isAccessible bool, organizerID int, image string) (int, error)
 
 	// CreateTouristAttraction creates a new cultural tourist attraction
 	CreateTouristAttraction(ctx context.Context, title, description, location, openDays, openTime string,
-		price float64, isAccessible bool, organizerID int, image string) error
+		price string, isAccessible bool, organizerID int, image string) (int, error)
 
 	// GetEventByID retrieves a cultural event by its ID
 	GetEventByID(ctx context.Context, id int) (Event, error)
@@ -23,11 +23,11 @@ type Service interface {
 
 	// UpdateEventByID updates a cultural event by its ID
 	UpdateEventByID(ctx context.Context, id int, title, description, location string,
-		startDate, finishDate, duration string, price float64, isAccessible bool, organizerID int, image string) error
+		startDate, finishDate, duration string, price string, isAccessible bool, organizerID int, image string) error
 
 	// UpdateTouristAttractionByID updates a cultural tourist attraction by its ID
 	UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, openDays, openTime string,
-		price float64, isAccessible bool, organizerID int, image string) error
+		price string, isAccessible bool, organizerID int, image string) error
 
 	// DeleteEventByID deletes a cultural event by its ID
 	DeleteEventByID(ctx context.Context, id int) error
@@ -54,7 +54,7 @@ func NewService(repository Repository) Service {
 }
 
 func (s *service) CreateEvent(ctx context.Context, title, description, location string,
-	startDate, finishDate, duration string, price float64, isAccessible bool, organizerID int, image string) error {
+	startDate, finishDate, duration string, price string, isAccessible bool, organizerID int, image string) (int, error) {
 
 	return s.repository.SaveEvent(
 		ctx,
@@ -72,7 +72,7 @@ func (s *service) CreateEvent(ctx context.Context, title, description, location 
 }
 
 func (s *service) CreateTouristAttraction(ctx context.Context, title, description, location, openDays, openTime string,
-	price float64, isAccessible bool, organizerID int, image string) error {
+	price string, isAccessible bool, organizerID int, image string) (int, error) {
 
 	return s.repository.SaveTouristAttraction(
 		ctx,
@@ -97,7 +97,7 @@ func (s *service) GetTouristAttractionByID(ctx context.Context, id int) (Tourist
 }
 
 func (s *service) UpdateEventByID(ctx context.Context, id int, title, description, location string, 
-	startDate, finishDate, duration string, price float64, isAccessible bool, organizerID int, image string) error {
+	startDate, finishDate, duration, price string, isAccessible bool, organizerID int, image string) error {
 	return s.repository.UpdateEventByID(
 		ctx, 
 		id, 
@@ -115,7 +115,7 @@ func (s *service) UpdateEventByID(ctx context.Context, id int, title, descriptio
 }
 
 func (s *service) UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, openDays, openTime string,
-	price float64, isAccessible bool, organizerID int, image string) error {
+	price string, isAccessible bool, organizerID int, image string) error {
 	return  s.repository.UpdateTouristAttractionByID(
 		ctx, 
 		id, 

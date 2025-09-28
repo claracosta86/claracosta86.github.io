@@ -24,6 +24,12 @@ const (
 	UserTypeOrganizer UserType = "organizer"
 )
 
+type FavoriteCulturalList struct {
+	ID    int    `json:"id"`
+	Title  string `json:"title"`
+	Type   string `json:"type"`
+}
+
 // Validate checks if the UserType is valid
 func (ut UserType) Validate() (UserType, error) {
 	switch ut {

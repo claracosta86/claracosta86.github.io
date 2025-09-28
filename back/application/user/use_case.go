@@ -30,6 +30,9 @@ type UseCase interface {
 
 	// ToggleFavorite adds or removes a cultural item from user's favorites
 	ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error
+
+	// GetUserFavorites retrieves a user's favorite cultural items
+	GetUserFavorites(ctx context.Context, userID int) ([]model.FavoriteCulturalList, error)
 }
 
 type useCase struct {
@@ -149,3 +152,20 @@ func (uc *useCase) ToggleFavorite(ctx context.Context, userID int, request model
 	return uc.userService.ToggleFavorite(ctx, userID, request.CulturalType, request.CulturalID, request.IsFavorite)
 }
 
+// GetUserFavorites retrieves a user's favorite cultural items
+func (uc *useCase) GetUserFavorites(ctx context.Context, userID int) ([]model.FavoriteCulturalList, error) {
+	favorites, err := uc.userService.GetUserFavorites(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	
+	result := make([]model.FavoriteCulturalList, len(favorites))
+	for _, favorite := range favorites {
+		result = append(result, model.FavoriteCulturalList{
+			ID:   favorite.ID,
+			Type: favorite.Type,
+		})
+	}
+	
+	return result, nil
+}

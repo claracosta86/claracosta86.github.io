@@ -21,10 +21,26 @@ import mangabeirasAttraction from '../assets/thumb-size/mangabeiras-attraction.p
 const NotificationModal = ({ isOpen, onClose, notifications }) => {
   if (!isOpen) return null;
 
-  
-  const handleLinkClick = (culturalID) =>  async () => {
-    navigate(`/card/${culturalID}`);
+  const handleLinkClick = (culturalID, culturalType) =>  async () => {
+    let isEvent = culturalType === 'event' ? true : false
+    navigate(`/card/${culturalID}`, { state: {userID, userType, isEvent } });
   };
+
+  const renderNotificationContent = (notif) => {
+  switch (notif.NotificationType) {
+    case "updated":
+      return <p>Veja as atualizações de <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button></p>;
+    case "canceled":
+      return <p>O cultural <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button> foi cancelado.</p>;
+    case "closed":
+      return <p>O cultural <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button> foi encerrado.</p>;
+    case "commented":
+      return <p>Veja os novos comentários de <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button>.</p>;
+    default:
+      return null;
+  }
+};
+
   
   return (
      <div className="modal-overlay" onClick={onClose}>
@@ -38,8 +54,8 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
             <p>Você não tem novas notificações.</p>
           ) : (
             notifications.map((notif, index) => (
-              <div key={index} className="notification-item">
-                <p> Veja as atualizações de <button onClick={() => handleLinkClick(notif.ID)}>{notif.Title}</button></p>
+              <div key={notif.ID} className="notification-item">
+                {renderNotificationContent(notif)}
               </div>
             ))
           )}
@@ -50,7 +66,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
             onClick={onClose}
             className="modal-close-btn"
           >
-            Entendi
+            Fechar
           </button>
         </div>
       </div>
@@ -112,11 +128,32 @@ const HomePage = () => {
     setNotificationModalOpen(true, notification);
   };
 
+
+  const handleNotificationCloseClick = async () => {
+    const setNotificationsAsSeen = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notificationIDs: notification.map(notif => notif.ID) }),
+          credentials: 'include'
+        });
+        if (response.ok) {
+          console.log("Notificações marcadas como vistas com sucesso.");
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar favorito:", error);
+      }
+   };
+    setNotificationsAsSeen();
+    setNotificationModalOpen(false);
+  };
+
   const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
 
   return (
     <>
-    <NotificationModal isOpen={isNotificationModalOpen} onClose={() => setNotificationModalOpen(false)} notifications={notification} />
+    <NotificationModal isOpen={isNotificationModalOpen} onClose={() => handleNotificationCloseClick()} notifications={notification} />
     <section className="screen" id="tela-home">
       <header className={topBarClass}>
         <div className="logo-container">
