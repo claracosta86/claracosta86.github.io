@@ -74,3 +74,9 @@ SELECT
 FROM user_favorites uf
 INNER JOIN tourist_attractions ta ON uf.favorite_id = ta.id
 WHERE uf.user_id = ? AND uf.favorite_type = "tourist_attraction";
+
+
+-- name: update-last-seen-favorite
+UPDATE user_favorites
+SET last_seen_at = NOW()
+WHERE user_id = ? AND favorite_type = ? AND favorite_id = ?;

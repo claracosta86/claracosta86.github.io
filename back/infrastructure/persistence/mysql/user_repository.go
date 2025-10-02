@@ -164,7 +164,7 @@ func (r *userRepository) GetFavoritesByUserID(ctx context.Context, userID int) (
 
 	defer rows.Close()
 
-	var favorites []user.FavoriteCulturalList
+	favorites := make([]user.FavoriteCulturalList, 0)
 	for rows.Next() {
 		var favorite user.FavoriteCulturalList
 		if err := rows.Scan(&favorite.ID, &favorite.Title, &favorite.Type); err != nil {
@@ -179,4 +179,13 @@ func (r *userRepository) GetFavoritesByUserID(ctx context.Context, userID int) (
 	}
 
 	return favorites, nil
+}
+
+func (r *userRepository) UpdateLastSeenFavorite(ctx context.Context, userID, culturalID int, culturalType string) error {
+	_, err := r.db.ExecContext(ctx, userQueries["update-last-seen-favorite"],
+		userID,
+		culturalType,
+		culturalID,
+	)
+	return err
 }

@@ -49,38 +49,38 @@ fmt.Printf("Fetching notifications for user %d with favorite events: %v and favo
         return nil, nil 
     }
 
-	baseQuery := notificationQueries["fetch-notifications-by-user-id"]
+	// baseQuery := notificationQueries["fetch-notifications-by-user-id"]
     
-    eventsPlaceholders := ""
-    if len(eventsIDs) > 0 {
-        eventsPlaceholders = "?" + strings.Repeat(",?", len(eventsIDs)-1)
-    } else {
-        eventsPlaceholders = "NULL" 
-    }
+    // eventsPlaceholders := ""
+    // if len(eventsIDs) > 0 {
+    //     eventsPlaceholders = "?" + strings.Repeat(",?", len(eventsIDs)-1)
+    // } else {
+    //     eventsPlaceholders = "NULL" 
+    // }
 
-    touristAttractionPlaceholders := ""
-    if len(touristAttractionIDs) > 0 {
-        touristAttractionPlaceholders = "?" + strings.Repeat(",?", len(touristAttractionIDs)-1)
-    } else {
-        touristAttractionPlaceholders = "NULL"
-    }
+    // touristAttractionPlaceholders := ""
+    // if len(touristAttractionIDs) > 0 {
+    //     touristAttractionPlaceholders = "?" + strings.Repeat(",?", len(touristAttractionIDs)-1)
+    // } else {
+    //     touristAttractionPlaceholders = "NULL"
+    // }
 
-    finalQuery := fmt.Sprintf(baseQuery, eventsPlaceholders, touristAttractionPlaceholders)
+    // finalQuery := fmt.Sprintf(baseQuery, eventsPlaceholders, touristAttractionPlaceholders)
 
-    args := make([]any, 0, 1+len(eventsIDs)+1+len(touristAttractionIDs))
+    args := make([]any, 0, 2)
     args = append(args, userID)
-    args = append(args, eventsIDs...)
+    // args = append(args, eventsIDs...)
     args = append(args, userID)
-    args = append(args, touristAttractionIDs...)
+    // args = append(args, touristAttractionIDs...)
 
-   rows, err := r.db.QueryContext(ctx, finalQuery, args...)
+   rows, err := r.db.QueryContext(ctx, notificationQueries["fetch-notifications-by-user-id"], userID, userID)
 	if err != nil {
 		return nil, err
 	}
 
 	defer rows.Close()
 
-	var notifications []notification.NotificationCulturalList
+	notifications := make([]notification.NotificationCulturalList, 0)
 	for rows.Next() {
 		var notification notification.NotificationCulturalList
 		if err := rows.Scan(&notification.ID, 
@@ -90,6 +90,13 @@ fmt.Printf("Fetching notifications for user %d with favorite events: %v and favo
 			&notification.Type,
 		); err != nil {
 			return nil, err
+		}
+		if notification.Type == "updated" {
+			notificationID, err := insertNotifications(ctx, r.db, userID, notification, 1)
+			if err != nil {
+				return nil, err
+			}
+			notification.ID = notificationID
 		}
 
 		notifications = append(notifications, notification)
@@ -121,3 +128,24 @@ func (r *notificationRepository) MarkAsSeen(ctx context.Context, userID int, not
 	_, err := r.db.ExecContext(ctx, query, args...)
 	return err
 }
+
+func insertNotifications(ctx context.Context, db *sql.DB, userID int, notification notification.NotificationCulturalList, seen int) (int, error) {
+    result, err := db.ExecContext(ctx, notificationQueries["create-notification"], 
+		userID,
+		notification.CulturalID, 
+		notification.CulturalType, 
+		notification.Type,
+		seen,
+	)
+    if err != nil {
+        return 0, fmt.Errorf("erro ao inserir notificações em massa: %w", err)
+    }
+
+    id, err := result.LastInsertId()
+    if err != nil {
+        return 0, fmt.Errorf("erro ao obter ID da notificação inserida: %w", err)
+    }
+
+    return int(id), nil
+}
+	

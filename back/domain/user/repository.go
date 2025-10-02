@@ -42,4 +42,7 @@ type Repository interface {
 
 	// GetFavoritesByUserID retrieves all favorite cultural items of a user
 	GetFavoritesByUserID(ctx context.Context, userID int) ([]FavoriteCulturalList, error)
+
+	// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
+	UpdateLastSeenFavorite(ctx context.Context, userID, culturalID int, culturalType string) error
 }

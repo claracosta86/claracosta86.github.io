@@ -37,6 +37,9 @@ type Service interface {
 
 	// GetUserFavorites retrieves a user's favorite cultural items
 	GetUserFavorites(ctx context.Context, userID int) ([]FavoriteCulturalList, error)
+
+	// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
+	UpdateLastSeenFavorite(ctx context.Context, userID, culturalID int, culturalType string) error
 }
 
 type service struct {
@@ -165,4 +168,13 @@ func (s *service) GetUserFavorites(ctx context.Context, userID int) ([]FavoriteC
 	}
 	
 	return s.repository.GetFavoritesByUserID(ctx, userID)
+}
+
+func (s *service) UpdateLastSeenFavorite(ctx context.Context, userID, culturalID int, culturalType string) error {
+	_, err := s.repository.FindByID(ctx, userID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	
+	return s.repository.UpdateLastSeenFavorite(ctx, userID, culturalID, culturalType)
 }

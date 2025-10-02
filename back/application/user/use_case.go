@@ -33,6 +33,9 @@ type UseCase interface {
 
 	// GetUserFavorites retrieves a user's favorite cultural items
 	GetUserFavorites(ctx context.Context, userID int) ([]model.FavoriteCulturalList, error)
+
+	// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
+	UpdateLastSeenFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error
 }
 
 type useCase struct {
@@ -168,4 +171,9 @@ func (uc *useCase) GetUserFavorites(ctx context.Context, userID int) ([]model.Fa
 	}
 	
 	return result, nil
+}
+
+// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
+func (uc *useCase) UpdateLastSeenFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error {
+	return uc.userService.UpdateLastSeenFavorite(ctx, userID, request.CulturalID, request.CulturalType)
 }

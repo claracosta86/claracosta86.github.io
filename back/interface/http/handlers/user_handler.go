@@ -383,6 +383,12 @@ func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "favorites updated successfully"})
 }
 
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] User favorites recovered successfully
+// /users/{userID}/favorites [GET]
 func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -411,4 +417,45 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] Organizer recovered successfully
+// /users/favorites/last-seen [PATCH]
+func (h *UserHandler) HandleLastSeenFavorite(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPatch {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	
+	userIDStr := chi.URLParam(r, "userID")
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	var request userModel.FavoriteRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "Invalid request data", http.StatusBadRequest)
+		return
+	}
+
+	err = h.userUseCase.UpdateLastSeenFavorite(r.Context(), userID, request)
+	if err != nil {
+		log.Printf("Error in UpdateLastSeenFavorite: %v", err)
+		if strings.Contains(err.Error(), "user not found") {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		log.Printf("Error updating last seen favorite: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "last seen favorite updated successfully"})
 }

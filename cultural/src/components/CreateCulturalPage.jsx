@@ -6,24 +6,24 @@ import gobackIcon from '../assets/goback.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import userIcon from '../assets/user-icon.png';
 
-const NotificationModal = ({ isOpen, onClose, notifications }) => {
+const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
 
-  const handleLinkClick = (culturalID, culturalType) =>  async () => {
+  const handleLinkClick = (culturalID, culturalType, ) =>  async () => {
     let isEvent = culturalType === 'event' ? true : false
-    navigate(`/card/${culturalID}`, { state: {userID, userType, isEvent } });
+    navigate(`/card/${culturalID}`, { state: {userID, userType, "event": isEvent } });
   };
 
   const renderNotificationContent = (notif) => {
-  switch (notif.NotificationType) {
+  switch (notif.notificationType) {
     case "updated":
-      return <p>Veja as atualizações de <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button></p>;
+      return <p>Veja as atualizações de <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button></p>;
     case "canceled":
-      return <p>O cultural <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button> foi cancelado.</p>;
+      return <p>O cultural <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi cancelado.</p>;
     case "closed":
-      return <p>O cultural <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button> foi encerrado.</p>;
+      return <p>O cultural <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi encerrado.</p>;
     case "commented":
-      return <p>Veja os novos comentários de <button onClick={() => handleLinkClick(notif.ID, notif.Type)}>{notif.Title}</button>.</p>;
+      return <p>Veja os novos comentários de <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button>.</p>;
     default:
       return null;
   }
@@ -41,8 +41,8 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
           {notifications.length === 0 ? (
             <p>Você não tem novas notificações.</p>
           ) : (
-            notifications.map((notif, index) => (
-              <div key={notif.ID} className="notification-item">
+            notifications.map((notif) => (
+              <div key={notif.id} className="notification-item">
                 {renderNotificationContent(notif)}
               </div>
             ))
@@ -164,7 +164,7 @@ const CreateCulturalPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-console.log('Cultural criado com sucesso:', result);        
+
         let isEvent = result.type === 'event' ? true : false
         navigate(`/card/${result.id}`, { state: { userID, userType, "event": isEvent } });
       } else {
@@ -204,12 +204,32 @@ console.log('Cultural criado com sucesso:', result);
       fetchNewNotifications();
     setNotificationModalOpen(true, notification);
   };
+
+  const handleNotificationCloseClick = async () => {
+    const setNotificationsAsSeen = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/notifications/${userID}/seen`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ notificationIDs: notification.map(notif => notif.ID) }),
+            credentials: 'include'
+            });
+            if (response.ok) {
+            console.log("Notificações marcadas como vistas com sucesso.");
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar favorito:", error);
+        }
+    };
+        setNotificationsAsSeen();
+        setNotificationModalOpen(false);
+    };
   
   const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
   return (
     <>
-    <NotificationModal isOpen={isNotificationModalOpen} onClose={() => setNotificationModalOpen(false)} notifications={notification} />
+    <NotificationModal isOpen={isNotificationModalOpen} onClose={() => handleNotificationCloseClick()} notifications={notification} navigate={navigate} userID={userID} userType={userType}/> 
     <section className="screen" id="tela-create">
       <header className='top-bar-common'>
           <div className="logo-container">
