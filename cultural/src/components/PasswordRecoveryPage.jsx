@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import './styles/login.css'; 
+import './styles/login.css';
 
 const PasswordRecoveryPage = () => {
   return (
@@ -16,7 +16,10 @@ const PasswordRecoveryPage = () => {
         <button className="btn">Enviar link de recuperação</button>
 
         <p className="small-letters">
-          Lembrou sua senha? <Link to="/user/login" state={{ userType }} className="link">Login</Link>
+          Lembrou sua senha?{' '}
+          <Link to="/user/login" state={{ userType }} className="link">
+            Login
+          </Link>
         </p>
       </div>
     </section>

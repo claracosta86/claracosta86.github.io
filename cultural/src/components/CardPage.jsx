@@ -1,8 +1,8 @@
 // src/components/CardPage.jsx
-import { useUser } from './UserContext';
+import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import './styles/card.css'; 
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import './styles/card.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import homeIcon from '../assets/home-icon.png';
@@ -18,37 +18,55 @@ import accessibleIcon from '../assets/accessibility-icon.png';
 import mailIcon from '../assets/mail-icon.png';
 import logoutIcon from '../assets/logout-icon.png';
 
-
 const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
 
-  const handleLinkClick = (culturalID, culturalType, ) =>  async () => {
-    let isEvent = culturalType === 'event' ? true : false
-    navigate(`/card/${culturalID}`, { state: {userID, userType, "event": isEvent } });
+  const handleLinkClick = (culturalID, culturalType) => async () => {
+    let isEvent = culturalType === 'event' ? true : false;
+    navigate(`/card/${culturalID}`, { state: { userID, userType, event: isEvent } });
   };
 
   const renderNotificationContent = (notif) => {
-  switch (notif.notificationType) {
-    case "updated":
-      return <p>Veja as atualizações de <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button></p>;
-    case "canceled":
-      return <p>O cultural <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi cancelado.</p>;
-    case "closed":
-      return <p>O cultural <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi encerrado.</p>;
-    case "commented":
-      return <p>Veja os novos comentários de <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button>.</p>;
-    default:
-      return null;
-  }
-};
+    switch (notif.notificationType) {
+      case 'updated':
+        return (
+          <p>
+            Veja as atualizações de{' '}
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button>
+          </p>
+        );
+      case 'canceled':
+        return (
+          <p>
+            O cultural{' '}
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button> foi
+            cancelado.
+          </p>
+        );
+      case 'closed':
+        return (
+          <p>
+            O cultural{' '}
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button> foi
+            encerrado.
+          </p>
+        );
+      case 'commented':
+        return (
+          <p>
+            Veja os novos comentários de{' '}
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button>.
+          </p>
+        );
+      default:
+        return null;
+    }
+  };
 
-  
   return (
-     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={e => e.stopPropagation()}>
-        <h2 className="modal-title">
-          Notificações
-        </h2>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+        <h2 className="modal-title">Notificações</h2>
 
         <div className="modal-content">
           {notifications.length === 0 ? (
@@ -63,10 +81,7 @@ const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, u
         </div>
 
         <div className="modal-actions">
-          <button
-            onClick={onClose}
-            className="modal-close-btn"
-          >
+          <button onClick={onClose} className="modal-close-btn">
             Fechar
           </button>
         </div>
@@ -75,91 +90,85 @@ const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, u
   );
 };
 
-
 const CardPage = () => {
   const navigate = useNavigate();
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-  
-  const { id } = useParams();
+
+  const { id, culturalType } = useParams();
+
   const [culturalData, setCulturalData] = useState(null);
 
-  const user = useUser();
+  const { user } = useUser();
   const userID = user.userID;
   const userType = user.type;
 
-  const location = useLocation();
-  let type = "event" ;
-  if (location.state?.event == false) {
-    type = "attraction";
-  }
-
   useEffect(() => {
     const fetchCulturalDataAndFavorites = async () => {
-            try {
-              console.log(`Fetching cultural details for type: ${type}, id: ${id}`);
-                const culturalResponse = await fetch(`http://localhost:8080/culturais/${type}/${id}`);
-                const cultural = await culturalResponse.json();
+          console.log(`%cuseEffect ACIONADO em ${new Date().toLocaleTimeString()}`, 'color: orange');
 
-                console.log(`Fetching favorites for userID: ${userID}`);
-                const favoritesResponse = await fetch(`http://localhost:8080/users/${userID}/favorites/`);
-                const favoritesData = await favoritesResponse.json(); 
+      try {
+        console.log(`Fetching cultural details for culturalType: ${culturalType}, id: ${id}`);
+        const culturalResponse = await fetch(`http://localhost:8080/culturais/${culturalType}/${id}`);
+        const cultural = await culturalResponse.json();
 
-                const isFav = favoritesData.some(fav => fav.id == cultural.id);
+        console.log(`Fetching favorites for userID: ${userID}`);
+        const favoritesResponse = await fetch(`http://localhost:8080/users/${userID}/favorites/`);
+        const favoritesData = await favoritesResponse.json();
 
-                  if (isFav) {
-                    try {
-                      const updateLastSeen = await fetch(`http://localhost:8080/users/${userID}/favorites/last-seen`, {
-                      method: 'PATCH',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ culturalID: cultural.id, culturalType: type }),
-                      credentials: 'include'
-                    });
-                    if (!updateLastSeen.ok) {
-                      console.error("Falha ao atualizar último visto.");
-                    }
-                  } catch (error) {
-                    console.error("Erro ao atualizar último visto:", error);
-                  }
-                }
+        const isFav = favoritesData.some((fav) => fav.id == cultural.id);
 
-
-                console.log("Cultural details fetched:", cultural);
-                console.log("User favorites fetched:", favoritesData);
-                console.log(`Is favorite: ${isFav}`);
-                setCulturalData({
-                ...cultural,
-                  isFavorite: isFav 
-              });
-            } catch (error) {
-              console.error("Erro ao buscar detalhes ou favoritos:", error);
+        if (isFav) {
+          try {
+            const updateLastSeen = await fetch(
+              `http://localhost:8080/users/${userID}/favorites/last-seen`,
+              {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ culturalID: cultural.id, culturalType: culturalType }),
+                credentials: 'include',
+              }
+            );
+            if (!updateLastSeen.ok) {
+              console.error('Falha ao atualizar último visto.');
             }
-        };
-        fetchCulturalDataAndFavorites();
-    }, [id, type, userID]); 
-
-    const handleNotificationIconClick = async () => {
-    const fetchNewNotifications = async () => {
-        try {
-          const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
-               credentials: 'include'
-          });
-          if (response.ok) {
-            const data = await response.json();
-            setNotification(data.culturals);
-            console.log("Notificações recebidas:", data.culturals);
+          } catch (error) {
+            console.error('Erro ao atualizar último visto:', error);
           }
-        } catch (error) {
-          console.error("Erro ao buscar por novas notificações:", error);
         }
-      };
-      fetchNewNotifications();
-    setNotificationModalOpen(true, notification);
-  };
 
-  const handleUserIconClick = async () => {
-    navigate('/user/profile',  { state: {userID: userID, userType: userType} });
+        console.log('Cultural details fetched:', cultural);
+        console.log('User favorites fetched:', favoritesData);
+        console.log(`Is favorite: ${isFav}`);
+        setCulturalData({
+          ...cultural,
+          isFavorite: isFav,
+        });
+      } catch (error) {
+        console.error('Erro ao buscar detalhes ou favoritos:', error);
+      }
+    };
+    fetchCulturalDataAndFavorites();
+  }, [id, culturalType, userID]);
+
+  const handleNotificationIconClick = async () => {
+    const fetchNewNotifications = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setNotification(data.culturals);
+          console.log('Notificações recebidas:', data.culturals);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar por novas notificações:', error);
+      }
+    };
+    fetchNewNotifications();
+    setNotificationModalOpen(true, notification);
   };
 
   const handleFavoriteIconClick = async () => {
@@ -168,39 +177,43 @@ const CardPage = () => {
       const response = await fetch(`http://localhost:8080/users/${userID}/favorites`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isFavorite: !culturalData.isFavorite, culturalType: type, culturalID: culturalData.id }),
-        credentials: 'include'
+        body: JSON.stringify({
+          isFavorite: !culturalData.isFavorite,
+          culturalType: culturalType,
+          culturalID: culturalData.id,
+        }),
+        credentials: 'include',
       });
       if (response.ok) {
-        setCulturalData(prevData => ({
+        setCulturalData((prevData) => ({
           ...prevData,
-          isFavorite: !prevData.isFavorite
+          isFavorite: !prevData.isFavorite,
         }));
       }
-    } catch (error) { 
-      console.error("Erro ao atualizar favorito:", error);
+    } catch (error) {
+      console.error('Erro ao atualizar favorito:', error);
     }
   };
 
   const handleNotificationCloseClick = async () => {
     if (notification.length === 0) {
-        setNotificationModalOpen(false);
-        return;
+      setNotificationModalOpen(false);
+      return;
     }
     const setNotificationsAsSeen = async () => {
       try {
         const response = await fetch(`http://localhost:8080/notifications/${userID}/seen`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notificationIDs: notification.map(notif => notif.ID) }),
-          credentials: 'include'
+          body: JSON.stringify({ notificationIDs: notification.map((notif) => notif.ID) }),
+          credentials: 'include',
         });
         if (response.ok) {
-          console.log("Notificações marcadas como vistas com sucesso.");
+          console.log('Notificações marcadas como vistas com sucesso.');
         }
       } catch (error) {
-        console.error("Erro ao atualizar favorito:", error);
-}
+        console.error('Erro ao atualizar favorito:', error);
+      }
     };
     setNotificationsAsSeen();
     setNotificationModalOpen(false);
@@ -211,91 +224,148 @@ const CardPage = () => {
   };
 
   if (!culturalData) {
-    return <div>Carregando...</div>;
+    return <div>Carregando...</div>; 
   }
-    return (
-      <>
-      <NotificationModal isOpen={isNotificationModalOpen} onClose={() => handleNotificationCloseClick()} notifications={notification} navigate={navigate} userID={userID} userType={userType}/> 
+
+  return (
+    <>
+      <NotificationModal
+        isOpen={isNotificationModalOpen}
+        onClose={() => handleNotificationCloseClick()}
+        notifications={notification}
+        navigate={navigate}
+        userID={userID}
+        userType={userType}
+      />
       <section className="screen" id="tela-home">
-       <header className="top-bar">
-               <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-               <div className="right-section">
-                 <Link to="/">
-                   <img src={logoutIcon} alt="Log-out" className="icon" />
-                 </Link>
-                 <div onClick={handleNotificationIconClick} className="icon-button-container">
-                   <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
-                 </div>
-               </div>
-             </header>
-  
+        <header className="top-bar">
+          <img src={logo} alt="Logo Cultural" className="logo-tiny" />
+          <div className="right-section">
+            <Link to="/">
+              <img src={logoutIcon} alt="Log-out" className="icon" />
+            </Link>
+            <div onClick={handleNotificationIconClick} className="icon-button-container">
+              <img
+                src={notificationsIcon}
+                id="notifications-icon"
+                alt="Notificações"
+                className="icon"
+              />
+            </div>
+          </div>
+        </header>
+
         <main className="home-container">
           <section>
             <div className="details-container">
-                  <div className="header-details">
-                      <h2 className="cultural-title">{culturalData.title}</h2>
-                  </div>
-                  <img src={`/thumb-size/${culturalData.image}`} alt={culturalData.title} className="event-image" />
-
-                  <div className="info-box">
-                      <p><img src={locationIcon} alt="Localização" className="info-icon" /><strong>Endereço:</strong> {culturalData.location}</p>
-                      <p><img src={clockIcon} alt="Horário" className="info-icon" />
-                       {type === 'event' 
-                          ? <strong>Data e Horário:</strong> 
-                          : <strong>Horário de Funcionamento:</strong>
-                      }
-                      {type === 'event' && culturalData.event && culturalData.event.end_date === "" && (
-                        ` ${culturalData.event.start_date}, de ${culturalData.event.duration_time}`
-                      )}
-                      {type === 'event' && culturalData.event && (
-                        ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`
-                      )}
-                      {type !== 'event' && culturalData.tourist_attraction && (
-                          ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`
-                      )}
-                      </p>
-                      <p><img src={priceIcon} alt="Preço" className="info-icon" /><strong>Preço: </strong>{culturalData.price === "R$0,00" || culturalData.price === "Gratuito" ? "Gratuito" : `${culturalData.price}`}</p>
-                      <p><img src={accessibleIcon} alt="Acessível" className="info-icon" /><strong>Acessível:</strong> {culturalData.accessible ? 'Sim' : 'Não'}</p>
-                      <p><img src={mailIcon} alt="Contato" className="info-icon" /><strong>Contato:</strong> {culturalData.organizer.email}</p>
-                      <p className="description"><strong>Descrição:</strong> {culturalData.description}</p>
-                  </div>
+              <div className="header-details">
+                <h2 className="cultural-title">{culturalData.title}</h2>
               </div>
+              <img
+                src={`/thumb-size/${culturalData.image}`}
+                alt={culturalData.title}
+                className="event-image"
+              />
 
-              <div id="organizer-container">
-                <button className="see-organizer-btn"><Link to={`/organizer/${culturalData.organizer.id}`}>Conhecer Organizador</Link></button>
+              <div className="info-box">
+                <p>
+                  <img src={locationIcon} alt="Localização" className="info-icon" />
+                  <strong>Endereço:</strong> {culturalData.location}
+                </p>
+                <p>
+                  <img src={clockIcon} alt="Horário" className="info-icon" />
+                  {culturalType === 'event' ? (
+                    <strong>Data e Horário:</strong>
+                  ) : (
+                    <strong>Horário de Funcionamento:</strong>
+                  )}
+                  {culturalType === 'event' &&
+                    culturalData.event &&
+                    culturalData.event.end_date === '' &&
+                    ` ${culturalData.event.start_date}, de ${culturalData.event.duration_time}`}
+                  {culturalType === 'event' &&
+                    culturalData.event &&
+                    ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`}
+                  {culturalType !== 'event' &&
+                    culturalData.tourist_attraction &&
+                    ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}
+                </p>
+                <p>
+                  <img src={priceIcon} alt="Preço" className="info-icon" />
+                  <strong>Preço: </strong>
+                  {culturalData.price === 'R$0,00' || culturalData.price === 'Gratuito'
+                    ? 'Gratuito'
+                    : `${culturalData.price}`}
+                </p>
+                <p>
+                  <img src={accessibleIcon} alt="Acessível" className="info-icon" />
+                  <strong>Acessível:</strong> {culturalData.accessible ? 'Sim' : 'Não'}
+                </p>
+                <p>
+                  <img src={mailIcon} alt="Contato" className="info-icon" />
+                  <strong>Contato:</strong> {culturalData.organizer.email}
+                </p>
+                <p className="description">
+                  <strong>Descrição:</strong> {culturalData.description}
+                </p>
               </div>
-              
-              <div className="comments-section">
-                  <h3>Comentários</h3>
-                  <div className="comment-box">
-                      {/* A lista de comentários será renderizada aqui. 
-                        A caixa ficará vazia se não houver comentários.
-                      */}
-                  </div>
-                  <button className="add-comment-btn">Adicionar Comentário</button>
-              </div>
+            </div>
 
-              <div className="down-container">
-                <div className="down-container-row">
-                  <button onClick={handleGoBackClick(userID, userType)} className="down-btn">Voltar</button>
-                  <button onClick={handleFavoriteIconClick} src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon} alt="Favoritar" className="down-btn">
-                    {culturalData.isFavorite ? '	Desfavoritar ♡' : 'Favoritar ❤'}</button>
-                </div>
-              </div>       
-            </section>                 
+            <div id="organizer-container">
+              <button className="see-organizer-btn">
+                <Link to={`/organizer/${culturalData.organizer.id}`}>Conhecer Organizador</Link>
+              </button>
+            </div>
+
+            <div className="comments-section">
+              <h3>Comentários</h3>
+              <div className="comment-box">
+                {/* A lista de comentários será renderizada aqui. 
+                    A caixa ficará vazia se não houver comentários.
+                  */}
+              </div>
+              <button className="add-comment-btn">Adicionar Comentário</button>
+            </div>
+
+            <div className="down-container">
+              <div className="down-container-row">
+                <button onClick={handleGoBackClick} className="down-btn">
+                  Voltar
+                </button>
+                <button
+                  onClick={handleFavoriteIconClick}
+                  src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon}
+                  alt="Favoritar"
+                  className="down-btn"
+                >
+                  {culturalData.isFavorite ? '	Desfavoritar ♡' : 'Favoritar ❤'}
+                </button>
+              </div>
+            </div>
+          </section>
         </main>
         <footer className="footer">
-          <Link to={`/home`}  state={{ userID, userType }}><img src={homeIcon} alt="Logo Cultural" /></Link>
-          <Link to={`/search`} state={{ userID, userType }}><img src={searchIcon} alt="Buscar"/></Link>
+          <Link to={`/home`} state={{ userID, userType }}>
+            <img src={homeIcon} alt="Logo Cultural" />
+          </Link>
+          <Link to={`/search`} state={{ userID, userType }}>
+            <img src={searchIcon} alt="Buscar" />
+          </Link>
           {userType === 'organizer' && (
-            <Link to={`/create-cultural`} state={{ userID, userType }}><img src={addIcon} alt="Adicionar" className='mostImportantButton' /></Link>
+            <Link to={`/create-cultural`} state={{ userID, userType }}>
+              <img src={addIcon} alt="Adicionar" className="mostImportantButton" />
+            </Link>
           )}
-          <Link to={`/user/favorites`} state={{ userID, userType }}><img src={favoriteIcon} alt="Favoritos" /></Link>
-          <Link to={`/user/profile`} state={{ userID, userType }}><img src={userIcon} alt="Usuário" /></Link>
-        </footer>       
+          <Link to={`/user/favorites`} state={{ userID, userType }}>
+            <img src={favoriteIcon} alt="Favoritos" />
+          </Link>
+          <Link to={`/user/profile`} state={{ userID, userType }}>
+            <img src={userIcon} alt="Usuário" />
+          </Link>
+        </footer>
       </section>
-      </>
-    );
-  };
+    </>
+  );
+};
 
-  export default CardPage;
+export default CardPage;

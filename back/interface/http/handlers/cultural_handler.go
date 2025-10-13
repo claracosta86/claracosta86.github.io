@@ -35,12 +35,6 @@ func NewCulturalHandler(culturalUseCase cultural.UseCase) *CulturalHandler {
 // /cultural [POST]
 // HandleCreateCultural creates a new cultural entry
 func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Request) {
-
-		// createReq, err := parseCreateCulturalRequest(r)
-		// if err != nil {
-		//     http.Error(w, err.Error(), http.StatusBadRequest)
-		//     return
-		// }
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

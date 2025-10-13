@@ -1,5 +1,5 @@
 // src/components/LoginPage.jsx
-import { useUser } from './UserContext';
+import { useUser } from '../contexts/UserContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './styles/login.css';
@@ -27,20 +27,19 @@ const LoginPage = () => {
   useEffect(() => {
     const fetchUserType = async () => {
       try {
-        const response = await fetch("http://localhost:8080/users/get-type", {
-             credentials: 'include'
-        }); 
+        const response = await fetch('http://localhost:8080/users/get-type', {
+          credentials: 'include',
+        });
         if (response.ok) {
           const data = await response.json();
           setUserType(data.userType);
         }
       } catch (error) {
-        console.error("Erro ao buscar o tipo de usuário:", error);
+        console.error('Erro ao buscar o tipo de usuário:', error);
       }
     };
     fetchUserType();
   }, []);
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,29 +62,29 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('http://localhost:8080/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (response.status === 404 || response.status === 401) {
-        setError("Seu usuário ou senha estão incorretos.");
+        setError('Seu usuário ou senha estão incorretos.');
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Erro ao fazer login");
+        throw new Error('Erro ao fazer login');
       }
 
       if (response.ok) {
         const data = await response.json();
 
         if (userType !== data.type) {
-            setError("Seu usuário não pertence a esta categoria! Volte à página inicial.");
-            setIsTypeError(true);
-            return;
+          setError('Seu usuário não pertence a esta categoria! Volte à página inicial.');
+          setIsTypeError(true);
+          return;
         }
 
         const formData = new URLSearchParams();
@@ -93,29 +92,28 @@ const LoginPage = () => {
         formData.append('userID', data.userID);
 
         try {
-            const response = await fetch("http://localhost:8080/users/set-information", {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: formData,
-                credentials: 'include'
-            });
-            if (response.ok) {
-                setUser(data);
-                localStorage.setItem('user', JSON.stringify(data));
-                navigate('/home');
-            } else {
-                console.error("Erro ao selecionar o tipo de usuário no backend.");
-            }
-            } catch (error) {
-            console.error("Erro de rede ao comunicar com o backend:", error);
+          const response = await fetch('http://localhost:8080/users/set-information', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData,
+            credentials: 'include',
+          });
+          if (response.ok) {
+            setUser(data);
+            localStorage.setItem('user', JSON.stringify(data));
+            navigate('/home');
+          } else {
+            console.error('Erro ao selecionar o tipo de usuário no backend.');
+          }
+        } catch (error) {
+          console.error('Erro de rede ao comunicar com o backend:', error);
         }
       }
-
     } catch (err) {
-      console.error("Erro:", err);
-      setError("Ocorreu um erro. Tente novamente mais tarde.");
+      console.error('Erro:', err);
+      setError('Ocorreu um erro. Tente novamente mais tarde.');
     }
   };
 
@@ -137,23 +135,33 @@ const LoginPage = () => {
 
           <div className="password-container">
             <label htmlFor="password">Senha</label>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Digite sua senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Digite sua senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
             <button type="button" className="password-toggle" onClick={togglePasswordVisibility}>
-              <img className="toggle-btn" src={showPassword ? visiblePassword : invisiblePassword} alt="Toggle password visibility" />
+              <img
+                className="toggle-btn"
+                src={showPassword ? visiblePassword : invisiblePassword}
+                alt="Toggle password visibility"
+              />
             </button>
           </div>
           {error && <span className="error">{error}</span>}
           <div className="login-actions">
-            <button type="submit" className="login-btn">Login</button>
+            <button type="submit" className="login-btn">
+              Login
+            </button>
             <div className="login-actions-row">
-              <button onClick={() => navigate('/')} className="login-btn">Voltar</button>
-              <button onClick={() => navigate('/user/password-recovery')} className="login-btn">Recuperar Senha</button>
+              <button onClick={() => navigate('/')} className="login-btn">
+                Voltar
+              </button>
+              <button onClick={() => navigate('/user/password-recovery')} className="login-btn">
+                Recuperar Senha
+              </button>
             </div>
           </div>
         </form>

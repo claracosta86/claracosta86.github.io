@@ -12,7 +12,7 @@ import (
 
 const (
 	CulturalTypeEvent          = "event"
-	CulturalTypeTouristAttraction = "attraction"
+	CulturalTypeTouristAttraction = "tourist_attraction"
 )
 
 type UseCase interface {

@@ -12,7 +12,8 @@ import FavoritesPage from './components/FavoritesPage';
 import ManageCulturalPage from './components/ManageCulturalPage';
 import CardPage from './components/CardPage';
 import CreateCulturalPage from './components/CreateCulturalPage';
-import UserProvider from './components/UserContext';
+import UserProvider from './contexts/UserContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -22,15 +23,17 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/user/login" element={<LoginPage />} />
           <Route path="/user/register" element={<RegisterPage />} />
-          <Route path="/user/password-recovery" element={<PasswordRecoveryPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/user/profile" element={<ProfilePage />} />
-          <Route path="/user/profile/edit" element={<EditProfilePage />} />
-          <Route path="/user/profile/change-password" element={<ChangePasswordPage />} />
-          <Route path="/user/favorites" element={<FavoritesPage />} />
-          <Route path="/user/profile/manage-cultural" element={<ManageCulturalPage />} />
-          <Route path="/card/:id" element={<CardPage />} />
-          <Route path="/create-cultural" element={<CreateCulturalPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/user/password-recovery" element={<PasswordRecoveryPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/user/profile" element={<ProfilePage />} />
+            <Route path="/user/profile/edit" element={<EditProfilePage />} />
+            <Route path="/user/profile/change-password" element={<ChangePasswordPage />} />
+            <Route path="/user/favorites" element={<FavoritesPage />} />
+            <Route path="/user/profile/manage-cultural" element={<ManageCulturalPage />} />
+            <Route path="/card/:culturalType/:id" element={<CardPage />} />
+            <Route path="/create-cultural" element={<CreateCulturalPage />} />
+          </Route>
         </Routes>
       </Router>
     </UserProvider>

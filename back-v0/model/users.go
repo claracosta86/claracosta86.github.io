@@ -26,7 +26,7 @@ type UserFavorites struct {
 
 type UserFavorite struct {
 	ID		int    `json:"id"`
-	Type    string `json:"type"` // enum: ["event", "attraction"]
+	Type    string `json:"type"` // enum: ["event", "tourist_attraction"]
 }
 
 type Organizer struct {
