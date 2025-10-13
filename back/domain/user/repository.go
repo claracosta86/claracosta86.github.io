@@ -41,8 +41,11 @@ type Repository interface {
 	RemoveFavorite(ctx context.Context, userID int, culturalType string, culturalID int) error
 
 	// GetFavoritesByUserID retrieves all favorite cultural items of a user
-	GetFavoritesByUserID(ctx context.Context, userID int) ([]FavoriteCulturalList, error)
+	GetFavoritesByUserID(ctx context.Context, userID int) ([]CulturalList, error)
 
 	// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
 	UpdateLastSeenFavorite(ctx context.Context, userID, culturalID int, culturalType string) error
+
+	// GetCulturaisByOrganizerID retrieves cultural items associated with an organizer
+	GetCulturaisByOrganizerID(ctx context.Context, organizerID int) ([]CulturalList, error)
 }

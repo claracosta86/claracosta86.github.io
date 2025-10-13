@@ -14,8 +14,8 @@ body, #root {
 }
 
 .phone {
-  width: 360px; 
-  height: 740px;
+  width: 375px; 
+  height: 812px;
   border: 1px solid #ccc;
   border-radius: 30px;
   overflow: hidden;
@@ -31,7 +31,7 @@ body, #root {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 30px 20px;
+  padding: 30px 20px; 
 }
 
 .logo {
@@ -54,6 +54,7 @@ body, #root {
   max-width: 300px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
+  margin-bottom: 115px;
 }
 
 .box h2 {
@@ -62,19 +63,51 @@ body, #root {
   margin-left: 60px;
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.separator {
+  display: flex; 
+  align-items: center; 
+  text-align: center;
+  color: #000;
+  font-size: 14px;
+  margin: 25px 0; 
+}
+
+.separator::before,
+.separator::after {
+  content: ''; 
+  flex: 1; 
+  border-bottom: 1px solid #dcdcdc; 
+}
+
+.separator::before {
+  margin-right: 15px;
+}
+
+.separator::after {
+  margin-left: 15px;
+}
+
 .btn {
   display: block;
   text-align: center;
   background-color: #346aff;
   color: white;
-  padding: 10px 0;            /* altura menor */
+  padding: 10px 0;            
   margin-top: 20px;
   border-radius: 8px;
   text-decoration: none;
   font-size: 16px;
-  width: 80%;                 /* mais largo */
-  max-width: 300px;           /* largura máxima */
-  margin-left: auto;          /* centraliza horizontalmente */
+  width: 80%;
+  max-width: 300px;         
+  margin-left: auto;         
   margin-right: auto;
 }
 
@@ -82,39 +115,36 @@ body, #root {
   background-color: #2653cc;
 }
 
-.footer-img {
-  width: 100%;
-  max-height: 120px;
-  object-fit: contain;
-}
 
 .welcome-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* gap: 1px; */
   margin-bottom: 16px;
   width: 100%;
 }
 
 .info-img {
   width: 30%;
-  transition: transform 0.2s ease;
 }
 
 .modal-overlay {
   position: fixed;
-  inset: 0;
+  inset: 1;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 50;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 30px;
+  width: 375px;
+  height: 812px;
 }
 
 .modal-container {
   background-color: white;
-  border-radius: 1rem;
+  border-radius: 16px;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   padding: 32px;
   margin: 16px;
@@ -145,12 +175,12 @@ body, #root {
 }
 
 .modal-actions {
-  margin-top: 2rem;
+  margin-top: 32px;
   text-align: center;
 }
 
-.modal-close-btn {
-  background-color: #4f46e5; 
+.modal-container button{
+  background-color: #346aff;
   color: white;
   font-weight: 700;
   padding: 8px 24px;
@@ -160,6 +190,6 @@ body, #root {
   transition: background-color 0.3s ease;
 }
 
-.modal-close-btn:hover {
-  background-color: #4338ca; /
+.modal-container button:hover {
+  background-color: #2653cc;
 }

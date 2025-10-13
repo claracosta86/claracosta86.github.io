@@ -19,8 +19,8 @@ a {
 }
 
 .screen {
-  width: 360px;
-  height: 740px;
+  width: 375px; 
+  height: 812px;
   background-color: #f7d75e;
   border-radius: 30px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -30,47 +30,10 @@ a {
   align-items: center;
 }
 
-.top-bar-common {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  gap: 10px 150px;
-  margin-top: 15px;
-}
-
-.icons {
-  display: flex;
-  gap: 10px;
-}
-
-.icon {
-  height: 28px;
-  cursor: pointer;
-}
-
-.right-section {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px; /* espaço entre botão e ícones */
-  margin-left: 2px;
-}
-
-.logo-container {
-  display: flex;
-  justify-content: flex-start;
-}
-
 .logo-tiny {
   width: 75px;
   margin-top: 10px;
   margin-bottom: 40px;
-}
-
-.goback-img {
-  width: 25px;
-  margin-top: 3px;
-  margin-bottom: 20px;
 }
 
 .header-title {
@@ -82,13 +45,14 @@ a {
 /* Caixa de create */
 .create-box {
   background-color: #fff;
-  border-radius: 16px;
   padding: 25px 20px;
   width: 100%;
   max-width: 300px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-top: auto; 
   margin-bottom: auto;
+
+  box-sizing: content-box;
 
   overflow-y: auto;
   scrollbar-width: none;  

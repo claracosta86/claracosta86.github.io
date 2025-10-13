@@ -95,23 +95,21 @@ const LandingPage = () => {
               </button>
             </div>
             <form>
-              <button 
-                type="button" 
-                onClick={() => handleUserTypeSelection('common')} 
-                className="btn"
-              >
-                Sou Usuário
-              </button>
-              <button 
-                type="button" 
-                onClick={() => handleUserTypeSelection('organizer')} 
-                className="btn"
-              >
-                Sou Organizador
+              <div className="actions">
+                <button type="button" onClick={() => handleUserTypeSelection('common')} className="btn">
+                  Sou Usuário
+                </button>
+                <button type="button" onClick={() => handleUserTypeSelection('organizer')} className="btn">
+                  Sou Organizador
+                </button>
+              </div>
+              <p className='separator'> ou </p>
+              <button type="button" onClick={() => navigate('/user/register')} className="btn">
+                Criar Conta
               </button>
             </form>
           </div>
-          <img src={indexBottom} alt="Grupo de pessoas" className="footer-img" />
+          <b>@Cultural :) 2025</b>
         </div>
       </main>
     </>

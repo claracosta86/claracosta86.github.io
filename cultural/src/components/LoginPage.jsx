@@ -1,14 +1,16 @@
 // src/components/LoginPage.jsx
-import { useNavigate } from 'react-router-dom';
+import { useUser } from './UserContext';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './styles/login.css';
 import logo from '../assets/logo.png';
 import visiblePassword from '../assets/visiblepassword-icon.png';
 import invisiblePassword from '../assets/invisiblepassword-icon.png';
-import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+
+  const { setUser } = useUser();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -100,7 +102,9 @@ const LoginPage = () => {
                 credentials: 'include'
             });
             if (response.ok) {
-                navigate('/home',  { state: {userID: data.userID, userType: data.type} });
+                setUser(data);
+                localStorage.setItem('user', JSON.stringify(data));
+                navigate('/home');
             } else {
                 console.error("Erro ao selecionar o tipo de usuário no backend.");
             }
@@ -117,9 +121,7 @@ const LoginPage = () => {
 
   return (
     <section className="screen" id="tela-login">
-      <a href="/">
-        <img src={logo} alt="Logo Cultural" className="logo-img" />
-      </a>
+      <img src={logo} alt="Logo Cultural" className="logo-img" />
       <div className="login-box">
         <h2>Entre na sua conta</h2>
         <form id="loginForm" onSubmit={handleSubmit}>
@@ -134,9 +136,7 @@ const LoginPage = () => {
           />
 
           <div className="password-container">
-            <label htmlFor="password">
-              Senha <a href="/user/password-recovery" type="button" className="link-recovery">Esqueceu?</a>
-            </label>
+            <label htmlFor="password">Senha</label>
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
@@ -149,16 +149,14 @@ const LoginPage = () => {
             </button>
           </div>
           {error && <span className="error">{error}</span>}
-
-          <p className="button-container">
-            {isTypeError ? ( <Link to="/" type="button" className="btn"> Voltar </Link>) : 
-                ( <button type="submit" className="btn"> Login </button> )
-            }
-          </p>
+          <div className="login-actions">
+            <button type="submit" className="login-btn">Login</button>
+            <div className="login-actions-row">
+              <button onClick={() => navigate('/')} className="login-btn">Voltar</button>
+              <button onClick={() => navigate('/user/password-recovery')} className="login-btn">Recuperar Senha</button>
+            </div>
+          </div>
         </form>
-        <p className="small-letters">
-          Não tem uma conta? <Link to="/user/register" state={{ userType }} className="link">Cadastrar</Link>
-        </p>
       </div>
     </section>
   );

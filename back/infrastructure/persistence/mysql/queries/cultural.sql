@@ -1,5 +1,5 @@
 -- name: create-event
-INSERT INTO events (title, description, location, start_date, end_date, 
+INSERT INTO events (title, description, location, start_date, end_date, duration,
 price, is_accessible, organizer_id, image, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 

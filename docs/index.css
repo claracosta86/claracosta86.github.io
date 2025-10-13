@@ -15,8 +15,8 @@ body {
 
 /* Simula uma tela de celular Android compacta */
 .phone {
-  width: 360px; /* largura típica de um Android compacto */
-  height: 740px; /* altura aproximada da tela útil */
+  width: 375px; 
+  height: 812px;
   border: 1px solid #ccc;
   border-radius: 30px;
   overflow: hidden;

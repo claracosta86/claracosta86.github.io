@@ -24,7 +24,7 @@ const (
 	UserTypeOrganizer UserType = "organizer"
 )
 
-type FavoriteCulturalList struct {
+type CulturalList struct {
 	ID    int    `json:"id"`
 	Title  string `json:"title"`
 	Type   string `json:"type"`

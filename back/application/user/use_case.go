@@ -32,10 +32,13 @@ type UseCase interface {
 	ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error
 
 	// GetUserFavorites retrieves a user's favorite cultural items
-	GetUserFavorites(ctx context.Context, userID int) ([]model.FavoriteCulturalList, error)
+	GetUserFavorites(ctx context.Context, userID int) ([]model.CulturalList, error)
 
 	// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
 	UpdateLastSeenFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error
+
+	// GetOrganizerCulturais retrieves cultural items associated with an organizer
+	GetOrganizerCulturais(ctx context.Context, organizerID int) ([]model.CulturalList, error)
 }
 
 type useCase struct {
@@ -156,15 +159,15 @@ func (uc *useCase) ToggleFavorite(ctx context.Context, userID int, request model
 }
 
 // GetUserFavorites retrieves a user's favorite cultural items
-func (uc *useCase) GetUserFavorites(ctx context.Context, userID int) ([]model.FavoriteCulturalList, error) {
+func (uc *useCase) GetUserFavorites(ctx context.Context, userID int) ([]model.CulturalList, error) {
 	favorites, err := uc.userService.GetUserFavorites(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 	
-	result := make([]model.FavoriteCulturalList, len(favorites))
+	result := make([]model.CulturalList, len(favorites))
 	for _, favorite := range favorites {
-		result = append(result, model.FavoriteCulturalList{
+		result = append(result, model.CulturalList{
 			ID:   favorite.ID,
 			Type: favorite.Type,
 		})
@@ -176,4 +179,22 @@ func (uc *useCase) GetUserFavorites(ctx context.Context, userID int) ([]model.Fa
 // UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
 func (uc *useCase) UpdateLastSeenFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error {
 	return uc.userService.UpdateLastSeenFavorite(ctx, userID, request.CulturalID, request.CulturalType)
+}
+
+// GetOrganizerCulturais retrieves cultural items associated with an organizer
+func (uc *useCase) GetOrganizerCulturais(ctx context.Context, organizerID int) ([]model.CulturalList, error) {
+	culturais, err := uc.userService.GetCulturaisByOrganizerID(ctx, organizerID)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]model.CulturalList, 0, len(culturais))
+	for _, cultural := range culturais {
+		result = append(result, model.CulturalList{
+			ID:   cultural.ID,
+			Type: cultural.Type,
+		})
+	}
+
+	return result, nil
 }

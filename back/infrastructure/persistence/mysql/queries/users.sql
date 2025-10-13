@@ -50,7 +50,7 @@ DELETE FROM user_favorites WHERE favorite_type = 'event' AND favorite_id IN (%s)
 DELETE FROM user_favorites WHERE favorite_type = 'tourist_attraction' AND favorite_id IN (%s);
 
 -- name: add-user-favorite
-INSERT INTO user_favorites (user_id, favorite_type, favorite_id, favorited_at, last_seen_at) VALUES (?, ?, ?, NOW(), NOW());
+INSERT INTO user_favorites (user_id, favorite_type, favorite_id, favorited_at, last_seen_at) VALUES (?, ?, ?, NOW(), NOW())
 ON DUPLICATE KEY UPDATE last_seen_at = NOW();
 
 -- name: remove-user-favorite
@@ -80,3 +80,21 @@ WHERE uf.user_id = ? AND uf.favorite_type = "tourist_attraction";
 UPDATE user_favorites
 SET last_seen_at = NOW()
 WHERE user_id = ? AND favorite_type = ? AND favorite_id = ?;
+
+
+-- name: fetch-culturals-by-organizer-id
+SELECT 
+    id,
+    title,
+    "event" AS type
+FROM events
+WHERE organizer_id = ?
+
+UNION ALL
+
+SELECT 
+    id,
+    title,
+    "tourist_attraction" AS type
+FROM tourist_attractions
+WHERE organizer_id = ?;

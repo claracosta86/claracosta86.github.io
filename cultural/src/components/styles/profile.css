@@ -19,8 +19,8 @@ a {
 }
 
 .screen {
-  width: 360px;
-  min-height: 740px;
+  width: 375px; 
+  height: 812px;
   background-color: #f7d75e;
   border-radius: 30px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -28,54 +28,6 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-/* Top Bar */
-
-.top-bar-organizer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  gap: 10px 80px;
-  margin-top: 25px;
-}
-
-.top-bar-common {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  gap: 10px 150px;
-  margin-top: 15px;
-}
-
-.icons {
-  display: flex;
-  gap: 10px;
-}
-
-.icon {
-  height: 28px;
-  cursor: pointer;
-}
-
-.right-section {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px; /* espaço entre botão e ícones */
-  margin-left: 2px;
-}
-
-.logo-container {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.logo-tiny {
-  width: 75px;
-  margin-top: 10px;
-  margin-bottom: 40px;
 }
 
 .add-btn {
@@ -103,20 +55,22 @@ a {
 
 /* Caixa de Perfil */
 .profile-box {
-  background-color: #fff;
-  border-radius: 16px;
-  padding: 25px 20px;
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+  padding: 20px;
+  background-color: white;
+  margin: 0px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-sizing: content-box;
   width: 100%;
-  max-width: 300px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-top: auto; 
-  margin-bottom: auto;
 }
 
 .profile-box h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-  text-align: left;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 /* Campos de entrada */
@@ -152,56 +106,35 @@ a {
 /* Buttons */
 .profile-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
-  justify-content: center;
   margin-top: 20px;
+}
+
+.profile-actions-row {
+  display: flex;
+  gap: 10px; 
+}
+
+.profile-actions-row .profile-btn {
+  flex: 1; 
 }
 
 .profile-btn {
   background-color: #2563eb;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 12px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 16px;
   cursor: pointer;
-  min-width: 110px;
   text-align: center;
   transition: background 0.2s;
+  display: block;
 }
 
 .profile-actions .btn:hover {
   background-color: #1e40af;
-}
-
-.logout-btn {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 8px;
-    gap: 4.29px;
-    color: black;
-    min-width: 100px;
-    height: 36px;
-    background: #d1d5db;
-    border-radius: 6.86294px;  
-    text-decoration: none;
-    margin-top: 10px;
-    font-size: 12px;
-}
-
-.logout-btn:hover {
-  background-color: #9ca3af; /* cinza mais escuro */
-}
-
-.logout-container   {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px;
 }
 
 /* Erros */
@@ -216,29 +149,18 @@ a {
 /* Delete User */
 
 .delete-btn {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 8px;
-  gap: 4.29px;
+  background-color: #ff0000;
   color: white;
-  min-width: 120px;
-  height: 36px;
-  background: #d1d5db;
-  border-radius: 6.86294px;  
-  text-decoration: none;
-  margin-top: 10px;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+  display: block;
 }
 
 .delete-btn:hover {
-  background-color: red; /* cinza mais escuro */
-}
-
-.delete-container   {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px;
+  background-color: #d90429; /* cinza mais escuro */
 }

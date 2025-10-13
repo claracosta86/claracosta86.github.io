@@ -72,7 +72,7 @@ func (h *NotificationHandler) HandleMarkNotificationsAsSeen(w http.ResponseWrite
 		return
 	}
 
-	var seenReq notificationModel.SeenNortificationsRequest
+	var seenReq notificationModel.SeenNotificationsRequest
 	err = json.NewDecoder(r.Body).Decode(&seenReq)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)

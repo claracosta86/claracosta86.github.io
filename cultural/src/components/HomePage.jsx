@@ -1,8 +1,13 @@
 // src/components/HomePage.jsx
+import { useUser } from './UserContext';
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './styles/home.css'; 
 import logo from '../assets/logo.png';
+import homeIcon from '../assets/home-icon.png';
+import logoutIcon from '../assets/logout-icon.png';
+import addIcon from '../assets/add-icon.png';
+import favoriteIcon from '../assets/favorite-icon.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import userIcon from '../assets/user-icon.png';
 import searchIcon from '../assets/search-icon.png';
@@ -78,23 +83,24 @@ const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, u
 const HomePage = () => {
   const navigate = useNavigate();
 
+  const iwnbEventID = '1';
   const bienalEventID = '2';
   const mcrEventID = '3';
-  const dccWeekEventID = '4';
-  const iwnbEventID = '1';
-  const cruEventID = '5';
-  const liberdadeAttractionID = '6';
-  const igrejinhaAttractionID = '7';
-  const pseteAttractionID = '8';
-  const mercadoAttractionID = '9';
-  const mangabeirasAttractionID = '10';
+  const cruEventID = '4';
+  const dccWeekEventID = '5';
+  const liberdadeAttractionID = '1';
+  const igrejinhaAttractionID = '2';
+  const pseteAttractionID = '3';
+  const mercadoAttractionID = '4';
+  const mangabeirasAttractionID = '5';
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-  
-  const location = useLocation();
-  const userID = location.state?.userID || '';
-  const userType = location.state?.userType || '';
+
+  const { user } = useUser();
+
+  const userID = user.userID;
+  const userType = user.type;
 
   useEffect(() => {
     if (userID) {
@@ -103,11 +109,7 @@ const HomePage = () => {
     if (userType) {
       console.log("UserType recebido da página de login:", userType);
     }
-  }, [userID, userType]);
-
-  const handleUserIconClick = async () => {
-    navigate('/user/profile',  { state: {userID: userID, userType: userType} });
-  };
+  }, [user]);
 
   const handleNotificationIconClick = async () => {
     const fetchNewNotifications = async () => {
@@ -149,48 +151,33 @@ const HomePage = () => {
     setNotificationModalOpen(false);
   };
 
-  const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
 
   return (
     <>
     <NotificationModal isOpen={isNotificationModalOpen} onClose={() => handleNotificationCloseClick()} notifications={notification} navigate={navigate} userID={userID} userType={userType}/> 
     <section className="screen" id="tela-home">
-      <header className={topBarClass}>
-        <div className="logo-container">
-          <Link to="/">
-            <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-          </Link>
-        </div>
-        <div className="right-section">
-          <div className="icons">
-            {userType === 'organizer' && (
-              <Link to="/create-cultural" state={{ userID, userType }} className="add-btn">Adicionar Cultural</Link>
-            )}
-            <div onClick={handleNotificationIconClick} className="icon-button-container">
-              <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
-            </div>
-            <div onClick={handleUserIconClick} className="icon-button-container">
-                <img src={userIcon} id="user-icon" alt="Usuário" className="icon" />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <section className="search-bar">
-          <img src={searchIcon} alt="Buscar" className="search-icon" />
-          <input id="search-input" type="text" placeholder="Buscar..." />
-      </section>
+      <header className="top-bar">
+              <img src={logo} alt="Logo Cultural" className="logo-tiny" />
+              <div className="right-section">
+                <Link to="/">
+                  <img src={logoutIcon} alt="Log-out" className="icon" />
+                </Link>
+                <div onClick={handleNotificationIconClick} className="icon-button-container">
+                  <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
+                </div>
+              </div>
+            </header>
 
       <main className="home-container">
         <section className="background-container">
           <div className="category-box">
             <h2>Principais Eventos</h2>
             <div className="card-events">
-              <Link to={`/card/${bienalEventID}`} state={{userID, userType, "event":true}}><div className="card">
+              <Link to={`/card/${bienalEventID}`} state={{"event":true}}><div className="card">
                 <p className="title">Bienal do Livro</p>
                 <img src={bienalEvent} alt="Bienal do livro" />
               </div></Link>
-               <Link to={`/card/${mcrEventID}`} state={{userID, userType, "event":true}}><div className="card">
+               <Link to={`/card/${mcrEventID}`} state={{"event":true}}><div className="card">
                 <p className="title">My Chemical Romance Ao Vivo</p>
                <img src={mcrEvent} alt="MCR Ao Vivo" />
               </div></Link>
@@ -233,6 +220,15 @@ const HomePage = () => {
           </div>
         </section>
       </main>
+      <footer className="footer">
+        <Link to={`/home`}><img src={homeIcon} alt="Logo Cultural" /></Link>
+        <Link to={`/search`}><img src={searchIcon} alt="Buscar"/></Link>
+        {userType === 'organizer' && (
+          <Link to={`/create-cultural`}><img src={addIcon} alt="Adicionar" className='mostImportantButton' /></Link>
+        )}
+        <Link to={`/user/favorites`}><img src={favoriteIcon} alt="Favoritos" /></Link>
+        <Link to={`/user/profile`}><img src={userIcon} alt="Usuário" /></Link>
+      </footer>
     </section>
     </>
   );

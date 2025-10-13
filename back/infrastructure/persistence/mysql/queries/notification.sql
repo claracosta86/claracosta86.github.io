@@ -14,7 +14,7 @@ LEFT JOIN
 WHERE
     n.user_id = ?
     AND n.seen = 0
-    AND n.type IN ('commented', 'canceled') 
+    AND n.type IN ('commented', 'canceled', 'updated') 
 
 UNION ALL
 

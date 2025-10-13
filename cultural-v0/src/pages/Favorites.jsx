@@ -69,7 +69,7 @@ const Favorites = () => {
     <div className="favorites-container">
       <div className="favorites-header">
         <Link to="/profile" className="back-btn">
-          <img src="/images/goback.png" alt="Voltar" />
+          <img src="/images/goback-icon.png" alt="Voltar" />
         </Link>
         <h1>Meus Favoritos</h1>
       </div>

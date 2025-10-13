@@ -459,3 +459,39 @@ func (h *UserHandler) HandleLastSeenFavorite(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "last seen favorite updated successfully"})
 }
+
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] User favorites recovered successfully
+// /users/culturais/ [GET]
+func (h *UserHandler) HandleGetOrganizerCulturais(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	
+	userIDStr := chi.URLParam(r, "userID")
+	userID, err := strconv.Atoi(userIDStr)
+
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	response, err := h.userUseCase.GetOrganizerCulturais(r.Context(), userID)
+	if err != nil {
+		if strings.Contains(err.Error(), "user not found") {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		log.Printf("Error getting user favorites: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}

@@ -36,10 +36,13 @@ type Service interface {
 	ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error
 
 	// GetUserFavorites retrieves a user's favorite cultural items
-	GetUserFavorites(ctx context.Context, userID int) ([]FavoriteCulturalList, error)
+	GetUserFavorites(ctx context.Context, userID int) ([]CulturalList, error)
 
 	// UpdateLastSeenFavorite updates the last seen timestamp of a favorite cultural item
 	UpdateLastSeenFavorite(ctx context.Context, userID, culturalID int, culturalType string) error
+
+	// GetCulturaisByOrganizerID retrieves cultural items associated with an organizer
+	GetCulturaisByOrganizerID(ctx context.Context, organizerID int) ([]CulturalList, error)
 }
 
 type service struct {
@@ -150,7 +153,6 @@ func (s *service) ToggleFavorite(ctx context.Context, userID int, culturalType s
 	// Check if user exists
 	_, err := s.repository.FindByID(ctx, userID)
 	if err != nil {
-		fmt.Println(err)
 		return errors.New("user not found")
 	}
 
@@ -161,7 +163,7 @@ func (s *service) ToggleFavorite(ctx context.Context, userID int, culturalType s
 	}
 }
 
-func (s *service) GetUserFavorites(ctx context.Context, userID int) ([]FavoriteCulturalList, error) {
+func (s *service) GetUserFavorites(ctx context.Context, userID int) ([]CulturalList, error) {
 	_, err := s.repository.FindByID(ctx, userID)
 	if err != nil {
 		return nil, errors.New("user not found")
@@ -177,4 +179,17 @@ func (s *service) UpdateLastSeenFavorite(ctx context.Context, userID, culturalID
 	}
 	
 	return s.repository.UpdateLastSeenFavorite(ctx, userID, culturalID, culturalType)
+}
+
+func (s *service) GetCulturaisByOrganizerID(ctx context.Context, organizerID int) ([]CulturalList, error) {
+	// Check if organizer exists
+	organizer, err := s.repository.FindByID(ctx, organizerID)
+	if err != nil {
+		return nil, errors.New("organizer not found")
+	}
+	if organizer.Type != string(UserTypeOrganizer) {
+		return nil, fmt.Errorf("user with ID %d is not an organizer", organizerID)
+	}
+
+	return s.repository.GetCulturaisByOrganizerID(ctx, organizerID)
 }

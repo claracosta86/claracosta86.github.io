@@ -1,16 +1,11 @@
 // src/components/FavoritesPage.jsx
-import { useUser } from './UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './styles/favorites.css'; 
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
-import logoutIcon from '../assets/logout-icon.png';
 import userIcon from '../assets/user-icon.png';
-import homeIcon from '../assets/home-icon.png';
-import addIcon from '../assets/add-icon.png';
-import favoriteIcon from '../assets/favorite-icon.png';
-import searchIcon from '../assets/search-icon.png';
+import gobackIcon from '../assets/goback-icon.png';
 
 const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
@@ -93,10 +88,10 @@ const RemoveFavoriteModal = ({ isOpen, onClose, onConfirm }) => {
 
 const FavoritesPage = () => {
     const navigate = useNavigate();
-    
-    const user = useUser();
-    const userID = user.userID;
-    const userType = user.type;
+    const location = useLocation();
+
+    const userID = location.state?.userID || '';
+    const userType = location.state?.userType || 'common';
 
     const [favorites, setFavorites] = useState([]);
     const [notification, setNotification] = useState([]);
@@ -213,25 +208,42 @@ const FavoritesPage = () => {
         setNotificationModalOpen(false);
     };
 
+    const handleUserIconClick = async () => {
+        navigate('/user/profile', { state: { userID, userType } });
+    };
+
+    const headerClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
+
     return (
         <> 
         <NotificationModal isOpen={isNotificationModalOpen} onClose={() => handleNotificationCloseClick()} notifications={notification} navigate={navigate} userID={userID} userType={userType}/>
         <RemoveFavoriteModal isOpen={isRemoveFavoriteModalOpen} onClose={closeRemoveModal} onConfirm={handleConfirmRemove} />
             <section className="screen" id="tela-profile">
-                <header className="top-bar">
-                        <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-                        <div className="right-section">
-                          <Link to="/">
-                            <img src={logoutIcon} alt="Log-out" className="icon" />
-                          </Link>
-                          <div onClick={handleNotificationIconClick} className="icon-button-container">
-                            <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
-                          </div>
+                <header className={headerClass}>
+                    <div className="logo-container">
+                        <Link to="/home" state={{ userID, userType }}>
+                            <img src={logo} alt="Logo Cultural" className="logo-tiny" />
+                        </Link>
+                    </div>
+                    <div className="right-section">
+                        <div className="icons">
+                            {userType === 'organizer' && (
+                                <Link to="/create-cultural" state={{ userID, userType }} className="add-btn">Adicionar Cultural</Link>
+                            )}
+                            <div onClick={handleNotificationIconClick} className="icon-button-container">
+                                <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
+                            </div>
+                            <div onClick={handleUserIconClick} className="icon-button-container">
+                                <img src={userIcon} id="user-icon" alt="Usuário" className="icon" />
+                            </div>
                         </div>
-                      </header>
-
+                    </div>
+                </header>
                 <div className="favorites-box">
                     <div className="header-title">
+                        <button onClick={() => navigate(-1)} className="back-button">
+                            <img src={gobackIcon} alt="Voltar" className="goback-img" />
+                        </button>
                         <h2>Meus Favoritos</h2>
                     </div>
                     
@@ -250,7 +262,7 @@ const FavoritesPage = () => {
                                         </div>
                                     </Link>
                                     <button onClick={() => openRemoveModal(fav)} className="remove-btn">
-                                        Remover
+                                        &#x2715; Remover
                                     </button>
                                 </div>
                             )))
@@ -258,16 +270,8 @@ const FavoritesPage = () => {
                             <p><em>Você ainda não adicionou nenhum favorito.</em></p>
                         )}
                     </div>
+
                 </div>
-                <footer className="footer">
-                    <Link to={`/home`}  state={{ userID, userType }}><img src={homeIcon} alt="Logo Cultural" /></Link>
-                    <Link to={`/search`} state={{ userID, userType }}><img src={searchIcon} alt="Buscar"/></Link>
-                    {userType === 'organizer' && (
-                      <Link to={`/create-cultural`} state={{ userID, userType }}><img src={addIcon} alt="Adicionar" className='mostImportantButton' /></Link>
-                    )}
-                    <Link to={`/user/favorites`} state={{ userID, userType }}><img src={favoriteIcon} alt="Favoritos" /></Link>
-                    <Link to={`/user/profile`} state={{ userID, userType }}><img src={userIcon} alt="Usuário" /></Link>
-                </footer>
             </section>
         </>
     );

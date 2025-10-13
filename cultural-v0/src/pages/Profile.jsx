@@ -71,7 +71,7 @@ const Profile = () => {
 
       <div className="profile-box">
         <div className="header-title">
-          <img src="/images/goback.png" alt="Voltar" className="goback-img" onClick={() => navigate('/home')} />
+          <img src="/images/goback-icon.png" alt="Voltar" className="goback-img" onClick={() => navigate('/home')} />
           <h2>Meu Perfil</h2>
         </div>
 

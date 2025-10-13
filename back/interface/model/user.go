@@ -69,7 +69,7 @@ type FavoriteRequest struct {
 	IsFavorite   bool   `json:"isFavorite"`   // true to add to favorites, false to remove from favorites
 }
 
-type FavoriteCulturalList struct {
+type CulturalList struct {
 	ID    int    `json:"id"`
 	Type   string `json:"type"`
 }

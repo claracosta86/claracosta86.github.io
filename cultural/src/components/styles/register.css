@@ -20,8 +20,8 @@ a {
 
 /* Moldura de celular */
 .screen {
-  width: 360px;
-  min-height: 740px;
+  width: 375px; 
+  height: 812px;
   background-color: #f7d75e;
   border-radius: 30px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -41,28 +41,32 @@ a {
 }
 
 /* Caixa de Registro */
-.login-box {
-  background-color: #fff;
-  border-radius: 16px;
-  padding: 25px 20px;
+.register-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+  padding: 20px;
+  background-color: white;
+  margin: 0px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-sizing: content-box;
   width: 100%;
-  max-width: 300px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow-y: scroll;
+  overflow-y: auto; 
 }
 
-.login-box::-webkit-scrollbar {
+.register-box::-webkit-scrollbar {
   display: none; 
 }
 
-.login-box h2 {
+.register-box h2 {
   margin-bottom: 20px;
   font-size: 20px;
-  text-align: center;
+  text-align: flex-start;
 }
 
 /* Campos de entrada */
-.login-box label {
+.register-box label {
   display: block;
   margin-top: 15px;
   font-weight: bold;
@@ -70,7 +74,7 @@ a {
   color: #333;
 }
 
-.login-box input {
+.register-box input {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
@@ -84,21 +88,64 @@ label.required {
   font-weight: bold;
 }
 
+.register-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.register-actions .btn {
+  flex: 1; 
+}
+
+.selection-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  width: 100%;
+  gap: 20px;
+  white-space: nowrap; 
+}
+
+.selection-box legend {
+  padding: 0 10px;
+  font-weight: bold;
+  color: #555;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  cursor: pointer;
+}
+
+.radio-option label {
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 /* Botão Login */
 .btn {
-  display: block;
-  text-align: center;
-  background-color: #346aff;
+  background-color: #2563eb;
   color: white;
-  padding: 10px 0;           
-  margin-top: 20px;
+  border: none;
+  padding: 12px;
   border-radius: 8px;
-  text-decoration: none;
   font-size: 16px;
-  width: 80%;                 
-  max-width: 300px;          
-  margin-left: auto;          
-  margin-right: auto;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+  display: block;
 }
 
 .btn:hover {

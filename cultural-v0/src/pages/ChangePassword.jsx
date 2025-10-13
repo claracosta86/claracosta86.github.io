@@ -81,7 +81,7 @@ const ChangePassword = () => {
       <div className="change-password-box">
         <div className="change-password-header">
           <Link to="/profile" className="back-btn">
-            <img src="/images/goback.png" alt="Voltar" />
+            <img src="/images/goback-icon.png" alt="Voltar" />
           </Link>
           <h2>Alterar Senha</h2>
         </div>

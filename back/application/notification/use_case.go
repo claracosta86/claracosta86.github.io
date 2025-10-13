@@ -47,14 +47,14 @@ func (uc *useCase) GetNotifications(ctx context.Context, userID int) (*model.Get
 		return nil, err
 	}
 
-	culturals := make([]model.CulturalList, len(notificationCulturals))
+	culturals := make([]model.NotificationCulturalList, len(notificationCulturals))
 	for _, cultural := range notificationCulturals {
-		culturals = append(culturals, model.CulturalList{
-			ID:    cultural.CulturalID,
-			Title: cultural.Title,
-			Type:  cultural.CulturalType,
+		culturals = append(culturals, model.NotificationCulturalList{
+			ID:              cultural.CulturalID,
+			Title:           cultural.Title,
+			Type:            cultural.CulturalType,
 			NotificationType: cultural.Type,
-			NotificationID: cultural.ID,
+			NotificationID:   cultural.ID,
 		})
 	}
 

@@ -1,11 +1,30 @@
 /* src/components/styles/favorites.css */
 
+.favorites-box {
+  flex: 1; /* Faz este elemento crescer e ocupar o espaço restante */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* ESSENCIAL: Impede que este container cresça com o conteúdo */
+  padding: 20px;
+  background-color: white;
+  margin: 0px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-sizing: content-box;
+  width: 100%;
+}
+
 .favorites-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
   padding: 10px;
+  flex: 1; 
+  overflow-y: auto; 
+}
+
+.favorites-list::-webkit-scrollbar {
+  display: none;
 }
 
 .favorite-card {
@@ -23,7 +42,7 @@
 
 .favorite-card .card-link {
   display: flex;
-  align-items: center;
+  align-items: flex-start; 
   text-decoration: none;
   color: inherit;
   width: 100%;
@@ -35,28 +54,31 @@
   border-radius: 10px;
   object-fit: cover;
   margin-right: 15px;
+  margin-top: 15px;
 }
 
 .favorite-details {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  font-size: 14px;
 }
 
 .favorite-details h3 {
-  margin: 0;
-  font-size: 1.2rem;
+  margin-top: 5px;
+  margin-left: 0px ;
+  font-size: 16px;
   font-weight: bold;
 }
 
 .favorite-details p {
-  margin: 0;
+  margin: 0px;
   font-style: italic;
   color: #555;
 }
 
 .favorite-details span {
-  font-size: 0.9rem;
+  font-size: 12px;
 }
 
 .favorite-details .price {
@@ -65,51 +87,58 @@
 }
 
 .remove-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #333;
+  position: absolute; /* Posicionamento absoluto em relação ao pai */
+  bottom: 10px;       /* 10px de distância do fundo */
+  right: 10px;        /* 10px de distância da direita */
+  
+  /* Estilos que você pode manter */
+  background-color: #ff0000;
   color: white;
+  padding: 4px 8px; 
   border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  font-size: 12px;
-  line-height: 24px;
-  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 12px; /* Opcional, talvez um pouco menor fique melhor */
   cursor: pointer;
-  padding: 0;
+
+  width: 30%;
 }
 
 .remove-btn:hover {
+  background-color: #d90429; /* Uma cor um pouco diferente no hover */
+}
+
+.modal-confirm-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 110px;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.modal-confirm-btn:hover {
   background-color: #ff0000;
 }
 
-/* Esconde o texto "Remover", deixando só o 'X' como no exemplo */
-.remove-btn {
-    font-size: 16px;
-    font-weight: bold;
-    text-indent: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 30px; /* Largura do botão */
-    height: 30px; /* Altura do botão */
-    line-height: 30px;
-    position: relative;
+.modal-close-btn {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 110px;
+  text-align: center;
+  transition: background 0.2s;
+  margin-left: 10px;
 }
 
-.remove-btn::before {
-    content: 'X';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-indent: 0;
-}
-
-.goback-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
+.modal-close-btn:hover {
+  background-color: #999
 }

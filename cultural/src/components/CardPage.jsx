@@ -1,18 +1,23 @@
 // src/components/CardPage.jsx
+import { useUser } from './UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import './styles/card.css'; 
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
+import homeIcon from '../assets/home-icon.png';
+import addIcon from '../assets/add-icon.png';
+import searchIcon from '../assets/search-icon.png';
 import favoriteIcon from '../assets/favorite-icon.png';
 import unfavoriteIcon from '../assets/unfavorite-icon.png';
-import gobackIcon from '../assets/goback.png';
 import userIcon from '../assets/user-icon.png';
 import locationIcon from '../assets/location-icon.png';
 import clockIcon from '../assets/clock-icon.png';
 import priceIcon from '../assets/price-icon.png';
 import accessibleIcon from '../assets/accessibility-icon.png';
 import mailIcon from '../assets/mail-icon.png';
+import logoutIcon from '../assets/logout-icon.png';
+
 
 const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
@@ -80,9 +85,11 @@ const CardPage = () => {
   const { id } = useParams();
   const [culturalData, setCulturalData] = useState(null);
 
+  const user = useUser();
+  const userID = user.userID;
+  const userType = user.type;
+
   const location = useLocation();
-  const userID = location.state?.userID || '';
-  const userType = location.state?.userType || '';
   let type = "event" ;
   if (location.state?.event == false) {
     type = "attraction";
@@ -176,65 +183,57 @@ const CardPage = () => {
   };
 
   const handleNotificationCloseClick = async () => {
-        const setNotificationsAsSeen = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ notificationIDs: notification.map(notif => notif.ID) }),
-            credentials: 'include'
-            });
-            if (response.ok) {
-            console.log("Notificações marcadas como vistas com sucesso.");
-            }
-        } catch (error) {
-            console.error("Erro ao atualizar favorito:", error);
-        }
-    };
-        setNotificationsAsSeen();
+    if (notification.length === 0) {
         setNotificationModalOpen(false);
+        return;
+    }
+    const setNotificationsAsSeen = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/notifications/${userID}/seen`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notificationIDs: notification.map(notif => notif.ID) }),
+          credentials: 'include'
+        });
+        if (response.ok) {
+          console.log("Notificações marcadas como vistas com sucesso.");
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar favorito:", error);
+}
     };
-    
+    setNotificationsAsSeen();
+    setNotificationModalOpen(false);
+  };
+
+  const handleGoBackClick = () => {
+    navigate(-1);
+  };
+
   if (!culturalData) {
     return <div>Carregando...</div>;
   }
-
-  const topBarClass = userType === 'organizer' ? 'top-bar-organizer' : 'top-bar-common';
-
     return (
       <>
       <NotificationModal isOpen={isNotificationModalOpen} onClose={() => handleNotificationCloseClick()} notifications={notification} navigate={navigate} userID={userID} userType={userType}/> 
       <section className="screen" id="tela-home">
-        <header className={topBarClass}>
-          <div className="logo-container">
-            <Link to="/home">
-              <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-            </Link>
-          </div>
-          <div className="right-section">
-            <div className="icons">
-              {userType === 'organizer' && (
-                <Link to="/create-cultural" state={{ userID, userType }} className="add-btn">Adicionar Cultural</Link>
-              )}
-              <div onClick={handleNotificationIconClick} className="icon-button-container">
-                <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
-              </div>
-              <div onClick={handleUserIconClick} className="icon-button-container">
-                  <img src={userIcon} id="user-icon" alt="Usuário" className="icon" />
-              </div>
-            </div>
-          </div>
-        </header>
+       <header className="top-bar">
+               <img src={logo} alt="Logo Cultural" className="logo-tiny" />
+               <div className="right-section">
+                 <Link to="/">
+                   <img src={logoutIcon} alt="Log-out" className="icon" />
+                 </Link>
+                 <div onClick={handleNotificationIconClick} className="icon-button-container">
+                   <img src={notificationsIcon} id="notifications-icon" alt="Notificações" className="icon" />
+                 </div>
+               </div>
+             </header>
   
         <main className="home-container">
           <section>
             <div className="details-container">
                   <div className="header-details">
-                      <button onClick={() => navigate(-1)} className="back-button">
-                          <img src={gobackIcon} alt="Voltar" className="goback-img" />
-                      </button>
                       <h2 className="cultural-title">{culturalData.title}</h2>
-                      <img onClick={handleFavoriteIconClick} src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon} alt="Favoritar" className="favorite-icon" />
                   </div>
                   <img src={`/thumb-size/${culturalData.image}`} alt={culturalData.title} className="event-image" />
 
@@ -245,6 +244,9 @@ const CardPage = () => {
                           ? <strong>Data e Horário:</strong> 
                           : <strong>Horário de Funcionamento:</strong>
                       }
+                      {type === 'event' && culturalData.event && culturalData.event.end_date === "" && (
+                        ` ${culturalData.event.start_date}, de ${culturalData.event.duration_time}`
+                      )}
                       {type === 'event' && culturalData.event && (
                         ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`
                       )}
@@ -252,11 +254,15 @@ const CardPage = () => {
                           ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`
                       )}
                       </p>
-                      <p><img src={priceIcon} alt="Preço" className="info-icon" /><strong>Preço: R$</strong> {culturalData.price}</p>
+                      <p><img src={priceIcon} alt="Preço" className="info-icon" /><strong>Preço: </strong>{culturalData.price === "R$0,00" || culturalData.price === "Gratuito" ? "Gratuito" : `${culturalData.price}`}</p>
                       <p><img src={accessibleIcon} alt="Acessível" className="info-icon" /><strong>Acessível:</strong> {culturalData.accessible ? 'Sim' : 'Não'}</p>
-                      <p><Link to={`/organizer/${culturalData.organizer.id}`}><img src={mailIcon} alt="Contato" className="info-icon" /><strong>Contato:</strong> {culturalData.organizer.email}</Link></p>
+                      <p><img src={mailIcon} alt="Contato" className="info-icon" /><strong>Contato:</strong> {culturalData.organizer.email}</p>
                       <p className="description"><strong>Descrição:</strong> {culturalData.description}</p>
                   </div>
+              </div>
+
+              <div id="organizer-container">
+                <button className="see-organizer-btn"><Link to={`/organizer/${culturalData.organizer.id}`}>Conhecer Organizador</Link></button>
               </div>
               
               <div className="comments-section">
@@ -268,8 +274,25 @@ const CardPage = () => {
                   </div>
                   <button className="add-comment-btn">Adicionar Comentário</button>
               </div>
-            </section>
+
+              <div className="down-container">
+                <div className="down-container-row">
+                  <button onClick={handleGoBackClick(userID, userType)} className="down-btn">Voltar</button>
+                  <button onClick={handleFavoriteIconClick} src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon} alt="Favoritar" className="down-btn">
+                    {culturalData.isFavorite ? '	Desfavoritar ♡' : 'Favoritar ❤'}</button>
+                </div>
+              </div>       
+            </section>                 
         </main>
+        <footer className="footer">
+          <Link to={`/home`}  state={{ userID, userType }}><img src={homeIcon} alt="Logo Cultural" /></Link>
+          <Link to={`/search`} state={{ userID, userType }}><img src={searchIcon} alt="Buscar"/></Link>
+          {userType === 'organizer' && (
+            <Link to={`/create-cultural`} state={{ userID, userType }}><img src={addIcon} alt="Adicionar" className='mostImportantButton' /></Link>
+          )}
+          <Link to={`/user/favorites`} state={{ userID, userType }}><img src={favoriteIcon} alt="Favoritos" /></Link>
+          <Link to={`/user/profile`} state={{ userID, userType }}><img src={userIcon} alt="Usuário" /></Link>
+        </footer>       
       </section>
       </>
     );

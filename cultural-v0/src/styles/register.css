@@ -20,8 +20,8 @@ a {
 
 /* Moldura de celular */
 .screen {
-  width: 360px;
-  min-height: 740px;
+  width: 375px; 
+  height: 812px;
   background-color: #f7d75e;
   border-radius: 30px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);

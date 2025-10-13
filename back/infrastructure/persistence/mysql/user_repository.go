@@ -156,7 +156,7 @@ func (r *userRepository) RemoveFavorite(ctx context.Context, userID int, cultura
 	return err
 }
 
-func (r *userRepository) GetFavoritesByUserID(ctx context.Context, userID int) ([]user.FavoriteCulturalList, error) {
+func (r *userRepository) GetFavoritesByUserID(ctx context.Context, userID int) ([]user.CulturalList, error) {
 	rows, err := r.db.QueryContext(ctx, userQueries["fetch-user-favorites-by-id"], userID, userID)
 	if err != nil {
 		return nil, err
@@ -164,9 +164,9 @@ func (r *userRepository) GetFavoritesByUserID(ctx context.Context, userID int) (
 
 	defer rows.Close()
 
-	favorites := make([]user.FavoriteCulturalList, 0)
+	favorites := make([]user.CulturalList, 0)
 	for rows.Next() {
-		var favorite user.FavoriteCulturalList
+		var favorite user.CulturalList
 		if err := rows.Scan(&favorite.ID, &favorite.Title, &favorite.Type); err != nil {
 			return nil, err
 		}
@@ -188,4 +188,29 @@ func (r *userRepository) UpdateLastSeenFavorite(ctx context.Context, userID, cul
 		culturalID,
 	)
 	return err
+}
+
+func (r *userRepository) GetCulturaisByOrganizerID(ctx context.Context, organizerID int) ([]user.CulturalList, error) {
+	rows, err := r.db.QueryContext(ctx, userQueries["fetch-culturals-by-organizer-id"], organizerID, organizerID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	culturais := make([]user.CulturalList, 0)
+	for rows.Next() {
+		var cultural user.CulturalList
+		if err := rows.Scan(&cultural.ID, &cultural.Title, &cultural.Type); err != nil {
+			return nil, err
+		}
+
+		culturais = append(culturais, cultural)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return culturais, nil
 }
