@@ -14,6 +14,7 @@ import CardPage from './components/CardPage';
 import CreateCulturalPage from './components/CreateCulturalPage';
 import UserProvider from './contexts/UserContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import OrganizerPage from './components/OrganizerPage';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/user/profile/manage-cultural" element={<ManageCulturalPage />} />
             <Route path="/card/:culturalType/:id" element={<CardPage />} />
             <Route path="/create-cultural" element={<CreateCulturalPage />} />
+            <Route path="/organizer/:id" element={<OrganizerPage />} />
           </Route>
         </Routes>
       </Router>

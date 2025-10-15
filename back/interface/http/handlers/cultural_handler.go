@@ -72,7 +72,7 @@ func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Re
 // [500] Internal Server Error
 // [200] Cultural data recovered successfully
 // /cultural/{type}/{id} [GET]
-// HandleGetCulturalEvent retrieves cultural information
+// HandleGetCultural retrieves cultural information
 func (h *CulturalHandler) HandleGetCultural(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

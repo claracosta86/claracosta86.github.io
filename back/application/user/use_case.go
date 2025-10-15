@@ -2,6 +2,8 @@ package user
 
 import (
 	"context"
+	"time"
+	"fmt"
 
 	"poc2/back/domain/user"
 	"poc2/back/domain/cultural"
@@ -39,6 +41,9 @@ type UseCase interface {
 
 	// GetOrganizerCulturais retrieves cultural items associated with an organizer
 	GetOrganizerCulturais(ctx context.Context, organizerID int) ([]model.CulturalList, error)
+
+	// GetOrganizerInfo retrieves organizer information
+	GetOrganizerInfo(ctx context.Context, organizerID int) (*model.GetOrganizerInfoResponse, error) 
 }
 
 type useCase struct {
@@ -197,4 +202,68 @@ func (uc *useCase) GetOrganizerCulturais(ctx context.Context, organizerID int) (
 	}
 
 	return result, nil
+}
+
+// GetOrganizerInfo retrieves organizer information
+func (uc *useCase) GetOrganizerInfo(ctx context.Context, organizerID int) (*model.GetOrganizerInfoResponse, error) {
+	organizer, err := uc.userService.GetUserByID(ctx, organizerID)
+	if err != nil {
+		return nil, err
+	}
+
+	culturalItems, err := uc.GetOrganizerCulturais(ctx, organizerID)
+	if err != nil {
+		return nil, err
+	}
+
+	years, err := time.Parse("2006-01-02 15:04:05", organizer.CreatedAt)
+	if err != nil {
+		fmt.Println("Error parsing organizer creation date:", err)
+		return nil, err
+	}
+	yearsSince := formatTimeSince(years)
+
+	return &model.GetOrganizerInfoResponse{
+		Name:            organizer.Name,
+		Email:           organizer.Email,
+		ID:              organizer.ID,
+		CulturalItems:   culturalItems,
+		OrganizerSince:  yearsSince,
+	}, nil
+}
+
+func formatTimeSince(t time.Time) string {
+	now := time.Now()
+	
+	years := now.Year() - t.Year()
+	months := int(now.Month() - t.Month())
+	days := now.Day() - t.Day()
+
+	if days < 0 {
+		months--
+		days += time.Date(now.Year(), now.Month(), 0, 0, 0, 0, 0, time.UTC).Day()
+	}
+	if months < 0 {
+		years--
+		months += 12
+	}
+
+	if years > 0 {
+		if years == 1 {
+			return "1 ano"
+		}
+		return fmt.Sprintf("%d anos", years)
+	}
+
+	if months > 0 {
+		if months == 1 {
+			return "1 mês"
+		}
+		return fmt.Sprintf("%d meses", months)
+	}
+	
+	if days == 1 {
+		return "1 dia"
+	}
+	return fmt.Sprintf("%d dias", days)
 }

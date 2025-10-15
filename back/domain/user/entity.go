@@ -14,6 +14,7 @@ type User struct {
 	CompanyName string `json:"companyName"`
 	Password    string `json:"password"`
 	Type        string `json:"type"`
+	CreatedAt   string `json:"created_at"`
 }
 
 // UserType represents valid user types

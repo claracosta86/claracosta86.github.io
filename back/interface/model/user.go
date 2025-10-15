@@ -73,3 +73,11 @@ type CulturalList struct {
 	ID    int    `json:"id"`
 	Type   string `json:"type"`
 }
+
+type GetOrganizerInfoResponse struct {
+	Name            string         `json:"name"`
+	Email           string         `json:"email"`
+	OrganizerSince  string         `json:"organizer_since"`
+	CulturalItems   []CulturalList `json:"cultural_items"`
+	ID              int            `json:"id"`
+}

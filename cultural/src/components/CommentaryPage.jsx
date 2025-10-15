@@ -256,7 +256,7 @@ const CardPage = () => {
         </header>
 
         <main className="home-container">
-          <section className="main-content">
+          <section>
             <div className="details-container">
               <div className="header-details">
                 <h2 className="cultural-title">{culturalData.title}</h2>
@@ -326,22 +326,23 @@ const CardPage = () => {
               </div>
               <button className="add-comment-btn">Adicionar Comentário</button>
             </div>
-          </section>
-          <div className="down-container">
-            <div className="down-container-row">
-              <button onClick={handleGoBackClick} className="down-btn">
-                Voltar
-              </button>
-              <button
-                onClick={handleFavoriteIconClick}
-                src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon}
-                alt="Favoritar"
-                className="down-btn"
-              >
-                {culturalData.isFavorite ? '	Desfavoritar ♡' : 'Favoritar ❤'}
-              </button>
+
+            <div className="down-container">
+              <div className="down-container-row">
+                <button onClick={handleGoBackClick} className="down-btn">
+                  Voltar
+                </button>
+                <button
+                  onClick={handleFavoriteIconClick}
+                  src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon}
+                  alt="Favoritar"
+                  className="down-btn"
+                >
+                  {culturalData.isFavorite ? '	Desfavoritar ♡' : 'Favoritar ❤'}
+                </button>
+              </div>
             </div>
-          </div>
+          </section>
         </main>
         <footer className="footer">
           <Link to={`/home`} state={{ userID, userType }}>

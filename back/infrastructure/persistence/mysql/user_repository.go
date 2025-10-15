@@ -62,6 +62,7 @@ func (r *userRepository) FindByID(ctx context.Context, id int) (*user.User, erro
 		&u.Document,
 		&u.CompanyName,
 		&u.Type,
+		&u.CreatedAt,
 	)
 	
 	if err != nil {

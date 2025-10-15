@@ -8,7 +8,8 @@ SELECT
     email, 
     document, 
     company_name, 
-    type 
+    type,
+    created_at
 FROM users WHERE id = ?;
 
 -- name: fetch-user-by-email
@@ -98,3 +99,12 @@ SELECT
     "tourist_attraction" AS type
 FROM tourist_attractions
 WHERE organizer_id = ?;
+
+-- name: fetch-organizer-info-by-id
+SELECT 
+    id, 
+    name,
+    email,
+    created_at
+FROM users
+WHERE id = ? AND type = 'organizer';

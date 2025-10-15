@@ -293,13 +293,15 @@ const FavoritesPage = () => {
                         />
                         <div className="favorite-details">
                           <h3>{fav.Title}</h3>
-                          <p>{fav.Type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
-                          <span>{fav.Location}</span>
-                          <span className="price">
-                            {fav.Price === 'R$0,00' || fav.Price === 'Gratuito'
-                              ? 'Gratuito'
-                              : `${fav.Price}`}
-                          </span>
+                          <p>{fav.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
+                          <div className ="details-box">
+                            <span>{fav.Location}</span>
+                            <span className="price">
+                              {fav.Price === 'R$0,00' || fav.Price === 'Gratuito'
+                                ? 'Gratuito'
+                                : `${fav.Price}`}
+                            </span>
+                          </div>
                         </div>
                       </Link>
                       <button onClick={() => openRemoveModal(fav)} className="remove-btn">

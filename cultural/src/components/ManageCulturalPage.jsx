@@ -3,6 +3,8 @@ import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/profile.css';
+import './styles/favorites.css';
+import './styles/manage.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import logoutIcon from '../assets/logout-icon.png';
@@ -237,16 +239,21 @@ const ManageCulturalPage = () => {
                         />
                         <div className="favorite-details">
                           <h3>{cult.Title}</h3>
-                          <p>{cult.Type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
-                          <span>{cult.Location}</span>
-                          <span className="price">
-                            {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
-                              ? 'Gratuito'
-                              : `${cult.Price}`}
-                          </span>
+                          <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
+                          <div className="details-box">
+                            <span>{cult.Location}</span>
+                            <span className="price">
+                              {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
+                                ? 'Gratuito'
+                                : `${cult.Price}`}
+                            </span>
+                          </div>
                         </div>
                       </Link>
-                      <button className="remove-btn">Remover</button>
+                      <div className="actions-container">
+                        <button className="edit-btn">Editar</button>
+                        <button className="remove-btn">Excluir</button>
+                      </div>
                     </div>
                   )
               )

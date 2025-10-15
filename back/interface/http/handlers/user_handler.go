@@ -495,3 +495,39 @@ func (h *UserHandler) HandleGetOrganizerCulturais(w http.ResponseWriter, r *http
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
+
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] User favorites recovered successfully
+// HandleGetOrganizerInfo  
+func (h *UserHandler) HandleGetOrganizerInfo(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	
+	userIDStr := chi.URLParam(r, "userID")
+	userID, err := strconv.Atoi(userIDStr)
+
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	response, err := h.userUseCase.GetOrganizerInfo(r.Context(), userID)
+	if err != nil {
+		if strings.Contains(err.Error(), "user not found") {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		log.Printf("Error getting organizer info: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}

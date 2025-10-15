@@ -1,0 +1,45 @@
+.actions-container {
+  display: flex; /* Alinha os botões lado a lado */
+  gap: 10px; /* Espaço entre os botões */
+  width: 100%;
+  flex-direction: row;
+}
+
+
+.edit-btn {
+  position: absolute; /* Posicionamento absoluto em relação ao pai */
+        /* 10px de distância da direita */
+  
+  /* Estilos que você pode manter */
+  background-color: #2563eb;
+  color: white;
+  padding: 4px 8px; 
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 12px; /* Opcional, talvez um pouco menor fique melhor */
+  cursor: pointer;
+
+  width: 22%;
+}
+
+.edit-btn:hover {
+  background-color: #1e40af; /* Uma cor um pouco diferente no hover */
+}
+
+.actions-container button {
+  flex: 1; /* MÁGICA: Faz os botões dividirem o espaço igualmente */
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* .details-box .actions-container {
+  margin-top: auto; 
+  font-size: 14px;
+} */

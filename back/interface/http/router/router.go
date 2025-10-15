@@ -15,9 +15,32 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 	r.Use(enableCors, logging.LoggingMiddleware)
 
 	// Use handlers from the container
+	commentaryHandler := container.CommentaryHandler
 	culturalHandler := container.CulturalHandler
 	notificationHandler := container.NotificationHandler
 	userHandler := container.UserHandler
+
+	// Rotas de comentários
+	r.Route("/comments", func(r chi.Router) {
+		r.Post("/", commentaryHandler.HandleCreateCommentary)
+		r.Get("/", commentaryHandler.HandleGetCommentary)
+		r.Patch("/{commentID:[0-9]+}", commentaryHandler.HandleUpdateCommentary)
+		r.Delete("/{commentID:[0-9]+}", commentaryHandler.HandleDeleteCommentary)
+	})
+
+	// Rotas de culturais
+	r.Route("/culturais", func(r chi.Router) {
+		r.Post("/", culturalHandler.HandleCreateCultural)
+		r.Get("/{type}/{id:[0-9]+}", culturalHandler.HandleGetCultural)
+		r.Patch("/{type}/{id:[0-9]+}", culturalHandler.HandleUpdateCultural)
+		r.Delete("/{type}/{id:[0-9]+}", culturalHandler.HandleDeleteCultural)
+	})
+
+	// Rotas de notificações
+	r.Route("/notifications", func(r chi.Router) {
+		r.Get("/{userID:[0-9]+}", notificationHandler.HandleGetUserNotifications)
+		r.Patch("/{userID:[0-9]+}/seen", notificationHandler.HandleMarkNotificationsAsSeen)
+	})
 
 	// Rotas de usuário
 	r.Route("/users", func(r chi.Router) {
@@ -37,25 +60,13 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 			})
 			r.Route("/culturais", func (r chi.Router) {
 				r.Get("/", userHandler.HandleGetOrganizerCulturais)
-				// r.Get("/organizer", userHandler.HandleGetOrganizerInformation)
+				r.Get("/organizer", userHandler.HandleGetOrganizerInfo)
 			})
 		})
 		r.Post("/select-type", userHandler.HandleUserTypeSelection)
 		r.Get("/get-type", userHandler.HandleGetUserType)
 		r.Post("/set-information", userHandler.HandleSetUserInformation)
 		r.Get("/get-information", userHandler.HandleGetUserInformation)
-	})
-
-	r.Route("/culturais", func(r chi.Router) {
-		r.Post("/", culturalHandler.HandleCreateCultural)
-		r.Get("/{type}/{id:[0-9]+}", culturalHandler.HandleGetCultural)
-		r.Patch("/{type}/{id:[0-9]+}", culturalHandler.HandleUpdateCultural)
-		r.Delete("/{type}/{id:[0-9]+}", culturalHandler.HandleDeleteCultural)
-	})
-
-	r.Route("/notifications", func(r chi.Router) {
-		r.Get("/{userID:[0-9]+}", notificationHandler.HandleGetUserNotifications)
-		r.Patch("/{userID:[0-9]+}/seen", notificationHandler.HandleMarkNotificationsAsSeen)
 	})
 	
 	return r
@@ -64,6 +75,7 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 func enableCors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5174")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")

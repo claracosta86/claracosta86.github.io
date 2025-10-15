@@ -49,29 +49,9 @@ fmt.Printf("Fetching notifications for user %d with favorite events: %v and favo
         return nil, nil 
     }
 
-	// baseQuery := notificationQueries["fetch-notifications-by-user-id"]
-    
-    // eventsPlaceholders := ""
-    // if len(eventsIDs) > 0 {
-    //     eventsPlaceholders = "?" + strings.Repeat(",?", len(eventsIDs)-1)
-    // } else {
-    //     eventsPlaceholders = "NULL" 
-    // }
-
-    // touristAttractionPlaceholders := ""
-    // if len(touristAttractionIDs) > 0 {
-    //     touristAttractionPlaceholders = "?" + strings.Repeat(",?", len(touristAttractionIDs)-1)
-    // } else {
-    //     touristAttractionPlaceholders = "NULL"
-    // }
-
-    // finalQuery := fmt.Sprintf(baseQuery, eventsPlaceholders, touristAttractionPlaceholders)
-
     args := make([]any, 0, 2)
     args = append(args, userID)
-    // args = append(args, eventsIDs...)
     args = append(args, userID)
-    // args = append(args, touristAttractionIDs...)
 
    rows, err := r.db.QueryContext(ctx, notificationQueries["fetch-notifications-by-user-id"], userID, userID)
 	if err != nil {
