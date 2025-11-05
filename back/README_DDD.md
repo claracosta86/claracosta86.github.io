@@ -9,44 +9,68 @@ The application follows a layered DDD architecture with clear separation of conc
 ```
 back/
 ├── application/      # Application Layer - Use cases
-│   ├── cultural/        # Events/Tourist Attractions use cases
-│   │   └── use_case.go      # Application use cases
+│   ├── commentary/  # Card Commentary Section  
+│   │   └── use_case.go      
+│   ├── cultural/        # Events/Tourist Attractions 
+│   │   └── use_case.go
+│   ├── notification/        # Notification
+│   │   └── use_case.go         
 │   └── user/        # User use cases
-│       └── use_case.go      # Application use cases
+│       └── use_case.go      
 ├── cmd/     
 │   └── api/        
 │       └── main.go 
 ├── domain/          # Domain Layer - Core business logic
-│   ├── cultural/        # Events/Tourist Attractions domain
-│   │   ├── entity.go        # Events/Tourist Attractions entity with business 
+│   ├── commentary/        # Card Commentary Section domain
+│   │   ├── entity.go        # Entity with business rules
 │   │   ├── value_objects.go # Value objects
 │   │   ├── repository.go    # Repository interface
 │   │   └── service.go       # Domain service
+│   ├── cultural/        # Events/Tourist Attractions domain
+│   │   ├── entity.go         
+│   │   ├── value_objects.go 
+│   │   ├── repository.go   
+│   │   └── service.go      
+│   ├── notification/        # Notification domain
+│   │   ├── entity.go         
+│   │   ├── value_objects.go 
+│   │   ├── repository.go    
+│   │   └── service.go       
 │   └── user/        # User domain
-│       ├── entity.go        # User entity with business rules
-│       ├── value_objects.go # Value objects 
-│       ├── repository.go    # Repository interface
-│       └── service.go       # Domain service
+│       ├── entity.go         
+│       ├── value_objects.go 
+│       ├── repository.go    
+│       └── service.go 
 ├── infrastructure/   # Infrastructure Layer - External concerns
 │   ├── persistence/ # Data persistence
 │   │   └── mysql/   # MySQL implementation
 │   │       ├── queries 
+│   │       │   ├── commentary.sql
 │   │       │   ├── cultural.sql
+│   │       │   ├── notification.sql
 │   │       │   └── user.sql
+│   │       ├── commentary_repository.go
 │   │       ├── cultural_repository.go
+│   │       ├── notification_repository.go
 │   │       └── user_repository.go
 │   └── container/   # Dependency injection
 │       └── container.go
 ├── interface/       # Interface Layer - HTTP handlers
-│   └── http/        # HTTP interface
-│       ├── handlers
-│       │   ├── cultural_handler.go 
-│       │   └── user_handler.go
-│       ├── middlewares
-│       │    └── session.go
-│       └── model
-│           ├── cultural.go
-│           └──  user.go
+│   ├── http/        # HTTP interface
+│   │   ├── handlers
+│   │   │   ├── commentary_handler.go
+│   │   │   ├── cultural_handler.go 
+│   │   │   ├── notification_handler.go 
+│   │   │   └── user_handler.go
+│   │   ├── middlewares
+│   │   │    └── session.go
+│   │   ├── router
+│   │   │    └── router.go
+│   └── model       # HTTP response/request models
+│       ├── commentary.go
+│       ├── cultural.go
+│       ├── notifications.go
+│       └──  user.go
 ├── go.mod
 └── go.sum
 ```
@@ -85,11 +109,24 @@ back/
 
 ## Implementation Details
 
+### Commentary Domain
+- **Entity**: `Commentary` with business validation rules
+- **Value Objects**: 
+- **Repository**: Interface for data persistence
+- **Service**: Business logic for user operations
+
 ### Cultural Domain
 - **Entity**: `Cultural` with business validation rules
 - **Value Objects**: 
 - **Repository**: Interface for data persistence
 - **Service**: Business logic for user operations
+
+### Notification Domain
+- **Entity**: `Notification` with business validation rules
+- **Value Objects**: 
+- **Repository**: Interface for data persistence
+- **Service**: Business logic for user operations
+
 
 ### User Domain
 - **Entity**: `User` with business validation rules
@@ -116,12 +153,10 @@ userHandler := container.UserHandler
 
 ## Next Steps
 
-1. Implement Event and Attraction domains following the same pattern
-2. Add more value objects and business rules
-3. Implement additional use cases
-4. Add comprehensive error handling
-5. Implement logging and monitoring
-6. Add unit tests for each layer
+1. Add more value objects and business rules
+2. Add comprehensive error handling
+3. Implement logging and monitoring
+4. Add unit tests for each layer
 
 ## Migration Notes
 
