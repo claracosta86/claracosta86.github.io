@@ -50,8 +50,7 @@
 }
 
 .favorite-img {
-  width: 175px;
-  height: 175px;
+  width: 100%;
   border-radius: 10px;
   object-fit: cover;
   margin-right: 15px;
@@ -105,7 +104,7 @@
   position: absolute; /* Posicionamento absoluto em relação ao pai */
   bottom: 10px;       /* 10px de distância do fundo */
   right: 15px; 
-  margin-top: 40px;       /* 10px de distância da direita */
+  margin-top: 45px;       /* 10px de distância da direita */
   
   /* Estilos que você pode manter */
   background-color: #ff0000;
@@ -117,37 +116,20 @@
   font-size: 12px; /* Opcional, talvez um pouco menor fique melhor */
   cursor: pointer;
 
-  width: 43%;
+  width: 46.5%;
 }
 
 .remove-btn:hover {
   background-color: #d90429; /* Uma cor um pouco diferente no hover */
 }
 
-.modal-confirm-btn {
-  background-color: #2563eb;
+.modal-confirm-btn {  
+  background-color: #ff0000;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  min-width: 110px;
-  text-align: center;
-  transition: background 0.2s;
-}
-
-.modal-confirm-btn:hover {
-  background-color: #ff0000;
-}
-
-.modal-close-btn {
-  background-color: #ccc;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
   min-width: 110px;
   text-align: center;
@@ -155,8 +137,25 @@
   margin-left: 10px;
 }
 
+.modal-confirm-btn:hover {
+  background-color: #d90429;
+}
+
+.modal-close-btn {
+  background-color: #346aff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 110px;
+  text-align: center;
+  transition: background 0.2s;
+}
+
 .modal-close-btn:hover {
-  background-color: #999
+  background-color: #2653cc;
 }
 
 

@@ -8,3 +8,5 @@ CREATE TABLE comments (
 );
 
 ALTER TABLE comments ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+ALTER TABLE comments MODIFY COLUMN cultural_type ENUM('event', 'tourist_attraction') NOT NULL DEFAULT 'event';

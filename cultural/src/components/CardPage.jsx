@@ -99,6 +99,7 @@ const CardPage = () => {
   const { id, culturalType } = useParams();
 
   const [culturalData, setCulturalData] = useState(null);
+  const [commentarys, setCommentarys] = useState([]);
 
   const { user } = useUser();
   const userID = user.userID;
@@ -149,7 +150,18 @@ const CardPage = () => {
         console.error('Erro ao buscar detalhes ou favoritos:', error);
       }
     };
+    const fetchCulturalCommentary = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/commentarys/${culturalType}/${id}`);
+        const data = await response.json();
+        console.log('Comentários culturais recebidos:', data);
+        setCommentarys(data.commentaries);
+      } catch (error) {
+        console.error('Erro ao buscar comentários culturais:', error);
+      }
+    };
     fetchCulturalDataAndFavorites();
+    fetchCulturalCommentary();
   }, [id, culturalType, userID]);
 
   const handleNotificationIconClick = async () => {
@@ -282,10 +294,10 @@ const CardPage = () => {
                   {culturalType === 'event' &&
                     culturalData.event &&
                     culturalData.event.end_date === '' &&
-                    ` ${culturalData.event.start_date}, de ${culturalData.event.duration_time}`}
+                    ` ${culturalData.event.start_date}, de ${culturalData.event.working_hours}`}
                   {culturalType === 'event' &&
                     culturalData.event &&
-                    ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`}
+                    ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`}
                   {culturalType !== 'event' &&
                     culturalData.tourist_attraction &&
                     ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}
@@ -320,15 +332,21 @@ const CardPage = () => {
             <div className="comments-section">
               <h3>Comentários</h3>
               <div className="comment-box">
-                {/* A lista de comentários será renderizada aqui. 
-                    A caixa ficará vazia se não houver comentários.
-                  */}
+                {commentarys.length > 0 ? (
+                  commentarys.map((commentary) => (
+                    <div key={commentary.id} className="comment-item">
+                      <p><strong>{commentary.user_name}:</strong> {commentary.commentary}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>Não há comentários ainda. Seja o primeiro a comentar!</p>
+                )}
               </div>
-              <button className="add-comment-btn">Adicionar Comentário</button>
+              <Link to={`/commentaries/${culturalType}/${culturalData.id}`} className="add-comment-btn">Adicionar Comentário</Link>
             </div>
           </section>
-          <div className="down-container">
-            <div className="down-container-row">
+          <div className="down-actions-container">
+            <div className="down-actions-row">
               <button onClick={handleGoBackClick} className="down-btn">
                 Voltar
               </button>

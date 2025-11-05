@@ -27,7 +27,7 @@ type Event struct {
 	Description string    `json:"description"`
 	StartDate   string    `json:"start_date"` // YYYY-MM-DD HH:MM
 	EndDate     string    `json:"end_date"`   // YYYY-MM-DD HH:MM
-	DurationTime string    `json:"duration_time"` // HH:MM
+	WorkingHours string    `json:"working_hours"` // HH:MM
 	Location     string    `json:"location"`
 	Price       string    `json:"price"` // Price in R$
 	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade

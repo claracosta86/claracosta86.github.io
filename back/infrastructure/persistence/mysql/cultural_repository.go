@@ -36,14 +36,14 @@ func NewCulturalRepository(db *sql.DB) cultural.Repository {
 
 
 func (r *culturalRepository) SaveEvent(ctx context.Context, title, description, location string,
-	startDate, finishDate, duration, price string, isAccessible bool, organizerID int, image string) (int, error) {
+	startDate, finishDate, workingHours, price string, isAccessible bool, organizerID int, image string) (int, error) {
 	result, err := r.db.ExecContext(ctx, culturalQueries["create-event"],
 		title,
 		description,
 		location,
 		startDate, 
 		finishDate, 
-		duration,
+		workingHours,
 		price,
 		isAccessible,
 		organizerID,
@@ -93,7 +93,7 @@ func (r *culturalRepository) FindEventByID(ctx context.Context, id int) (cultura
 		&event.Location,
 		&event.StartDate,
 		&event.EndDate,
-		&event.DurationTime,
+		&event.WorkingHours,
 		&event.Price,
 		&event.IsAccessible,
 		&event.OrganizerID,
@@ -141,7 +141,7 @@ func (r *culturalRepository) FindTouristAttractionByID(ctx context.Context, id i
 }
 
 func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title, description, location string,
-	startDate, finishDate, duration string, price string, isAccessible bool, organizerID int, image string) error {
+	startDate, finishDate, workingHours string, price string, isAccessible bool, organizerID int, image string) error {
 
 	_, err := r.db.ExecContext(ctx, culturalQueries["update-event"], id,
 		title,

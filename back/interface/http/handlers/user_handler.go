@@ -289,58 +289,6 @@ func (h *UserHandler) HandleUserTypeSelection(w http.ResponseWriter, r *http.Req
     json.NewEncoder(w).Encode(userModel.Type{Type: userType})
 }
 
-// users/get-type [GET]
-func (h *UserHandler) HandleGetUserType(w http.ResponseWriter, r *http.Request) {
-    sess, _ := session.Store.Get(r, sessionName)
-    userType, ok := sess.Values[userTypeKey].(string)
-    if !ok || userType != "organizer" {
-        userType = "common"
-    }
-    
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(userModel.Type{Type: userType})
-}
-
-// /users/set-information [POST]
-func (h *UserHandler) HandleSetUserInformation(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
-		return
-	}
-
-	userType := r.Form.Get("userType")
-	if userType != "organizer" {
-		userType = "common"
-	}
-
-	userID := r.Form.Get("userID")
-
-	sess, _ := session.Store.Get(r, sessionName)
-	sess.Values[userTypeKey] = userType
-	sess.Values["userID"] = userID
-
-	_ = sess.Save(r, w)
-	w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(userModel.Information{Type: userType, ID: userID})
-}
-
-// users/get-information [GET]
-func (h *UserHandler) HandleGetUserInformation(w http.ResponseWriter, r *http.Request) {
-    sess, _ := session.Store.Get(r, sessionName)
-    userType, ok := sess.Values[userTypeKey].(string)
-    if !ok || userType != "organizer" {
-        userType = "common"
-    }
-
-	userID, ok := sess.Values["userID"].(string)
-	if !ok {
-		userID = ""
-	}
-
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(userModel.Information{Type: userType, ID: userID})
-}
-
 // // [400] Invalid data
 // // [404] User not found
 // // [405] Invalid HTTP method

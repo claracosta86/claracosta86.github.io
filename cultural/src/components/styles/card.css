@@ -5,13 +5,8 @@
 /* --- ESTILOS PRINCIPAIS PARA O CARD --- */
 .home-container {
     padding: 20px;
-    background-color: white;
-    flex: 1; /* Faz o container ocupar o espaço disponível */
+    background-color: white; /* Faz o container ocupar o espaço disponível */
     overflow-y: auto; /* Adiciona scroll se o conteúdo passar da tela */
-}
-
-.main-content {
-  flex-grow: 1; 
 }
 
 .logo-tiny {
@@ -33,19 +28,28 @@
     padding: 5px;
 }
 
-.down-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+main.home-container {
+  padding-bottom: 100px; 
 }
 
-.down-container-row {
+.down-actions-container {
+  position: fixed; /* 👈 A MÁGICA: Flutua sobre a tela */
+  bottom: 89px;    /* 👈 Distância do fundo (assumindo que o footer tem 60px de altura) */
+  left: auto;
+  right: auto;
+  
+  background-color: #FFFFFF; /* 👈 O fundo branco que você pediu */
+  padding: 15px;
+  width: 21.75%;
+  z-index: 20; /* 👈 Garante que fique acima do conteúdo de <main> */
+}
+
+.down-actions-row {
   display: flex;
   gap: 10px; 
 }
 
-.down-container-row .down-btn {
+.down-actions-row .down-btn {
   flex: 1; 
 }
 
@@ -141,14 +145,19 @@
     margin-bottom: 20px;
     text-align: left;
     min-height: 100px; /* Altura mínima para parecer com o card */
+    max-height: 150px; /* Altura máxima antes de rolar */
+    overflow-y: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Estilo para quando não há comentários */
 .comment-box:empty::before {
-    content: "Seja o primeiro a comentar!";
     color: var(--text-light);
     font-style: italic;
+}
+
+.comment-box::-webkit-scrollbar {
+  display: none; 
 }
 
 .add-comment-btn {

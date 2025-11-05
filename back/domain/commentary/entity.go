@@ -7,7 +7,7 @@ type Commentary struct {
 	UpdatedAt    string `json:"updated_at"`
 	ID           int    `json:"id"`
 	CulturalID   int    `json:"cultural_id"`
-	UserID      int    `json:"user_id"`
+	UserName     string `json:"user_name"`
 }
 
 type Commentaries []Commentary

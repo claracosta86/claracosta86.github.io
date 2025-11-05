@@ -36,7 +36,8 @@ func NewCommentaryRepository(db *sql.DB) commentary.Repository {
 
 
 func (r *commentaryRepository) SaveCommentary(ctx context.Context, culturalID int, culturalType string, userID int, commentary string) error {
-	_, err := r.db.ExecContext(ctx, commentaryQueries["create-event"],
+	fmt.Printf("Saving commentary for culturalID: %d, culturalType: %s, userID: %d\n", culturalID, culturalType, userID)
+	_, err := r.db.ExecContext(ctx, commentaryQueries["save-commentary"],
 		culturalID,
 		culturalType,
 		userID,
@@ -53,16 +54,18 @@ func (r *commentaryRepository) FindCommentariesByCultural(ctx context.Context, c
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch commentaries: %w", err)
 	}
-
 	defer rows.Close()
 
 	var commentaries []commentary.Commentary
 	for rows.Next() {
 		var c commentary.Commentary
-		if err := rows.Scan(&c.ID, &c.CulturalID, &c.CulturalType, &c.UserID, &c.Commentary, &c.CreatedAt, &c.UpdatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.CulturalID, &c.CulturalType, &c.UserName, &c.Commentary, &c.CreatedAt, &c.UpdatedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan commentary: %w", err)
 		}
 		commentaries = append(commentaries, c)
 	}
+
+	fmt.Println("Fetched commentaries:", commentaries)
+
 	return commentaries, nil
 }

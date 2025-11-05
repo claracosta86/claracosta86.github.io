@@ -17,7 +17,7 @@ type CreateCulturalRequest struct {
 type EventDateInformation struct {
 	StartDate   string    `json:"start_date"` // YYYY-MM-DD HH:MM
 	EndDate     string    `json:"end_date"`   // YYYY-MM-DD HH:MM
-	DurationTime string    `json:"duration_time"` // HH:MM
+	WorkingHours string    `json:"working_hours"` // HH:MM
 }
 
 type TouristAttractionHours struct {

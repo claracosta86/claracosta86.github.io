@@ -140,6 +140,8 @@ body, #root {
   border-radius: 30px;
   width: 375px;
   height: 812px;
+
+  z-index: 30;
 }
 
 .modal-container {

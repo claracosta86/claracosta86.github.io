@@ -13,3 +13,5 @@ ALTER TABLE notifications ADD COLUMN seen TINYINT(1) DEFAULT 0;
 ALTER TABLE notifications MODIFY COLUMN type ENUM('updated', 'canceled', 'commented', 'closed') NOT NULL DEFAULT 'updated';
 
 ALTER TABLE notifications DROP COLUMN title;
+
+ALTER TABLE notifications MODIFY COLUMN cultural_type ENUM('event', 'tourist_attraction') NOT NULL DEFAULT 'event';

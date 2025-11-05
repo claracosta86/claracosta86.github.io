@@ -6,15 +6,18 @@ import './styles/login.css';
 import logo from '../assets/logo.png';
 import visiblePassword from '../assets/visiblepassword-icon.png';
 import invisiblePassword from '../assets/invisiblepassword-icon.png';
+import logoutIcon from '../assets/logout-icon.png';
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const { setUser } = useUser();
+  const { setUser, user } = useUser();
+  if (!user || !user.type) {
+    user.type = 'common'; // Default to 'common' if user type is not set
+  }
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('common');
 
   const [error, setError] = useState('');
   const [isTypeError, setIsTypeError] = useState(false);
@@ -24,22 +27,6 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    const fetchUserType = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/users/get-type', {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserType(data.userType);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar o tipo de usuário:', error);
-      }
-    };
-    fetchUserType();
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -81,35 +68,15 @@ const LoginPage = () => {
       if (response.ok) {
         const data = await response.json();
 
-        if (userType !== data.type) {
+        if (user.type !== data.type) {
           setError('Seu usuário não pertence a esta categoria! Volte à página inicial.');
+          
           setIsTypeError(true);
           return;
         }
-
-        const formData = new URLSearchParams();
-        formData.append('userType', data.type);
-        formData.append('userID', data.userID);
-
-        try {
-          const response = await fetch('http://localhost:8080/users/set-information', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData,
-            credentials: 'include',
-          });
-          if (response.ok) {
-            setUser(data);
-            localStorage.setItem('user', JSON.stringify(data));
-            navigate('/home');
-          } else {
-            console.error('Erro ao selecionar o tipo de usuário no backend.');
-          }
-        } catch (error) {
-          console.error('Erro de rede ao comunicar com o backend:', error);
-        }
+        setUser(data);
+        localStorage.setItem('user', JSON.stringify(data));
+        navigate('/home');
       }
     } catch (err) {
       console.error('Erro:', err);
@@ -119,9 +86,20 @@ const LoginPage = () => {
 
   return (
     <section className="screen" id="tela-login">
-      <img src={logo} alt="Logo Cultural" className="logo-img" />
+      <header className="top-bar">
+        <img src={logo} alt="Logo Cultural" className="logo-tiny" />
+        <div className="right-section">
+          <Link to="/">
+            <img 
+            src={logoutIcon} 
+            alt="Voltar para a página inicial" 
+            className={`icon ${isTypeError ? 'highlight-logout-btn' : ''}`} 
+          />
+          </Link>
+        </div>
+      </header>
       <div className="login-box">
-        <h2>Entre na sua conta</h2>
+        <h2>Login</h2>
         <form id="loginForm" onSubmit={handleSubmit}>
           <label htmlFor="email">Email</label>
           <input
@@ -153,7 +131,7 @@ const LoginPage = () => {
           {error && <span className="error">{error}</span>}
           <div className="login-actions">
             <button type="submit" className="login-btn">
-              Login
+                Login
             </button>
             <div className="login-actions-row">
               <button onClick={() => navigate('/')} className="login-btn">

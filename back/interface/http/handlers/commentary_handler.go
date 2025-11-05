@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"fmt"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 
 	"poc2/back/application/commentary"
 	commentaryModel "poc2/back/interface/model"
@@ -25,7 +28,7 @@ func NewCommentaryHandler(commentaryUseCase commentary.UseCase) *CommentaryHandl
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [201] Commentary created successfully
-// /commentary [POST]
+// /commentarys/ [POST]
 // HandleCreateCommentary creates a new commentary entry
 func (h *CommentaryHandler) HandleCreateCommentary(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -38,7 +41,7 @@ func (h *CommentaryHandler) HandleCreateCommentary(w http.ResponseWriter, r *htt
 		http.Error(w, "Invalid request data", http.StatusBadRequest)
 		return
 	}
-
+fmt.Printf("Received commentary creation request: %+v\n", request)
     err := h.commentaryUseCase.CreateCommentary(r.Context(), request)
     if err != nil {
 		if err.Error() == "cultural not found" {
@@ -59,7 +62,7 @@ func (h *CommentaryHandler) HandleCreateCommentary(w http.ResponseWriter, r *htt
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [200] Commentary data recovered successfully
-// /commentary [GET]
+// /commentarys/{culturalType}/{culturalID} [GET]
 // HandleGetCommentary retrieves commentary information
 func (h *CommentaryHandler) HandleGetCommentary(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -67,18 +70,21 @@ func (h *CommentaryHandler) HandleGetCommentary(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	var request commentaryModel.GetCommentariesRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		http.Error(w, "Invalid request data", http.StatusBadRequest)
+
+	culturalIDStr := chi.URLParam(r, "culturalID")
+	culturalID, err := strconv.Atoi(culturalIDStr)
+	if err != nil {
+		http.Error(w, "Invalid cultural ID", http.StatusBadRequest)
 		return
 	}
 
-	if request.CulturalType != commentary.CulturalTypeEvent && request.CulturalType != commentary.CulturalTypeTouristAttraction {
+	culturalType := chi.URLParam(r, "culturalType")
+	if culturalType != commentary.CulturalTypeEvent && culturalType != commentary.CulturalTypeTouristAttraction {
 		http.Error(w, "Invalid cultural type", http.StatusBadRequest)
 		return
 	}
 
-	commentaries, err := h.commentaryUseCase.GetCommentaries(r.Context(), request.CulturalID, request.CulturalType)
+	commentaries, err := h.commentaryUseCase.GetCommentaries(r.Context(), culturalID, culturalType)
 	if err != nil {
 		switch err.Error() {
 		case "commentaries not found":

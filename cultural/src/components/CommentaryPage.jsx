@@ -9,13 +9,7 @@ import homeIcon from '../assets/home-icon.png';
 import addIcon from '../assets/add-icon.png';
 import searchIcon from '../assets/search-icon.png';
 import favoriteIcon from '../assets/favorite-icon.png';
-import unfavoriteIcon from '../assets/unfavorite-icon.png';
 import userIcon from '../assets/user-icon.png';
-import locationIcon from '../assets/location-icon.png';
-import clockIcon from '../assets/clock-icon.png';
-import priceIcon from '../assets/price-icon.png';
-import accessibleIcon from '../assets/accessibility-icon.png';
-import mailIcon from '../assets/mail-icon.png';
 import logoutIcon from '../assets/logout-icon.png';
 
 const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
@@ -98,7 +92,10 @@ const CardPage = () => {
 
   const { id, culturalType } = useParams();
 
+  const [error, setError] = useState('');
+
   const [culturalData, setCulturalData] = useState(null);
+  const [commentary, setCommentary] = useState([]);
 
   const { user } = useUser();
   const userID = user.userID;
@@ -171,30 +168,6 @@ const CardPage = () => {
     setNotificationModalOpen(true, notification);
   };
 
-  const handleFavoriteIconClick = async () => {
-    if (!culturalData) return;
-    try {
-      const response = await fetch(`http://localhost:8080/users/${userID}/favorites`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          isFavorite: !culturalData.isFavorite,
-          culturalType: culturalType,
-          culturalID: culturalData.id,
-        }),
-        credentials: 'include',
-      });
-      if (response.ok) {
-        setCulturalData((prevData) => ({
-          ...prevData,
-          isFavorite: !prevData.isFavorite,
-        }));
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar favorito:', error);
-    }
-  };
-
   const handleNotificationCloseClick = async () => {
     if (notification.length === 0) {
       setNotificationModalOpen(false);
@@ -222,6 +195,34 @@ const CardPage = () => {
   const handleGoBackClick = () => {
     navigate(-1);
   };
+
+  const handleAddCommentaryClick = async () => {
+    if (commentary.length === 0) {
+      setError('Seu comentário não pode estar vazio.');
+      return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8080/commentarys/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            { 
+              cultural_type: culturalType, 
+              cultural_id: culturalData.id,
+              user_id: userID,
+              commentary: commentary[0],
+             }),
+          credentials: 'include',
+        });
+        if (response.ok) {
+          console.log('Comentário adicionado com sucesso.');
+          navigate(-1);
+        }
+      } catch (error) {
+        console.error('Erro ao adicionar comentário:', error);
+      }
+  }
 
   if (!culturalData) {
     return <div>Carregando...</div>; 
@@ -256,7 +257,7 @@ const CardPage = () => {
         </header>
 
         <main className="home-container">
-          <section>
+          <section className="main-content">
             <div className="details-container">
               <div className="header-details">
                 <h2 className="cultural-title">{culturalData.title}</h2>
@@ -266,80 +267,27 @@ const CardPage = () => {
                 alt={culturalData.title}
                 className="event-image"
               />
-
-              <div className="info-box">
-                <p>
-                  <img src={locationIcon} alt="Localização" className="info-icon" />
-                  <strong>Endereço:</strong> {culturalData.location}
-                </p>
-                <p>
-                  <img src={clockIcon} alt="Horário" className="info-icon" />
-                  {culturalType === 'event' ? (
-                    <strong>Data e Horário:</strong>
-                  ) : (
-                    <strong>Horário de Funcionamento:</strong>
-                  )}
-                  {culturalType === 'event' &&
-                    culturalData.event &&
-                    culturalData.event.end_date === '' &&
-                    ` ${culturalData.event.start_date}, de ${culturalData.event.duration_time}`}
-                  {culturalType === 'event' &&
-                    culturalData.event &&
-                    ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.duration_time}`}
-                  {culturalType !== 'event' &&
-                    culturalData.tourist_attraction &&
-                    ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}
-                </p>
-                <p>
-                  <img src={priceIcon} alt="Preço" className="info-icon" />
-                  <strong>Preço: </strong>
-                  {culturalData.price === 'R$0,00' || culturalData.price === 'Gratuito'
-                    ? 'Gratuito'
-                    : `${culturalData.price}`}
-                </p>
-                <p>
-                  <img src={accessibleIcon} alt="Acessível" className="info-icon" />
-                  <strong>Acessível:</strong> {culturalData.accessible ? 'Sim' : 'Não'}
-                </p>
-                <p>
-                  <img src={mailIcon} alt="Contato" className="info-icon" />
-                  <strong>Contato:</strong> {culturalData.organizer.email}
-                </p>
-                <p className="description">
-                  <strong>Descrição:</strong> {culturalData.description}
-                </p>
-              </div>
-            </div>
-
-            <div id="organizer-container">
-              <button className="see-organizer-btn">
-                <Link to={`/organizer/${culturalData.organizer.id}`}>Conhecer Organizador</Link>
-              </button>
             </div>
 
             <div className="comments-section">
               <h3>Comentários</h3>
-              <div className="comment-box">
-                {/* A lista de comentários será renderizada aqui. 
-                    A caixa ficará vazia se não houver comentários.
-                  */}
-              </div>
-              <button className="add-comment-btn">Adicionar Comentário</button>
-            </div>
+              <textarea className="comment-box"
+                name="commentary"
+                placeholder="Escreva seu comentário aqui..."
+                value={commentary[commentary.length - 1] || ''}
+                onChange={(e) => setCommentary([e.target.value])}
+              />
 
-            <div className="down-container">
-              <div className="down-container-row">
-                <button onClick={handleGoBackClick} className="down-btn">
-                  Voltar
-                </button>
-                <button
-                  onClick={handleFavoriteIconClick}
-                  src={culturalData.isFavorite ? favoriteIcon : unfavoriteIcon}
-                  alt="Favoritar"
-                  className="down-btn"
-                >
-                  {culturalData.isFavorite ? '	Desfavoritar ♡' : 'Favoritar ❤'}
-                </button>
+              {error && <span className="error">{error}</span>}
+              <div className="down-container">
+                <div className="down-container-row">
+                  <button onClick={handleGoBackClick} className="down-btn">
+                    Voltar
+                  </button>
+                  <button className="add-comment-btn" onClick={handleAddCommentaryClick}>
+                    Adicionar Comentário
+                  </button>
+                </div>
               </div>
             </div>
           </section>

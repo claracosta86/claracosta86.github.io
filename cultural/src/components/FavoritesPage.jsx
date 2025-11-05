@@ -98,11 +98,11 @@ const RemoveFavoriteModal = ({ isOpen, onClose, onConfirm }) => {
           </p>
         </div>
         <div className="modal-actions">
-          <button onClick={onConfirm} className="modal-confirm-btn">
-            Remover!
-          </button>
           <button onClick={onClose} className="modal-close-btn">
-            Cancelar.
+            Cancelar
+          </button>
+          <button onClick={onConfirm} className="modal-confirm-btn">
+            Remover
           </button>
         </div>
       </div>

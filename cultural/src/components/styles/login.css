@@ -34,7 +34,6 @@ body {
 
 /* Caixa de login */
 .login-box {
-  flex: 1;
   background-color: #fff;
   border-radius: 16px;
   padding: 25px 20px;
@@ -43,7 +42,7 @@ body {
   height: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-top: auto; 
-  margin-bottom: 135px;
+  margin-bottom: auto;
 }
 
 .login-box h2 {

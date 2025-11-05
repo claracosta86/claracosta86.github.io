@@ -1,6 +1,6 @@
 import { useUser } from '../contexts/UserContext';
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import './styles/create.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -91,22 +91,64 @@ const CreateCulturalPage = () => {
   const userType = user.type;
 
   const [selectedFile, setSelectedFile] = useState(null);
-  const [culturalType, setCulturalType] = useState('');
+
+   const { id, culturalType } = useParams();
+
   const [error, setError] = useState('');
+
+  const [culturalDetails, setCulturalDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchCulturalDetails = async () => {
+      try {
+        console.log(`Fetching cultural details for culturalType: ${culturalType}, id: ${id}`);
+        const culturalResponse = await fetch(`http://localhost:8080/culturais/${culturalType}/${id}`);
+        const cultural = await culturalResponse.json();
+        console.log('Cultural details received:', cultural);
+        setCulturalDetails(cultural);
+      } catch (error) {
+        console.error('Erro ao buscar detalhes do cultural:', error);
+      }
+    };
+    fetchCulturalDetails();
+  }, [culturalType]);
 
   // Estado único para gerenciar todos os campos do formulário
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    location: '',
-    price: 'R$0,00',
-    is_accessible: false,
-    start_date: '',
-    end_date: '',
-    working_hours: '',
-    open_days: [],
-    open_time: '',
+    title: culturalDetails ? culturalDetails.title : '',
+    description: culturalDetails ? culturalDetails.description : '',
+    location: culturalDetails ? culturalDetails.location : '',
+    price: culturalDetails ? culturalDetails.price : 'R$0,00',
+    is_accessible: culturalDetails ? culturalDetails.is_accessible : false,
+    start_date: culturalDetails ? culturalDetails.start_date : '',
+    end_date: culturalDetails ? culturalDetails.end_date : '',
+    working_hours: culturalDetails ? culturalDetails.working_hours : '',
+    open_days: culturalDetails ? culturalDetails.open_days : [],
+    open_time: culturalDetails ? culturalDetails.open_time : '',
   });
+
+  useEffect(() => {
+    // Apenas preenche o formulário se culturalDetails não for nulo
+    if (culturalDetails) {
+        setFormData({
+        title: culturalDetails.title || '',
+        description: culturalDetails.description || '',
+        location: culturalDetails.location || '',
+        price: culturalDetails.price || 'R$0,00',
+        is_accessible: culturalDetails.is_accessible || false,
+        
+        // Lida com dados aninhados de eventos
+        start_date: formatDateForInput(culturalDetails.event ? culturalDetails.event.start_date : ''),
+        end_date: formatDateForInput(culturalDetails.event ? culturalDetails.event.end_date : ''),
+        working_hours: culturalDetails.event ? culturalDetails.event.working_hours : '',
+        
+        // Lida com dados aninhados de pontos turísticos
+        // A API envia como string "Segunda, Terça", então transformamos em array
+        open_days: culturalDetails.tourist_attraction ? culturalDetails.tourist_attraction.open_days.split(', ') : [],
+        open_time: culturalDetails.tourist_attraction ? culturalDetails.tourist_attraction.open_time : '',
+        });
+    }
+   }, [culturalDetails]);
 
   const handleTypeChange = (event) => {
     setCulturalType(event.target.value);
@@ -184,8 +226,8 @@ const CreateCulturalPage = () => {
     console.log('Enviando para a API:', JSON.stringify(finalPayload, null, 2));
 
     try {
-      const response = await fetch('http://localhost:8080/culturais/', {
-        method: 'POST',
+      const response = await fetch('http://localhost:8080/culturais', {
+        method: 'PATCH',
         body: submissionFormData,
         credentials: 'include',
       });
@@ -203,6 +245,24 @@ const CreateCulturalPage = () => {
       console.error('Erro de rede:', err);
       setError('Não foi possível criar seu cultural no momento, tente novamente mais tarde :(');
     }
+  };
+
+  // Converte uma string de data para o formato 'YYYY-MM-DDTHH:MM'
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return ''; // Retorna vazio se a data não existir
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return ''; // Retorna vazio se a data for inválida
+
+    // Pega os componentes da data
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    // Monta a string no formato correto
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   const [notification, setNotification] = useState([]);
@@ -247,6 +307,7 @@ const CreateCulturalPage = () => {
     setNotificationModalOpen(false);
   };
 
+ 
   const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
   return (
@@ -279,7 +340,7 @@ const CreateCulturalPage = () => {
 
         <div className="create-box">
           <div className="header-title">
-            <h2>Crie Seu Cultural</h2>
+            <h2>Edite Seu Cultural</h2>
           </div>
 
           <form id="createCulturalForm" onSubmit={handleSubmit}>
@@ -448,14 +509,18 @@ const CreateCulturalPage = () => {
                 />
 
                 {error && <span className="error">{error}</span>}
-
-                <p className="button-container">
-                  <button type="submit" className="btn">
-                    Criar
-                  </button>
-                </p>
               </>
             )}
+              <div className="button-container">
+                <div className="button-container-row">
+                  <button type="button" className="btn" onClick={() => navigate(-1)}>
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn">
+                    Atualizar
+                  </button>
+                </div>
+            </div>
           </form>
         </div>
         <footer className="footer">

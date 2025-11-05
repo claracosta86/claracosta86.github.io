@@ -21,9 +21,9 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 	userHandler := container.UserHandler
 
 	// Rotas de comentários
-	r.Route("/comments", func(r chi.Router) {
+	r.Route("/commentarys", func(r chi.Router) {
 		r.Post("/", commentaryHandler.HandleCreateCommentary)
-		r.Get("/", commentaryHandler.HandleGetCommentary)
+		r.Get("/{culturalType}/{culturalID:[0-9]+}", commentaryHandler.HandleGetCommentary)
 		r.Patch("/{commentID:[0-9]+}", commentaryHandler.HandleUpdateCommentary)
 		r.Delete("/{commentID:[0-9]+}", commentaryHandler.HandleDeleteCommentary)
 	})
@@ -64,9 +64,6 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 			})
 		})
 		r.Post("/select-type", userHandler.HandleUserTypeSelection)
-		r.Get("/get-type", userHandler.HandleGetUserType)
-		r.Post("/set-information", userHandler.HandleSetUserInformation)
-		r.Get("/get-information", userHandler.HandleGetUserInformation)
 	})
 	
 	return r
@@ -75,7 +72,6 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 func enableCors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5174")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")

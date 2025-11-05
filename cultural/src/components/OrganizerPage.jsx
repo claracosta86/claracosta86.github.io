@@ -1,7 +1,7 @@
 // src/components/OrganizerPage.jsx
 import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import './styles/organizer.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -91,11 +91,13 @@ const OrganizerPage = () => {
   const userID = user.userID;
   const userType = user.type;
 
+  const { id: organizerID } = useParams();
+
   const [organizerData, setOrganizerData] = useState({
     name: '',
     email: '',
     organizer_since: '',
-    id: null,
+    id: organizerID,
   });
   const [culturais, setCulturais] = useState([]);
 
@@ -104,7 +106,7 @@ const OrganizerPage = () => {
             if (!userID) return;
 
             try {
-            const response = await fetch(`http://localhost:8080/users/${userID}/culturais/organizer`);
+            const response = await fetch(`http://localhost:8080/users/${organizerID}/culturais/organizer`);
             if (!response.ok) {
                 console.error('Falha ao buscar dados do organizador.');
                 return; 
@@ -257,13 +259,15 @@ const OrganizerPage = () => {
                         />
                         <div className="favorite-details">
                           <h3>{cult.Title}</h3>
-                          <p>{cult.Type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
-                          <span>{cult.Location}</span>
-                          <span className="price">
-                            {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
-                              ? 'Gratuito'
-                              : `${cult.Price}`}
-                          </span>
+                          <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
+                          <div className="details-box">
+                            <span>{cult.Location}</span>
+                            <span className="price">
+                              {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
+                                ? 'Gratuito'
+                                : `${cult.Price}`}
+                            </span>
+                          </div>
                         </div>
                       </Link>
                     </div>

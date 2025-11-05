@@ -27,3 +27,5 @@ ALTER TABLE user_favorites RENAME COLUMN updated_at TO last_seen_at;
 
 ALTER TABLE user_favorites MODIFY COLUMN favorited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
 ALTER TABLE user_favorites MODIFY COLUMN last_seen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
+
+ALTER TABLE user_favorites MODIFY COLUMN favorite_type ENUM('event', 'tourist_attraction') NOT NULL DEFAULT 'event';

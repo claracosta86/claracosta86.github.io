@@ -1,6 +1,6 @@
+import { useUser } from '../contexts/UserContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import indexBottom from '../assets/index-bottom.png';
 import logo from '../assets/logo.png';
 import infoIcon from '../assets/blueinfo-icon.png';
 import hooverIcon from '../assets/redinfo-icon.png';
@@ -44,27 +44,15 @@ const InfoModal = ({ isOpen, onClose }) => {
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  const { setUser } = useUser();
+  
   const [isInfoModalOpen, setInfoModalOpen] = useState(false);
   const [isIconHovered, setIconHovered] = useState(false);
 
   const handleUserTypeSelection = async (userType) => {
-    try {
-      const response = await fetch('http://localhost:8080/users/select-type', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `userType=${userType}`,
-        credentials: 'include',
-      });
-      if (response.ok) {
-        navigate('/user/login');
-      } else {
-        console.error('Erro ao selecionar o tipo de usuário no backend.');
-      }
-    } catch (error) {
-      console.error('Erro de rede ao comunicar com o backend:', error);
-    }
+    setUser({ type: userType });
+    localStorage.setItem('user', JSON.stringify({ type: userType }));
+    navigate('/user/login');
   };
 
   return (

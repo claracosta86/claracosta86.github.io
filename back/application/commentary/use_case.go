@@ -78,7 +78,7 @@ func (uc *commentaryUseCase) GetCommentaries(ctx context.Context, culturalID int
 			ID:          commentary.ID,
 			CulturalID:  commentary.CulturalID,
 			CulturalType: commentary.CulturalType,
-			UserID:      commentary.UserID,
+			UserName:    commentary.UserName,
 			Commentary:  commentary.Commentary,
 			CreatedAt:   commentary.CreatedAt,
 			UpdatedAt:   commentary.UpdatedAt,

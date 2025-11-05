@@ -3,7 +3,6 @@ import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/profile.css';
-import './styles/favorites.css';
 import './styles/manage.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -188,6 +187,10 @@ const ManageCulturalPage = () => {
     fetchCulturais();
   }, [userID]);
 
+  const handleEditClick = (id, type) => {
+    navigate(`/edit-cultural/${type}/${id}`);
+  };
+
   return (
     <>
       <NotificationModal
@@ -226,7 +229,7 @@ const ManageCulturalPage = () => {
                   cult.Title &&
                   cult.Image &&
                   cult.Location && (
-                    <div key={cult.id} className="favorite-card">
+                    <div key={cult.id} className="manage-card">
                       <Link
                         to={`/card/${cult.type}/${cult.id}`}
                         state={{ userID, userType, isEvent: cult.type === 'event' }}
@@ -235,24 +238,27 @@ const ManageCulturalPage = () => {
                         <img
                           src={`/thumb-size/${cult.Image}`}
                           alt={cult.Title}
-                          className="favorite-img"
+                          className="manage-img"
                         />
-                        <div className="favorite-details">
+                        <div className="manage-details">
                           <h3>{cult.Title}</h3>
                           <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
-                          <div className="details-box">
+                          <div className="details-content">
                             <span>{cult.Location}</span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
                                 ? 'Gratuito'
                                 : `${cult.Price}`}
                             </span>
+
                           </div>
                         </div>
                       </Link>
                       <div className="actions-container">
-                        <button className="edit-btn">Editar</button>
-                        <button className="remove-btn">Excluir</button>
+                        <div className="actions-row">
+                          <button onClick={() => handleEditClick(cult.id, cult.type)} className="edit-btn">Editar</button>
+                          <button onClick={() => handleRemoveClick(cult.id)} className="remove-btn">Excluir</button>
+                        </div>
                       </div>
                     </div>
                   )

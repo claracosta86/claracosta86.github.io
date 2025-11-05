@@ -3,16 +3,11 @@ package model
 type Commentary struct {
 	ID         int    `json:"id"`
 	CulturalID int    `json:"cultural_id"`
-	UserID     int    `json:"user_id"`
+	UserName   string `json:"user_name"`
 	CulturalType string `json:"cultural_type"`
 	Commentary string `json:"commentary"`
 	CreatedAt  string `json:"created_at"`
 	UpdatedAt  string `json:"updated_at"`
-}
-
-type GetCommentariesRequest struct {
-	CulturalType string `json:"cultural_type"`
-	CulturalID  int    `json:"cultural_id"`
 }
 
 type GetCommentariesResponse struct {
@@ -25,7 +20,6 @@ type CreateCommentaryRequest struct {
 	CulturalID  int    `json:"cultural_id"`
 	UserID      int    `json:"user_id"`
 }
-
 
 type UpdateCommentaryRequest struct {
 	Commentary string `json:"commentary"`

@@ -15,16 +15,18 @@ import CreateCulturalPage from './components/CreateCulturalPage';
 import UserProvider from './contexts/UserContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import OrganizerPage from './components/OrganizerPage';
+import EditCulturalPage from './components/EditCulturalPage';
+import CommentaryPage from './components/CommentaryPage';
 
 function App() {
   return (
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/user/login" element={<LoginPage />} />
-          <Route path="/user/register" element={<RegisterPage />} />
           <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/user/login" element={<LoginPage />} />
+            <Route path="/user/register" element={<RegisterPage />} />
             <Route path="/user/password-recovery" element={<PasswordRecoveryPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/user/profile" element={<ProfilePage />} />
@@ -35,6 +37,8 @@ function App() {
             <Route path="/card/:culturalType/:id" element={<CardPage />} />
             <Route path="/create-cultural" element={<CreateCulturalPage />} />
             <Route path="/organizer/:id" element={<OrganizerPage />} />
+            <Route path="/edit-cultural/:culturalType/:id" element={<EditCulturalPage />} />
+            <Route path="/commentaries/:culturalType/:id" element={<CommentaryPage />} />
           </Route>
         </Routes>
       </Router>

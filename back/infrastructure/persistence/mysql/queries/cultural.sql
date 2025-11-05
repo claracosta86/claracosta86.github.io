@@ -1,5 +1,5 @@
 -- name: create-event
-INSERT INTO events (title, description, location, start_date, end_date, duration,
+INSERT INTO events (title, description, location, start_date, end_date, working_hours,
 price, is_accessible, organizer_id, image, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 
@@ -16,7 +16,7 @@ SELECT
     IFNULL(e.location, ''),
     IFNULL(e.start_date, ''), 
     IFNULL(e.end_date, ''), 
-    IFNULL(e.duration, ''), 
+    IFNULL(e.working_hours, ''), 
     e.price, 
     e.is_accessible, 
     IFNULL(e.organizer_id, 0), 
