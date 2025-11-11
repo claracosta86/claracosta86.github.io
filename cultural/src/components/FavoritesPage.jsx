@@ -143,8 +143,10 @@ const FavoritesPage = () => {
                     ...fav,
                     Title: detailData.title,
                     Image: detailData.image,
-                    Location: detailData.location,
                     Price: fav.type === 'event' ? detailData.price : 'Gratuito',
+                    Event: fav.type === 'event' ? detailData.event : null,
+                    TouristAttraction:
+                      fav.type === 'tourist_attraction' ? detailData : null,
                   };
                 }
               }
@@ -279,7 +281,7 @@ const FavoritesPage = () => {
                 (fav) =>
                   fav.Title &&
                   fav.Image &&
-                  fav.Location && (
+                  (fav.Event || fav.TouristAttraction) && (
                     <div key={fav.id} className="favorite-card">
                       <Link
                         to={`/card/${fav.type}/${fav.id}`}
@@ -295,7 +297,19 @@ const FavoritesPage = () => {
                           <h3>{fav.Title}</h3>
                           <p>{fav.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
                           <div className ="details-box">
-                            <span>{fav.Location}</span>
+                            <span>
+                               {fav.type === 'event' &&
+                                fav.Event &&
+                                fav.Event.end_date === '' &&
+                                ` ${fav.Event.start_date}, de ${fav.Event.working_hours}`}
+                              {fav.type === 'event' &&
+                                fav.Event &&
+                                ` ${fav.Event.start_date} - ${fav.Event.end_date}, de ${fav.Event.working_hours}`}
+                              {fav.type !== 'event' &&
+                                fav.TouristAttraction &&
+                                ` ${fav.TouristAttraction.open_days}, ${fav.TouristAttraction.open_time}`}
+                            </span>
+
                             <span className="price">
                               {fav.Price === 'R$0,00' || fav.Price === 'Gratuito'
                                 ? 'Gratuito'

@@ -18,7 +18,7 @@ import accessibleIcon from '../assets/accessibility-icon.png';
 import mailIcon from '../assets/mail-icon.png';
 import logoutIcon from '../assets/logout-icon.png';
 
-const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
+export const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
 
   const handleLinkClick = (culturalID, culturalType) => async () => {
@@ -332,7 +332,7 @@ const CardPage = () => {
             <div className="comments-section">
               <h3>Comentários</h3>
               <div className="comment-box">
-                {commentarys.length > 0 ? (
+                {commentarys != null ? (
                   commentarys.map((commentary) => (
                     <div key={commentary.id} className="comment-item">
                       <p><strong>{commentary.user_name}:</strong> {commentary.commentary}</p>
@@ -363,7 +363,7 @@ const CardPage = () => {
         </main>
         <footer className="footer">
           <Link to={`/home`} state={{ userID, userType }}>
-            <img src={homeIcon} alt="Logo Cultural" />
+            <img src={homeIcon} alt="Home" />
           </Link>
           <Link to={`/search`} state={{ userID, userType }}>
             <img src={searchIcon} alt="Buscar" />

@@ -17,6 +17,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import OrganizerPage from './components/OrganizerPage';
 import EditCulturalPage from './components/EditCulturalPage';
 import CommentaryPage from './components/CommentaryPage';
+import SearchPage from './components/SearchPage';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/organizer/:id" element={<OrganizerPage />} />
             <Route path="/edit-cultural/:culturalType/:id" element={<EditCulturalPage />} />
             <Route path="/commentaries/:culturalType/:id" element={<CommentaryPage />} />
+            <Route path="/search" element={<SearchPage />} />
           </Route>
         </Routes>
       </Router>

@@ -144,8 +144,8 @@ main.home-container {
     padding: 16px;
     margin-bottom: 20px;
     text-align: left;
-    min-height: 100px; /* Altura mínima para parecer com o card */
-    max-height: 150px; /* Altura máxima antes de rolar */
+    min-height: 100px; 
+    max-height: 150px;
     overflow-y: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
