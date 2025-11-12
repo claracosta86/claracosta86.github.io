@@ -11,16 +11,6 @@ import favoriteIcon from '../assets/favorite-icon.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import userIcon from '../assets/user-icon.png';
 import searchIcon from '../assets/search-icon.png';
-import bienalEvent from '../assets/thumb-size/bienal-event.png';
-import mcrEvent from '../assets/thumb-size/mcr-event.png';
-import dccWeekEvent from '../assets/thumb-size/dccweek-event.png';
-import iwnbEvent from '../assets/thumb-size/iwnb-event.png';
-import cruEvent from '../assets/thumb-size/cru-event.png';
-import liberdadeAttraction from '../assets/thumb-size/liberdade-attraction.png';
-import igrejinhaAttraction from '../assets/thumb-size/igrejinha-attraction.png';
-import pseteAttraction from '../assets/thumb-size/psete-attraction.png';
-import mercadoAttraction from '../assets/thumb-size/mercado-attraction.png';
-import mangabeirasAttraction from '../assets/thumb-size/mangabeiras-attraction.png';
 
 const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
@@ -97,17 +87,8 @@ const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, u
 const HomePage = () => {
   const navigate = useNavigate();
 
-  const iwnbEventID = '1';
-  const bienalEventID = '2';
-  const mcrEventID = '3';
-  const cruEventID = '4';
-  const dccWeekEventID = '5';
-  const liberdadeAttractionID = '11';
-  const mercadoAttractionID = '12';
-  const igrejinhaAttractionID = '13';
-  const pseteAttractionID = '15';
-  const mangabeirasAttractionID = '14';
-
+  const [events, setEvents] = useState([]);
+  const [attractions, setAttractions] = useState([]);
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
 
@@ -117,13 +98,18 @@ const HomePage = () => {
   const userType = user.type;
 
   useEffect(() => {
-    if (userID) {
-      console.log('UserID recebido da página de login:', userID);
-    }
-    if (userType) {
-      console.log('UserType recebido da página de login:', userType);
-    }
-  }, [user]);
+    const fetchCulturals = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/culturais/home');
+        const data = await response.json();
+        setEvents(data.events || []);
+        setAttractions(data.tourist_attractions || []);
+      } catch (error) {
+        console.error('Erro ao buscar culturais:', error);
+      }
+    };
+    fetchCulturals();
+  }, []);
 
   const handleNotificationIconClick = async () => {
     const fetchNewNotifications = async () => {
@@ -197,81 +183,35 @@ const HomePage = () => {
             <div className="category-box">
               <h2>Principais Eventos</h2>
               <div className="card-events">
-                <Link to={`/card/event/${bienalEventID}`} state={{ event: true }}>
-                  <div className="card">
-                    <p className="title">Bienal do Livro</p>
-                    <img src={bienalEvent} alt="Bienal do livro" />
-                  </div>
-                </Link>
-                <Link to={`/card/event/${mcrEventID}`} state={{ event: true }}>
-                  <div className="card">
-                    <p className="title">My Chemical Romance Ao Vivo</p>
-                    <img src={mcrEvent} alt="MCR Ao Vivo" />
-                  </div>
-                </Link>
-                <Link to={`/card/event/${dccWeekEventID}`} state={{ event: true }}>
-                  <div className="card">
-                    <p className="title">DCC Week</p>
-                    <img src={dccWeekEvent} alt="DCC Week" />
-                  </div>
-                </Link>
-                <Link to={`/card/event/${iwnbEventID}`} state={{ event: true }}>
-                  <div className="card">
-                    <p className="title">I Wanna Be Tour</p>
-                    <img src={iwnbEvent} alt="I Wanna Be Tour" />
-                  </div>
-                </Link>
-                <Link to={`/card/event/${cruEventID}`} state={{ event: true }}>
-                  <div className="card">
-                    <p className="title">Jogo do Cruzeiro</p>
-                    <img src={cruEvent} alt="Jogo do Cruzeiro" />
-                  </div>
-                </Link>
+                {events.map((event) => (
+                  <Link to={`/card/event/${event.id}`} state={{ event: true }} key={event.id}>
+                    <div className="card">
+                      <p className="title">{event.title}</p>
+                      <img
+                        src={`http://localhost:8080/static/culturalthumbs/${event.image}`}
+                        alt={event.title}
+                      />
+                    </div>
+                  </Link>
+                ))}
               </div>
               <h2>Principais Pontos Turísticos</h2>
               <div className="card-attractions">
-                <Link
-                  to={`/card/tourist_attraction/${liberdadeAttractionID}`}
-                  state={{ event: false }}
-                >
-                  <div className="card">
-                    <p className="title">Praça Liberdade</p>
-                    <img src={liberdadeAttraction} alt="Praça da Liberdade" />
-                  </div>
-                </Link>
-                <Link
-                  to={`/card/tourist_attraction/${igrejinhaAttractionID}`}
-                  state={{ event: false }}
-                >
-                  <div className="card">
-                    <p className="title">Igreja da Pampulha</p>
-                    <img src={igrejinhaAttraction} alt="Igreja da Pampulha" />
-                  </div>
-                </Link>
-                <Link to={`/card/tourist_attraction/${pseteAttractionID}`} state={{ event: false }}>
-                  <div className="card">
-                    <p className="title">Pirulito da Praça Sete</p>
-                    <img src={pseteAttraction} alt="Pirulito da Praça Sete" />
-                  </div>
-                </Link>
-                <Link
-                  to={`/card/tourist_attraction/${mercadoAttractionID}`}
-                  state={{ event: false }}
-                >
-                  <div className="card">
-                    <p className="title">Mercado Central</p>
-                    <img src={mercadoAttraction} alt="Mercado Central" />
-                  </div>
-                </Link>
-                <Link
-                  to={`/card/tourist_attraction/${mangabeirasAttractionID}`}
-                  state={{ event: false }}
-                >
-                  <div className="card">
-                    <p className="title">Parque das Mangabeiras</p>
-                    <img src={mangabeirasAttraction} alt="Parque das Mangabeiras" />
-                  </div>
-                </Link>
+                {attractions.map((attraction) => (
+                  <Link
+                    to={`/card/tourist_attraction/${attraction.id}`}
+                    state={{ event: false }}
+                    key={attraction.id}
+                  >
+                    <div className="card">
+                      <p className="title">{attraction.title}</p>
+                      <img
+                        src={`http://localhost:8080/static/culturalthumbs/${attraction.image}`}
+                        alt={attraction.title}
+                      />
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </section>

@@ -40,6 +40,12 @@ type Service interface {
 
 	// GetTouristAttractionsIDsByOrganizer retrieves all tourist attraction IDs organized by a specific user
 	GetTouristAttractionsIDsByOrganizer(ctx context.Context, organizerID int) ([]int, error)
+
+	// GetAllEvents retrieves all cultural events
+	GetAllEvents(ctx context.Context) ([]Event, error)
+
+	// GetAllTouristAttractions retrieves all cultural tourist attractions
+	GetAllTouristAttractions(ctx context.Context) ([]TouristAttraction, error)
 }
 
 type service struct {
@@ -145,4 +151,12 @@ func (s *service) GetEventsIDsByOrganizer(ctx context.Context, organizerID int) 
 
 func (s *service) GetTouristAttractionsIDsByOrganizer(ctx context.Context, organizerID int) ([]int, error) {
 	return s.repository.FindTouristAttractionsIDsByOrganizer(ctx, organizerID)
+}
+
+func (s *service) GetAllEvents(ctx context.Context) ([]Event, error) {
+	return s.repository.FindAllEvents(ctx)
+}
+
+func (s *service) GetAllTouristAttractions(ctx context.Context) ([]TouristAttraction, error) {
+	return s.repository.FindAllTouristAttractions(ctx)
 }

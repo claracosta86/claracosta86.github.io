@@ -40,5 +40,11 @@ type Repository interface {
 
 	// FindTouristAttractionsIDsByOrganizer retrieves all tourist attraction IDs organized by a specific user
 	FindTouristAttractionsIDsByOrganizer(ctx context.Context, organizerID int) ([]int, error)
+
+	// FindAllEvents retrieves all cultural events
+	FindAllEvents(ctx context.Context) ([]Event, error)
+
+	// FindAllTouristAttractions retrieves all cultural tourist attractions
+	FindAllTouristAttractions(ctx context.Context) ([]TouristAttraction, error)
 }
 

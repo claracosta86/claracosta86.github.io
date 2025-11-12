@@ -70,3 +70,11 @@ SELECT id FROM events WHERE organizer_id = ?;
 
 -- name: fetch-tourist-attractions-ids-by-organizer
 SELECT id FROM tourist_attractions WHERE organizer_id = ?;
+
+-- name: fetch-all-events
+SELECT id, title, image FROM events
+ORDER BY updated_at DESC;
+
+-- name: fetch-all-tourist-attractions
+SELECT id, title, image FROM tourist_attractions
+ORDER BY updated_at DESC;

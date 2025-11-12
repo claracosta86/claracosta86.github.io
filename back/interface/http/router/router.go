@@ -30,6 +30,8 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 
 	// Rotas de culturais
 	r.Route("/culturais", func(r chi.Router) {
+		r.Get("/", culturalHandler.HandleGetAllCulturais)
+		r.Get("/home", culturalHandler.HandleGetHomeCulturais)
 		r.Post("/", culturalHandler.HandleCreateCultural)
 		r.Get("/{type}/{id:[0-9]+}", culturalHandler.HandleGetCultural)
 		r.Patch("/{type}/{id:[0-9]+}", culturalHandler.HandleUpdateCultural)
@@ -65,7 +67,11 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 		})
 		r.Post("/select-type", userHandler.HandleUserTypeSelection)
 	})
-	
+
+	// Servidor de arquivos para assets estáticos
+	fs := http.FileServer(http.Dir("static"))
+	r.Handle("/static/*", http.StripPrefix("/static/", fs))
+
 	return r
 }
 

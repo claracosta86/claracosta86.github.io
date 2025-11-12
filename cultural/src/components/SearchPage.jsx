@@ -228,7 +228,7 @@ const SearchPage = () => {
                     className="result-card"
                   >
                     <img
-                      src={`/thumb-size/${item.image}`}
+                      src={`http://localhost:8080/static/culturalthumbs/${item.image}`}
                       alt={item.title}
                       className="result-image"
                     />

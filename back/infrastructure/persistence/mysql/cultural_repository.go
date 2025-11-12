@@ -222,3 +222,41 @@ func (r *culturalRepository) FindTouristAttractionsIDsByOrganizer(ctx context.Co
 
 	return attractionIDs, nil
 }
+
+func (r *culturalRepository) FindAllEvents(ctx context.Context) ([]cultural.Event, error) {
+	rows, err := r.db.QueryContext(ctx, culturalQueries["fetch-all-events"])
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch all events: %w", err)
+	}
+	defer rows.Close()
+
+	var events []cultural.Event
+	for rows.Next() {
+		var event cultural.Event
+		if err := rows.Scan(&event.ID, &event.Title, &event.Image); err != nil {
+			return nil, fmt.Errorf("failed to scan event: %w", err)
+		}
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func (r *culturalRepository) FindAllTouristAttractions(ctx context.Context) ([]cultural.TouristAttraction, error) {
+	rows, err := r.db.QueryContext(ctx, culturalQueries["fetch-all-tourist-attractions"])
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch all tourist attractions: %w", err)
+	}
+	defer rows.Close()
+
+	var attractions []cultural.TouristAttraction
+	for rows.Next() {
+		var attraction cultural.TouristAttraction
+		if err := rows.Scan(&attraction.ID, &attraction.Title, &attraction.Image); err != nil {
+			return nil, fmt.Errorf("failed to scan tourist attraction: %w", err)
+		}
+		attractions = append(attractions, attraction)
+	}
+
+	return attractions, nil
+}

@@ -274,7 +274,7 @@ const CardPage = () => {
                 <h2 className="cultural-title">{culturalData.title}</h2>
               </div>
               <img
-                src={`/thumb-size/${culturalData.image}`}
+                src={`http://localhost:8080/static/culturalthumbs/${culturalData.image}`}
                 alt={culturalData.title}
                 className="event-image"
               />

@@ -288,7 +288,7 @@ const FavoritesPage = () => {
                         className="card-link"
                       >
                         <img
-                          src={`/thumb-size/${fav.Image}`}
+                          src={`http://localhost:8080/static/culturalthumbs/${fav.Image}`}
                           alt={fav.Title}
                           className="favorite-img"
                         />

@@ -27,6 +27,12 @@ type UseCase interface {
 
 	// DeleteCultural deletes a cultural entry by ID
 	DeleteCultural(ctx context.Context, id int, culturalType string) error
+
+	// GetAllCulturais retrieves all cultural events and attractions
+	GetAllCulturais(ctx context.Context) (model.AllCulturaisResponse, error)
+
+	// GetHomeCulturais retrieves cultural events and attractions for home display
+	GetHomeCulturais(ctx context.Context) (model.AllCulturaisResponse, error)
 }
 
 type culturalUseCase struct {
@@ -141,4 +147,77 @@ func (uc *culturalUseCase) DeleteCultural(ctx context.Context, id int, culturalT
 	}
 
 	return errors.New("invalid cultural type")
+}
+
+func (uc *culturalUseCase) GetAllCulturais(ctx context.Context) (model.AllCulturaisResponse, error) {
+	events, err := uc.culturalService.GetAllEvents(ctx)
+	if err != nil {
+		return model.AllCulturaisResponse{}, err
+	}
+
+	attractions, err := uc.culturalService.GetAllTouristAttractions(ctx)
+	if err != nil {
+		return model.AllCulturaisResponse{}, err
+	}
+
+	return model.AllCulturaisResponse{
+		Events: convertEventsToModel(events),
+		TouristAttractions: convertAttractionsToModel(attractions),
+	}, nil
+}
+
+func (uc *culturalUseCase) GetHomeCulturais(ctx context.Context) (model.AllCulturaisResponse, error) {
+	events, err := uc.culturalService.GetAllEvents(ctx)
+	if err != nil {
+		return model.AllCulturaisResponse{}, err
+	}
+
+	attractions, err := uc.culturalService.GetAllTouristAttractions(ctx)
+	if err != nil {
+		return model.AllCulturaisResponse{}, err
+	}
+
+	return model.AllCulturaisResponse{
+		Events: convertEventsToModel(events[:5]),
+		TouristAttractions: convertAttractionsToModel(attractions[:5]),
+	}, nil
+}
+
+func convertEventsToModel(events []cultural.Event) []model.Event {
+	var eventModels []model.Event
+	for _, event := range events {
+		eventModels = append(eventModels, model.Event{
+			ID:          event.ID,
+			Title:       event.Title,
+			Description: event.Description,
+			Location:    event.Location,
+			Price:      event.Price,
+			IsAccessible: event.IsAccessible,
+			OrganizerID: event.OrganizerID,
+			Image:      event.Image,
+			StartDate:   event.StartDate,
+			EndDate:     event.EndDate,
+			WorkingHours: event.WorkingHours,
+		})
+	}
+	return eventModels
+}
+
+func convertAttractionsToModel(attractions []cultural.TouristAttraction) []model.TouristAttraction {
+	var attractionModels []model.TouristAttraction
+	for _, attraction := range attractions {
+		attractionModels = append(attractionModels, model.TouristAttraction{
+			ID:          attraction.ID,
+			Title:       attraction.Title,
+			Description: attraction.Description,
+			Location:    attraction.Location,
+			Price:      attraction.Price,
+			IsAccessible: attraction.IsAccessible,
+			OrganizerID: attraction.OrganizerID,
+			Image:      attraction.Image,
+			OpenDays:   attraction.OpenDays,
+			OpenTime:   attraction.OpenTime,
+		})
+	}
+	return attractionModels
 }

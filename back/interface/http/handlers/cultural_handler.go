@@ -66,6 +66,42 @@ func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(map[string]string{"status": "Cultural created successfully", "id": strconv.Itoa(result.ID), "type": result.Type})
 }
 
+// HandleGetAllCulturais retrieves all cultural events and attractions
+func (h *CulturalHandler) HandleGetAllCulturais(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	culturals, err := h.culturalUseCase.GetAllCulturais(r.Context())
+	if err != nil {
+		http.Error(w, "Error retrieving culturals: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(culturals)
+}
+
+// HandleGetAllCulturais retrieves all cultural events and attractions
+func (h *CulturalHandler) HandleGetHomeCulturais(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	culturals, err := h.culturalUseCase.GetHomeCulturais(r.Context())
+	if err != nil {
+		http.Error(w, "Error retrieving culturals: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(culturals)
+}
+
 // [400] Invalid data
 // [404] Cultural not found
 // [405] Invalid HTTP method

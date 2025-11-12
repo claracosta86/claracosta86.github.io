@@ -85,6 +85,32 @@ const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, u
   );
 };
 
+const RemoveFavoriteModal = ({ isOpen, onClose, onConfirm }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+        <h2 className="modal-title">Confirmar Remoção</h2>
+        <div className="modal-content">
+          <p>
+            Você realmente deseja excluir o evento/ponto turístico da plataforma?
+          </p>
+        </div>
+        <div className="modal-actions">
+          <button onClick={onClose} className="modal-close-btn">
+            Cancelar
+          </button>
+          <button onClick={onConfirm} className="modal-confirm-btn">
+            Remover
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const ManageCulturalPage = () => {
   const navigate = useNavigate();
 
@@ -103,6 +129,8 @@ const ManageCulturalPage = () => {
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+
+  const [isRemoveFavoriteModalOpen, setRemoveFavoriteModalOpen] = useState(false);
 
   const handleNotificationIconClick = async () => {
     const fetchNewNotifications = async () => {
@@ -193,6 +221,39 @@ const ManageCulturalPage = () => {
     navigate(`/edit-cultural/${type}/${id}`);
   };
 
+  const openRemoveModal = (cultural) => {
+    setFavoriteToRemove(cultural);
+    setRemoveFavoriteModalOpen(true);
+  };
+
+  const closeRemoveModal = () => {
+    setRemoveFavoriteModalOpen(false);
+    setFavoriteToRemove(null);
+  };
+
+  const handleConfirmRemove = async () => {
+    if (!culturalToRemove) return;
+
+    try {
+      const { id, type } = culturalToRemove;
+      const response = await fetch(`http://localhost:8080/culturais/${type}/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        setCulturais((prevCulturais) => prevCulturais.filter((cult) => cult.id !== id));
+      } else {
+        alert('Não foi possível excluir o cultural. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro de rede ao remover cultural:', error);
+    } finally {
+      closeRemoveModal();
+    }
+  };
+
   return (
     <>
       <NotificationModal
@@ -202,6 +263,11 @@ const ManageCulturalPage = () => {
         navigate={navigate}
         userID={userID}
         userType={userType}
+      />
+      <RemoveFavoriteModal
+        isOpen={isRemoveFavoriteModalOpen}
+        onClose={closeRemoveModal}
+        onConfirm={handleConfirmRemove}
       />
       <section className="screen" id="tela-profile">
         <header className="top-bar">
@@ -268,7 +334,7 @@ const ManageCulturalPage = () => {
                       </Link>
                       <div className="actions-row">
                         <button onClick={() => handleEditClick(cult.id, cult.type)} className="edit-btn">Editar</button>
-                        <button onClick={() => handleRemoveClick(cult.id)} className="remove-btn">Excluir</button>
+                      <button onClick={() => openRemoveModal(cult)} className="remove-btn">Excluir</button>
                       </div>
                     </div>
                   )
