@@ -65,7 +65,7 @@
   flex-direction: column;
   margin-top: auto;
   margin-bottom: auto;
-  width: 140%;
+  width: 100%;
   background-color: white;
   border-radius: 8px;
   flex-wrap: wrap;
@@ -95,12 +95,12 @@
 }
 
 .manage-img {
-  width: 165px;
-  height: 165px;
+  width: 150px;
   border-radius: 10px;
   object-fit: cover;
   margin-right: 15px;
-  right: 161px;
+  margin-bottom: auto;
+  margin-top: auto;
 }
 
 .manage-details {
@@ -109,6 +109,7 @@
   gap: 5px;
   font-size: 14px;
   padding-bottom: 30px; 
+  flex-wrap: wrap;
 }
 
 .manage-details h3 {

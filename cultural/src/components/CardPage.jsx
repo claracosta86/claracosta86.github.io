@@ -291,13 +291,11 @@ const CardPage = () => {
                   ) : (
                     <strong>Horário de Funcionamento:</strong>
                   )}
-                  {culturalType === 'event' &&
-                    culturalData.event &&
-                    culturalData.event.end_date === '' &&
-                    ` ${culturalData.event.start_date}, de ${culturalData.event.working_hours}`}
-                  {culturalType === 'event' &&
-                    culturalData.event &&
-                    ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`}
+                  {culturalType === 'event' && culturalData.event && (
+                    culturalData.event.end_date === "" 
+                    ? ` ${culturalData.event.start_date}, de ${culturalData.event.working_hours}`
+                    : ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`
+                  )}
                   {culturalType !== 'event' &&
                     culturalData.tourist_attraction &&
                     ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}
@@ -311,7 +309,7 @@ const CardPage = () => {
                 </p>
                 <p>
                   <img src={accessibleIcon} alt="Acessível" className="info-icon" />
-                  <strong>Acessível:</strong> {culturalData.accessible ? 'Sim' : 'Não'}
+                  <strong>Acessível:</strong> {culturalData.is_accessible ? 'Sim' : 'Não'}
                 </p>
                 <p>
                   <img src={mailIcon} alt="Contato" className="info-icon" />

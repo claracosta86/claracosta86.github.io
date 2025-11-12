@@ -91,12 +91,6 @@ a {
   font-size: 14px;
 }
 
-.goback-img {
-  width: 25px;
-  margin-top: 3px;
-  margin-bottom: 20px;
-}
-
 .header-title {
   display: flex;
   align-items: left;
@@ -131,10 +125,6 @@ a {
   text-align: center;
   transition: background 0.2s;
   display: block;
-}
-
-.profile-actions .btn:hover {
-  background-color: #1e40af;
 }
 
 /* Erros */

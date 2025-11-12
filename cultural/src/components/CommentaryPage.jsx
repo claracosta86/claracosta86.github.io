@@ -242,13 +242,11 @@ const CommentaryPage = () => {
                   <span>{culturalData.location}</span><br />
 
                   <span>
-                      {culturalType === 'event' &&
-                      culturalData.event &&
-                      culturalData.event.end_date === '' &&
-                      ` ${culturalData.event.start_date}, de ${culturalData.event.working_hours}`}
-                      {culturalType === 'event' &&
-                        culturalData.event &&
-                        ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`}
+                      {culturalType === 'event' && culturalData.event && (
+                        culturalData.event.end_date === "" 
+                          ? ` ${culturalData.event.start_date}, de ${culturalData.event.working_hours}`
+                          : ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`
+                      )}
                       {culturalType !== 'event' &&
                         culturalData.tourist_attraction &&
                         ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}

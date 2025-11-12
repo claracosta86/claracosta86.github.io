@@ -169,6 +169,8 @@ const ManageCulturalPage = () => {
                     Image: detailData.image,
                     Location: detailData.location,
                     Price: detailData.price,
+                    Event: cult.type === 'event' ? detailData.event : null,
+                    TouristAttraction: cult.type === 'tourist_attraction' ? detailData.tourist_attraction : null,
                   };
                 }
               }
@@ -241,10 +243,20 @@ const ManageCulturalPage = () => {
                           className="manage-img"
                         />
                         <div className="manage-details">
-                          <h3>{cult.Title}</h3>
+                          <h3>{cult.Title}</h3> 
                           <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
                           <div className="details-content">
-                            <span>{cult.Location}</span>
+                            <span>{cult.Location}</span> <br />
+                            <span>
+                                {cult.type === 'event' && cult.Event && (
+                                  cult.Event.end_date === "" 
+                                    ? ` ${cult.Event.start_date}, de ${cult.Event.working_hours}`
+                                    : ` ${cult.Event.start_date} - ${cult.Event.end_date}, de ${cult.Event.working_hours}`
+                                )}
+                                {cult.type !== 'event' &&
+                                  cult.TouristAttraction &&
+                                  ` ${cult.TouristAttraction.open_days}, ${cult.TouristAttraction.open_time}`}
+                            </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
                                 ? 'Gratuito'
@@ -254,11 +266,9 @@ const ManageCulturalPage = () => {
                           </div>
                         </div>
                       </Link>
-                      <div className="actions-container">
-                        <div className="actions-row">
-                          <button onClick={() => handleEditClick(cult.id, cult.type)} className="edit-btn">Editar</button>
-                          <button onClick={() => handleRemoveClick(cult.id)} className="remove-btn">Excluir</button>
-                        </div>
+                      <div className="actions-row">
+                        <button onClick={() => handleEditClick(cult.id, cult.type)} className="edit-btn">Editar</button>
+                        <button onClick={() => handleRemoveClick(cult.id)} className="remove-btn">Excluir</button>
                       </div>
                     </div>
                   )

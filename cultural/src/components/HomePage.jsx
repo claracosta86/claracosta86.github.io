@@ -102,11 +102,11 @@ const HomePage = () => {
   const mcrEventID = '3';
   const cruEventID = '4';
   const dccWeekEventID = '5';
-  const liberdadeAttractionID = '1';
-  const igrejinhaAttractionID = '2';
-  const pseteAttractionID = '3';
-  const mercadoAttractionID = '4';
-  const mangabeirasAttractionID = '5';
+  const liberdadeAttractionID = '11';
+  const mercadoAttractionID = '12';
+  const igrejinhaAttractionID = '13';
+  const pseteAttractionID = '15';
+  const mangabeirasAttractionID = '14';
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);

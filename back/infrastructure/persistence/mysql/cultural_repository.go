@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"context"
-	"errors"
 	"database/sql"
 	_ "embed"
+	"errors"
 	"fmt"
 
 	"github.com/nleof/goyesql"

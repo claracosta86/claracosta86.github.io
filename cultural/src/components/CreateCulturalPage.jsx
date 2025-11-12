@@ -400,7 +400,7 @@ const CreateCulturalPage = () => {
                     <textarea
                       id="open_time"
                       name="open_time"
-                      placeholder="ex: Dom - Sab 09:00 às 17:00"
+                      placeholder="ex: 09:00 às 17:00 ou 24 horas"
                       value={formData.open_time}
                       onChange={handleInputChange}
                       required

@@ -6,7 +6,22 @@
 .home-container {
     padding: 20px;
     background-color: white; /* Faz o container ocupar o espaço disponível */
-    overflow-y: auto; /* Adiciona scroll se o conteúdo passar da tela */
+}
+
+.main-content {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Adiciona scroll se o conteúdo passar da tela */
+  padding: 20px;
+  background-color: white;
+  margin: 0px;
+  box-sizing: content-box;
+  width: 100%;
+}
+
+.main-content::-webkit-scrollbar {
+  display: none;
 }
 
 .logo-tiny {
@@ -28,20 +43,12 @@
     padding: 5px;
 }
 
-main.home-container {
-  padding-bottom: 100px; 
-}
-
 .down-actions-container {
-  position: fixed; /* 👈 A MÁGICA: Flutua sobre a tela */
-  bottom: 89px;    /* 👈 Distância do fundo (assumindo que o footer tem 60px de altura) */
-  left: auto;
-  right: auto;
-  
-  background-color: #FFFFFF; /* 👈 O fundo branco que você pediu */
-  padding: 15px;
-  width: 21.75%;
-  z-index: 20; /* 👈 Garante que fique acima do conteúdo de <main> */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  width: 100%;
 }
 
 .down-actions-row {
@@ -64,10 +71,6 @@ main.home-container {
   text-align: center;
   transition: background 0.2s;
   display: block;
-}
-
-.down-container .down-btn:hover {
-  background-color: #1e40af;
 }
 
 .cultural-title {

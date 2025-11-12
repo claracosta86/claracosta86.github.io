@@ -135,6 +135,8 @@ const OrganizerPage = () => {
                         Image: detailData.image,
                         Location: detailData.location,
                         Price: detailData.price,
+                        Event: cult.type === 'event' ? detailData.event : null,
+                        TouristAttraction: cult.type === 'tourist_attraction' ? detailData.tourist_attraction : null,
                         };
                     }
                     }
@@ -261,7 +263,16 @@ const OrganizerPage = () => {
                           <h3>{cult.Title}</h3>
                           <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
                           <div className="details-box">
-                            <span>{cult.Location}</span>
+                            <span id='Working Hours'>
+                                {cult.type === 'event' && cult.Event && (
+                                  cult.Event.end_date === "" 
+                                    ? ` ${cult.Event.start_date}, de ${cult.Event.working_hours}`
+                                    : ` ${cult.Event.start_date} - ${cult.Event.end_date}, de ${cult.Event.working_hours}`
+                                )}
+                                {cult.type !== 'event' &&
+                                  cult.TouristAttraction &&
+                                  ` ${cult.TouristAttraction.open_days}, ${cult.TouristAttraction.open_time}`}
+                            </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
                                 ? 'Gratuito'

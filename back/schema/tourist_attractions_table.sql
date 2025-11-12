@@ -9,7 +9,6 @@ CREATE TABLE tourist_attractions (
     price DECIMAL(10, 2) DEFAULT 0.00,
     image VARCHAR(255),
     organizer_id INT,
-    organizer_contact VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
