@@ -131,6 +131,7 @@ const ManageCulturalPage = () => {
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
 
   const [isRemoveFavoriteModalOpen, setRemoveFavoriteModalOpen] = useState(false);
+  const [culturalToRemove, setCulturalToRemove] = useState(null);
 
   const handleNotificationIconClick = async () => {
     const fetchNewNotifications = async () => {
@@ -222,13 +223,13 @@ const ManageCulturalPage = () => {
   };
 
   const openRemoveModal = (cultural) => {
-    setFavoriteToRemove(cultural);
+    setCulturalToRemove(cultural);
     setRemoveFavoriteModalOpen(true);
   };
 
   const closeRemoveModal = () => {
     setRemoveFavoriteModalOpen(false);
-    setFavoriteToRemove(null);
+    setCulturalToRemove(null);
   };
 
   const handleConfirmRemove = async () => {
@@ -304,7 +305,7 @@ const ManageCulturalPage = () => {
                         className="card-link"
                       >
                         <img
-                          src={`/thumb-size/${cult.Image}`}
+                          src={`http://localhost:8080/static/culturalthumbs/${cult.Image}`}
                           alt={cult.Title}
                           className="manage-img"
                         />
