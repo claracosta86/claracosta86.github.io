@@ -9,7 +9,7 @@ The application follows a layered DDD architecture with clear separation of conc
 ```
 back/
 ├── application/      # Application Layer - Use cases
-│   ├── commentary/  # Card Commentary Section  
+│   ├── comment/  # Card Comment Section  
 │   │   └── use_case.go      
 │   ├── cultural/        # Events/Tourist Attractions 
 │   │   └── use_case.go
@@ -21,7 +21,7 @@ back/
 │   └── api/        
 │       └── main.go 
 ├── domain/          # Domain Layer - Core business logic
-│   ├── commentary/        # Card Commentary Section domain
+│   ├── comment/        # Card Comment Section domain
 │   │   ├── entity.go        # Entity with business rules
 │   │   ├── value_objects.go # Value objects
 │   │   ├── repository.go    # Repository interface
@@ -45,7 +45,7 @@ back/
 │   ├── persistence/ # Data persistence
 │   │   └── mysql/   # MySQL implementation
 │   │       ├── queries 
-│   │       │   ├── commentary.sql
+│   │       │   ├── comment.sql
 │   │       │   ├── cultural.sql
 │   │       │   ├── notification.sql
 │   │       │   └── user.sql
@@ -67,7 +67,7 @@ back/
 │   │   ├── router
 │   │   │    └── router.go
 │   └── model       # HTTP response/request models
-│       ├── commentary.go
+│       ├── comment.go
 │       ├── cultural.go
 │       ├── notifications.go
 │       └──  user.go
@@ -109,8 +109,8 @@ back/
 
 ## Implementation Details
 
-### Commentary Domain
-- **Entity**: `Commentary` with business validation rules
+### Comment Domain
+- **Entity**: `Comment` with business validation rules
 - **Value Objects**: 
 - **Repository**: Interface for data persistence
 - **Service**: Business logic for user operations

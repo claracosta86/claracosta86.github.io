@@ -15,17 +15,17 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 	r.Use(enableCors, logging.LoggingMiddleware)
 
 	// Use handlers from the container
-	commentaryHandler := container.CommentaryHandler
+	commentaryHandler := container.CommentHandler
 	culturalHandler := container.CulturalHandler
 	notificationHandler := container.NotificationHandler
 	userHandler := container.UserHandler
 
 	// Rotas de comentários
-	r.Route("/commentarys", func(r chi.Router) {
-		r.Post("/", commentaryHandler.HandleCreateCommentary)
-		r.Get("/{culturalType}/{culturalID:[0-9]+}", commentaryHandler.HandleGetCommentary)
-		r.Patch("/{commentID:[0-9]+}", commentaryHandler.HandleUpdateCommentary)
-		r.Delete("/{commentID:[0-9]+}", commentaryHandler.HandleDeleteCommentary)
+	r.Route("/comments", func(r chi.Router) {
+		r.Post("/", commentaryHandler.HandleCreateComment)
+		r.Get("/{culturalType}/{culturalID:[0-9]+}", commentaryHandler.HandleGetComment)
+		r.Patch("/{commentID:[0-9]+}", commentaryHandler.HandleUpdateComment)
+		r.Delete("/{commentID:[0-9]+}", commentaryHandler.HandleDeleteComment)
 	})
 
 	// Rotas de culturais
@@ -49,18 +49,18 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 		r.Post("/register", userHandler.HandleRegisterUser)
 		r.Post("/login", userHandler.HandleUserLogin)
 		r.Route("/{userID:[0-9]+}", func(r chi.Router) {
-			r.Route("/profile", func (r chi.Router) {
+			r.Route("/profile", func(r chi.Router) {
 				r.Get("/", userHandler.HandleGetUserProfile)
 				r.Patch("/edit", userHandler.HandleEditUserProfile)
 				r.Patch("/change-password", userHandler.HandleChangeUserPassword)
 				r.Delete("/delete", userHandler.HandleDeleteUser)
 			})
-			r.Route("/favorites", func (r chi.Router) {
+			r.Route("/favorites", func(r chi.Router) {
 				r.Patch("/", userHandler.HandleFavorites)
 				r.Get("/", userHandler.HandleGetUserFavorites)
 				r.Patch("/last-seen", userHandler.HandleLastSeenFavorite)
 			})
-			r.Route("/culturais", func (r chi.Router) {
+			r.Route("/culturais", func(r chi.Router) {
 				r.Get("/", userHandler.HandleGetOrganizerCulturais)
 				r.Get("/organizer", userHandler.HandleGetOrganizerInfo)
 			})

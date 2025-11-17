@@ -1,3 +1,4 @@
+// src/components/LandingPage.jsx
 import { useUser } from '../contexts/UserContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -58,8 +59,8 @@ const LandingPage = () => {
   return (
     <>
       <InfoModal isOpen={isInfoModalOpen} onClose={() => setInfoModalOpen(false)} />
-      <main className="phone">
-        <div className="screen">
+      <main className="screen">
+        <div className="landing-container">
           <img src={logo} alt="Logo Cultural" className="logo-img" />
           <div className="box">
             <div className="welcome-container">

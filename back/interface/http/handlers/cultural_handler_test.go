@@ -11,15 +11,14 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"poc2/back/application/cultural"
-	"poc2/back/interface/http/handlers"
-	culturalModel "poc2/back/interface/model"
-	"strconv"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"poc2/back/interface/http/handlers"
+	culturalModel "poc2/back/interface/model"
 )
 
 // MockCulturalUseCase is a mock of cultural.UseCase
@@ -27,20 +26,20 @@ type MockCulturalUseCase struct {
 	mock.Mock
 }
 
-func (m *MockCulturalUseCase) CreateCultural(ctx context.Context, req culturalModel.CreateCulturalRequest) (*culturalModel.CreateCulturalResponse, error) {
+func (m *MockCulturalUseCase) CreateCultural(ctx context.Context, req culturalModel.CreateCulturalRequest) (culturalModel.CreateCulturalResponse, error) {
 	args := m.Called(ctx, req)
 	if args.Get(0) == nil {
-		return nil, args.Error(1)
+		return culturalModel.CreateCulturalResponse{}, args.Error(1)
 	}
-	return args.Get(0).(*culturalModel.CreateCulturalResponse), args.Error(1)
+	return args.Get(0).(culturalModel.CreateCulturalResponse), args.Error(1)
 }
 
-func (m *MockCulturalUseCase) GetCultural(ctx context.Context, id int, culturalType string) (interface{}, error) {
+func (m *MockCulturalUseCase) GetCultural(ctx context.Context, id int, culturalType string) (culturalModel.CulturalResponse, error) {
 	args := m.Called(ctx, id, culturalType)
 	if args.Get(0) == nil {
-		return nil, args.Error(1)
+		return culturalModel.CulturalResponse{}, args.Error(1)
 	}
-	return args.Get(0), args.Error(1)
+	return args.Get(0).(culturalModel.CulturalResponse), args.Error(1)
 }
 
 func (m *MockCulturalUseCase) UpdateCultural(ctx context.Context, req culturalModel.UpdateCulturalRequest) error {
@@ -51,6 +50,22 @@ func (m *MockCulturalUseCase) UpdateCultural(ctx context.Context, req culturalMo
 func (m *MockCulturalUseCase) DeleteCultural(ctx context.Context, id int, culturalType string) error {
 	args := m.Called(ctx, id, culturalType)
 	return args.Error(0)
+}
+
+func (m *MockCulturalUseCase) GetAllCulturais(ctx context.Context) (culturalModel.AllCulturaisResponse, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return culturalModel.AllCulturaisResponse{}, args.Error(1)
+	}
+	return args.Get(0).(culturalModel.AllCulturaisResponse), args.Error(1)
+}
+
+func (m *MockCulturalUseCase) GetHomeCulturais(ctx context.Context) (culturalModel.AllCulturaisResponse, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return culturalModel.AllCulturaisResponse{}, args.Error(1)
+	}
+	return args.Get(0).(culturalModel.AllCulturaisResponse), args.Error(1)
 }
 
 func TestHandleCreateCultural(t *testing.T) {
@@ -75,8 +90,8 @@ func TestHandleCreateCultural(t *testing.T) {
 
 		// Add JSON data
 		jsonData, _ := json.Marshal(culturalModel.CreateCulturalRequest{
-			Name: "Test Event",
-			Type: "event",
+			Title: "Test Event",
+			Type:  "event",
 		})
 		_ = writer.WriteField("data", string(jsonData))
 
@@ -90,7 +105,7 @@ func TestHandleCreateCultural(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		expectedResponse := &culturalModel.CreateCulturalResponse{ID: 1, Type: "event"}
+		expectedResponse := culturalModel.CreateCulturalResponse{ID: 1, Type: "event"}
 		mockUseCase.On("CreateCultural", mock.Anything, mock.AnythingOfType("culturalModel.CreateCulturalRequest")).Return(expectedResponse, nil)
 
 		handler.HandleCreateCultural(rr, req)
@@ -112,8 +127,8 @@ func TestHandleCreateCultural(t *testing.T) {
 		body := &bytes.Buffer{}
 		writer := multipart.NewWriter(body)
 		jsonData, _ := json.Marshal(culturalModel.CreateCulturalRequest{
-			Name: "Test Attraction",
-			Type: "tourist_attraction",
+			Title: "Test Attraction",
+			Type:  "tourist_attraction",
 		})
 		_ = writer.WriteField("data", string(jsonData))
 		writer.Close()
@@ -139,8 +154,8 @@ func TestHandleCreateCultural(t *testing.T) {
 		body := &bytes.Buffer{}
 		writer := multipart.NewWriter(body)
 		jsonData, _ := json.Marshal(culturalModel.CreateCulturalRequest{
-			Name: "Test Error",
-			Type: "event",
+			Title: "Test Error",
+			Type:  "event",
 		})
 		_ = writer.WriteField("data", string(jsonData))
 		writer.Close()

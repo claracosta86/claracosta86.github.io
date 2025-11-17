@@ -1,7 +1,6 @@
 import React from 'react';
-import './NotificationModal.css'; // Crie ou mova o CSS correspondente
 
-const NotificationModal = ({ isOpen, onClose, notifications }) => {
+export const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
   if (!isOpen) return null;
 
   const handleLinkClick = (culturalID, culturalType) => async () => {
@@ -15,14 +14,14 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
         return (
           <p>
             Veja as atualizações de{' '}
-            <button onClick={() => handleLinkClick(notif.id, notif.type)}>{notif.title}</button>
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button>
           </p>
         );
       case 'canceled':
         return (
           <p>
             O cultural{' '}
-            <button onClick={() => handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button> foi
             cancelado.
           </p>
         );
@@ -30,7 +29,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
         return (
           <p>
             O cultural{' '}
-            <button onClick={() => handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button> foi
             encerrado.
           </p>
         );
@@ -38,7 +37,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
         return (
           <p>
             Veja os novos comentários de{' '}
-            <button onClick={() => handleLinkClick(notif.id, notif.type)}>{notif.title}</button>.
+            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button>.
           </p>
         );
       default:
@@ -55,8 +54,8 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
           {notifications.length === 0 ? (
             <p>Você não tem novas notificações.</p>
           ) : (
-            notifications.map((notif, index) => (
-              <div key={notif.ID} className="notification-item">
+            notifications.map((notif) => (
+              <div key={notif.id} className="notification-item">
                 {renderNotificationContent(notif)}
               </div>
             ))

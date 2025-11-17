@@ -1,8 +1,8 @@
-package commentary
+package comment
 
-type Commentary struct {
+type Comment struct {
 	CulturalType string `json:"cultural_type"`
-	Commentary   string `json:"commentary"`
+	Comment      string `json:"comment"`
 	CreatedAt    string `json:"created_at"`
 	UpdatedAt    string `json:"updated_at"`
 	ID           int    `json:"id"`
@@ -10,4 +10,4 @@ type Commentary struct {
 	UserName     string `json:"user_name"`
 }
 
-type Commentaries []Commentary
+type Comments []Comment

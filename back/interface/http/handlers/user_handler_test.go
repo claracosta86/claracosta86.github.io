@@ -9,13 +9,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"poc2/back/application/user"
-	"poc2/back/interface/http/handlers"
-	userModel "poc2/back/interface/model"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"poc2/back/interface/http/handlers"
+	userModel "poc2/back/interface/model"
 )
 
 // MockUseCase is a mock of user.UseCase
@@ -36,12 +35,12 @@ func (m *MockUserUseCase) LoginUser(ctx context.Context, request userModel.Login
 	return args.Get(0).(*userModel.LoginUserResponse), args.Error(1)
 }
 
-func (m *MockUserUseCase) GetUserProfile(ctx context.Context, userID int) (*userModel.UserProfileResponse, error) {
+func (m *MockUserUseCase) GetUserProfile(ctx context.Context, userID int) (*userModel.GetUserProfileResponse, error) {
 	args := m.Called(ctx, userID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*userModel.UserProfileResponse), args.Error(1)
+	return args.Get(0).(*userModel.GetUserProfileResponse), args.Error(1)
 }
 
 func (m *MockUserUseCase) UpdateUserProfile(ctx context.Context, userID int, request userModel.UpdateUserProfileRequest) error {
@@ -64,12 +63,12 @@ func (m *MockUserUseCase) ToggleFavorite(ctx context.Context, userID int, reques
 	return args.Error(0)
 }
 
-func (m *MockUserUseCase) GetUserFavorites(ctx context.Context, userID int) (*userModel.FavoritesResponse, error) {
+func (m *MockUserUseCase) GetUserFavorites(ctx context.Context, userID int) ([]userModel.CulturalList, error) {
 	args := m.Called(ctx, userID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*userModel.FavoritesResponse), args.Error(1)
+	return args.Get(0).([]userModel.CulturalList), args.Error(1)
 }
 
 func (m *MockUserUseCase) UpdateLastSeenFavorite(ctx context.Context, userID int, request userModel.FavoriteRequest) error {
@@ -77,20 +76,20 @@ func (m *MockUserUseCase) UpdateLastSeenFavorite(ctx context.Context, userID int
 	return args.Error(0)
 }
 
-func (m *MockUserUseCase) GetOrganizerCulturais(ctx context.Context, userID int) (*userModel.OrganizerCulturaisResponse, error) {
+func (m *MockUserUseCase) GetOrganizerCulturais(ctx context.Context, userID int) ([]userModel.CulturalList, error) {
 	args := m.Called(ctx, userID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*userModel.OrganizerCulturaisResponse), args.Error(1)
+	return args.Get(0).([]userModel.CulturalList), args.Error(1)
 }
 
-func (m *MockUserUseCase) GetOrganizerInfo(ctx context.Context, userID int) (*userModel.OrganizerInfoResponse, error) {
+func (m *MockUserUseCase) GetOrganizerInfo(ctx context.Context, userID int) (*userModel.GetOrganizerInfoResponse, error) {
 	args := m.Called(ctx, userID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*userModel.OrganizerInfoResponse), args.Error(1)
+	return args.Get(0).(*userModel.GetOrganizerInfoResponse), args.Error(1)
 }
 
 func TestHandleRegisterUser(t *testing.T) {
@@ -102,7 +101,7 @@ func TestHandleRegisterUser(t *testing.T) {
 			Name:     "Test User",
 			Email:    "test@example.com",
 			Password: "password",
-			UserType: "common",
+			Type:     "common",
 		})
 
 		req, err := http.NewRequest("POST", "/users/register", bytes.NewBuffer(requestBody))
@@ -128,7 +127,7 @@ func TestHandleRegisterUser(t *testing.T) {
 			Name:     "Test User",
 			Email:    "test@example.com",
 			Password: "password",
-			UserType: "common",
+			Type:     "common",
 		})
 
 		req, err := http.NewRequest("POST", "/users/register", bytes.NewBuffer(requestBody))
@@ -166,8 +165,7 @@ func TestHandleUserLogin(t *testing.T) {
 
 		expectedResponse := &userModel.LoginUserResponse{
 			UserID: 1,
-			Name:   "Test User",
-			Email:  "test@example.com",
+			Type:   "common",
 		}
 
 		mockUseCase.On("LoginUser", mock.Anything, mock.AnythingOfType("userModel.LoginUserRequest")).Return(expectedResponse, nil)
@@ -248,7 +246,7 @@ func TestHandleGetUserProfile(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		expectedResponse := &userModel.UserProfileResponse{
+		expectedResponse := &userModel.GetUserProfileResponse{
 			Name:  "Test User",
 			Email: "test@example.com",
 		}
@@ -259,7 +257,7 @@ func TestHandleGetUserProfile(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, rr.Code)
 
-		var actualResponse userModel.UserProfileResponse
+		var actualResponse userModel.GetUserProfileResponse
 		json.Unmarshal(rr.Body.Bytes(), &actualResponse)
 		assert.Equal(t, *expectedResponse, actualResponse)
 

@@ -1,19 +1,4 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body, #root {
-  background-color: #eaeaea;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.phone {
+.screen {
   width: 375px; 
   height: 812px;
   border: 1px solid #ccc;
@@ -25,7 +10,7 @@ body, #root {
   flex-direction: column;
 }
 
-.screen {
+.landing-container {
   flex: 1;
   display: flex;
   flex-direction: column;

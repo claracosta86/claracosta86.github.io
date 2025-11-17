@@ -2,6 +2,7 @@
 import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import NotificationModal from './NotificationModal/NotificationModal';
 import './styles/card.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -17,78 +18,6 @@ import priceIcon from '../assets/price-icon.png';
 import accessibleIcon from '../assets/accessibility-icon.png';
 import mailIcon from '../assets/mail-icon.png';
 import logoutIcon from '../assets/logout-icon.png';
-
-export const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
-  if (!isOpen) return null;
-
-  const handleLinkClick = (culturalID, culturalType) => async () => {
-    let isEvent = culturalType === 'event' ? true : false;
-    navigate(`/card/${culturalID}`, { state: { userID, userType, event: isEvent } });
-  };
-
-  const renderNotificationContent = (notif) => {
-    switch (notif.notificationType) {
-      case 'updated':
-        return (
-          <p>
-            Veja as atualizações de{' '}
-            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button>
-          </p>
-        );
-      case 'canceled':
-        return (
-          <p>
-            O cultural{' '}
-            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button> foi
-            cancelado.
-          </p>
-        );
-      case 'closed':
-        return (
-          <p>
-            O cultural{' '}
-            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button> foi
-            encerrado.
-          </p>
-        );
-      case 'commented':
-        return (
-          <p>
-            Veja os novos comentários de{' '}
-            <button onClick={handleLinkClick(notif.id, notif.culturalType)}>{notif.title}</button>.
-          </p>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <h2 className="modal-title">Notificações</h2>
-
-        <div className="modal-content">
-          {notifications.length === 0 ? (
-            <p>Você não tem novas notificações.</p>
-          ) : (
-            notifications.map((notif) => (
-              <div key={notif.id} className="notification-item">
-                {renderNotificationContent(notif)}
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="modal-actions">
-          <button onClick={onClose} className="modal-close-btn">
-            Fechar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const CardPage = () => {
   const navigate = useNavigate();
@@ -107,8 +36,6 @@ const CardPage = () => {
 
   useEffect(() => {
     const fetchCulturalDataAndFavorites = async () => {
-          console.log(`%cuseEffect ACIONADO em ${new Date().toLocaleTimeString()}`, 'color: orange');
-
       try {
         console.log(`Fetching cultural details for culturalType: ${culturalType}, id: ${id}`);
         const culturalResponse = await fetch(`http://localhost:8080/culturais/${culturalType}/${id}`);

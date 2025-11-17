@@ -13,10 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"poc2/back/application/notification"
 	"poc2/back/interface/http/handlers"
 	notificationModel "poc2/back/interface/model"
-
 )
 
 // MockNotificationUseCase is a mock of notification.UseCase
@@ -24,12 +22,12 @@ type MockNotificationUseCase struct {
 	mock.Mock
 }
 
-func (m *MockNotificationUseCase) GetNotifications(ctx context.Context, userID int) ([]notificationModel.Notification, error) {
+func (m *MockNotificationUseCase) GetNotifications(ctx context.Context, userID int) (*notificationModel.GetNotificationsResponse, error) {
 	args := m.Called(ctx, userID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).([]notificationModel.Notification), args.Error(1)
+	return args.Get(0).(*notificationModel.GetNotificationsResponse), args.Error(1)
 }
 
 func (m *MockNotificationUseCase) MarkNotificationsAsSeen(ctx context.Context, userID int, notificationIDs []int) error {
@@ -49,15 +47,17 @@ func TestHandleGetUserNotifications(t *testing.T) {
 		chiCtx.URLParams.Add("userID", "1")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		expectedResponse := []notificationModel.Notification{
-			{ID: 1, Message: "Notification 1"},
+		expectedResponse := notificationModel.GetNotificationsResponse{
+			Cultural: []notificationModel.NotificationCulturalList{
+				{ID: 1, NotificationType: "update"},
+			},
 		}
 		mockUseCase.On("GetNotifications", mock.Anything, 1).Return(expectedResponse, nil)
 
 		handler.HandleGetUserNotifications(rr, req)
 
 		assert.Equal(t, http.StatusOK, rr.Code)
-		var resp []notificationModel.Notification
+		var resp notificationModel.GetNotificationsResponse
 		json.Unmarshal(rr.Body.Bytes(), &resp)
 		assert.Equal(t, expectedResponse, resp)
 		mockUseCase.AssertExpectations(t)

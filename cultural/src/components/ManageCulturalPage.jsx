@@ -1,5 +1,7 @@
 // src/components/ManageCulturalPage.jsx
 import { useUser } from '../contexts/UserContext';
+import RemoveModal from './RemoveModal/RemoveModal'; 
+import NotificationModal from './NotificationModal/NotificationModal';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/profile.css';
@@ -12,104 +14,6 @@ import homeIcon from '../assets/home-icon.png';
 import addIcon from '../assets/add-icon.png';
 import favoriteIcon from '../assets/favorite-icon.png';
 import searchIcon from '../assets/search-icon.png';
-
-const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
-  if (!isOpen) return null;
-
-  const handleLinkClick = (culturalID, culturalType) => async () => {
-    let isEvent = culturalType === 'event' ? true : false;
-    navigate(`/card/${culturalID}`, { state: { userID, userType, event: isEvent } });
-  };
-
-  const renderNotificationContent = (notif) => {
-    switch (notif.notificationType) {
-      case 'updated':
-        return (
-          <p>
-            Veja as atualizações de{' '}
-            <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button>
-          </p>
-        );
-      case 'canceled':
-        return (
-          <p>
-            O cultural{' '}
-            <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi
-            cancelado.
-          </p>
-        );
-      case 'closed':
-        return (
-          <p>
-            O cultural{' '}
-            <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button> foi
-            encerrado.
-          </p>
-        );
-      case 'commented':
-        return (
-          <p>
-            Veja os novos comentários de{' '}
-            <button onClick={handleLinkClick(notif.id, notif.type)}>{notif.title}</button>.
-          </p>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <h2 className="modal-title">Notificações</h2>
-
-        <div className="modal-content">
-          {notifications.length === 0 ? (
-            <p>Você não tem novas notificações.</p>
-          ) : (
-            notifications.map((notif) => (
-              <div key={notif.id} className="notification-item">
-                {renderNotificationContent(notif)}
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="modal-actions">
-          <button onClick={onClose} className="modal-close-btn">
-            Fechar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const RemoveFavoriteModal = ({ isOpen, onClose, onConfirm }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <h2 className="modal-title">Confirmar Remoção</h2>
-        <div className="modal-content">
-          <p>
-            Você realmente deseja excluir o evento/ponto turístico da plataforma?
-          </p>
-        </div>
-        <div className="modal-actions">
-          <button onClick={onClose} className="modal-close-btn">
-            Cancelar
-          </button>
-          <button onClick={onConfirm} className="modal-confirm-btn">
-            Remover
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 
 const ManageCulturalPage = () => {
   const navigate = useNavigate();
@@ -130,7 +34,7 @@ const ManageCulturalPage = () => {
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
 
-  const [isRemoveFavoriteModalOpen, setRemoveFavoriteModalOpen] = useState(false);
+  const [isRemoveModalOpen, setRemoveModalOpen] = useState(false);
   const [culturalToRemove, setCulturalToRemove] = useState(null);
 
   const handleNotificationIconClick = async () => {
@@ -224,11 +128,11 @@ const ManageCulturalPage = () => {
 
   const openRemoveModal = (cultural) => {
     setCulturalToRemove(cultural);
-    setRemoveFavoriteModalOpen(true);
+    setRemoveModalOpen(true);
   };
 
   const closeRemoveModal = () => {
-    setRemoveFavoriteModalOpen(false);
+    setRemoveModalOpen(false);
     setCulturalToRemove(null);
   };
 
@@ -265,8 +169,8 @@ const ManageCulturalPage = () => {
         userID={userID}
         userType={userType}
       />
-      <RemoveFavoriteModal
-        isOpen={isRemoveFavoriteModalOpen}
+      <RemoveModal
+        isOpen={isRemoveModalOpen}
         onClose={closeRemoveModal}
         onConfirm={handleConfirmRemove}
       />

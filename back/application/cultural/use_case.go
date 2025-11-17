@@ -4,14 +4,13 @@ import (
 	"context"
 	"errors"
 
-	"poc2/back/interface/model"
 	"poc2/back/domain/cultural"
 	"poc2/back/domain/user"
-
+	"poc2/back/interface/model"
 )
 
 const (
-	CulturalTypeEvent          = "event"
+	CulturalTypeEvent             = "event"
 	CulturalTypeTouristAttraction = "tourist_attraction"
 )
 
@@ -23,7 +22,7 @@ type UseCase interface {
 	GetCultural(ctx context.Context, id int, culturalType string) (model.CulturalResponse, error)
 
 	// UpdateCultural updates a cultural entry by ID
-	UpdateCultural(ctx context.Context, id int, data model.UpdateCulturalRequest) error
+	UpdateCultural(ctx context.Context, data model.UpdateCulturalRequest) error
 
 	// DeleteCultural deletes a cultural entry by ID
 	DeleteCultural(ctx context.Context, id int, culturalType string) error
@@ -37,7 +36,7 @@ type UseCase interface {
 
 type culturalUseCase struct {
 	culturalService cultural.Service
-	userService      user.Service
+	userService     user.Service
 }
 
 func NewUseCase(culturalService cultural.Service, userService user.Service) UseCase {
@@ -78,31 +77,31 @@ func (uc *culturalUseCase) GetCultural(ctx context.Context, id int, culturalType
 	case CulturalTypeEvent:
 		event, err := uc.culturalService.GetEventByID(ctx, id)
 		return model.CulturalResponse{
-			ID:    event.ID,
-			Title: event.Title,
-			Description: event.Description,
-			Location: event.Location,
-			Price: event.Price,
+			ID:           event.ID,
+			Title:        event.Title,
+			Description:  event.Description,
+			Location:     event.Location,
+			Price:        event.Price,
 			IsAccessible: event.IsAccessible,
 			Organizer: model.Organizer{
 				ID:    event.OrganizerID,
 				Email: event.OrganizerEmail,
 			},
 			Image: event.Image,
-			Event: model.EventDateInformation{	
-				StartDate:   event.StartDate,
-				EndDate:     event.EndDate,
+			Event: model.EventDateInformation{
+				StartDate:    event.StartDate,
+				EndDate:      event.EndDate,
 				WorkingHours: event.WorkingHours,
 			},
 		}, err
 	case CulturalTypeTouristAttraction:
 		attraction, err := uc.culturalService.GetTouristAttractionByID(ctx, id)
 		return model.CulturalResponse{
-			ID:    attraction.ID,
-			Title: attraction.Title,
-			Description: attraction.Description,
-			Location: attraction.Location,
-			Price: attraction.Price,
+			ID:           attraction.ID,
+			Title:        attraction.Title,
+			Description:  attraction.Description,
+			Location:     attraction.Location,
+			Price:        attraction.Price,
 			IsAccessible: attraction.IsAccessible,
 			Organizer: model.Organizer{
 				ID:    attraction.OrganizerID,
@@ -118,13 +117,13 @@ func (uc *culturalUseCase) GetCultural(ctx context.Context, id int, culturalType
 	return model.CulturalResponse{}, errors.New("invalid cultural type")
 }
 
-func (uc *culturalUseCase) UpdateCultural(ctx context.Context, id int, data model.UpdateCulturalRequest) error {
+func (uc *culturalUseCase) UpdateCultural(ctx context.Context, data model.UpdateCulturalRequest) error {
 	switch data.Type {
 	case CulturalTypeEvent:
-		return uc.culturalService.UpdateEventByID(ctx, id, data.Title, data.Description, data.Location,
+		return uc.culturalService.UpdateEventByID(ctx, data.ID, data.Title, data.Description, data.Location,
 			data.Event.StartDate, data.Event.EndDate, data.Event.WorkingHours, data.Price, data.IsAccessible, data.OrganizerID, data.Image)
 	case CulturalTypeTouristAttraction:
-		return uc.culturalService.UpdateTouristAttractionByID(ctx, id, data.Title, data.Description, data.Location,
+		return uc.culturalService.UpdateTouristAttractionByID(ctx, data.ID, data.Title, data.Description, data.Location,
 			data.TouristAttraction.OpenDays, data.TouristAttraction.OpenTime, data.Price, data.IsAccessible, data.OrganizerID, data.Image)
 	}
 	return errors.New("invalid cultural type")
@@ -136,7 +135,7 @@ func (uc *culturalUseCase) DeleteCultural(ctx context.Context, id int, culturalT
 		if err := uc.culturalService.DeleteEventByID(ctx, id); err != nil {
 			return err
 		}
-		
+
 		return uc.userService.RemoveEventFromAllUsers(ctx, []int{id})
 
 	case CulturalTypeTouristAttraction:
@@ -161,7 +160,7 @@ func (uc *culturalUseCase) GetAllCulturais(ctx context.Context) (model.AllCultur
 	}
 
 	return model.AllCulturaisResponse{
-		Events: convertEventsToModel(events),
+		Events:             convertEventsToModel(events),
 		TouristAttractions: convertAttractionsToModel(attractions),
 	}, nil
 }
@@ -178,7 +177,7 @@ func (uc *culturalUseCase) GetHomeCulturais(ctx context.Context) (model.AllCultu
 	}
 
 	return model.AllCulturaisResponse{
-		Events: convertEventsToModel(events[:5]),
+		Events:             convertEventsToModel(events[:5]),
 		TouristAttractions: convertAttractionsToModel(attractions[:5]),
 	}, nil
 }
@@ -187,16 +186,16 @@ func convertEventsToModel(events []cultural.Event) []model.Event {
 	var eventModels []model.Event
 	for _, event := range events {
 		eventModels = append(eventModels, model.Event{
-			ID:          event.ID,
-			Title:       event.Title,
-			Description: event.Description,
-			Location:    event.Location,
-			Price:      event.Price,
+			ID:           event.ID,
+			Title:        event.Title,
+			Description:  event.Description,
+			Location:     event.Location,
+			Price:        event.Price,
 			IsAccessible: event.IsAccessible,
-			OrganizerID: event.OrganizerID,
-			Image:      event.Image,
-			StartDate:   event.StartDate,
-			EndDate:     event.EndDate,
+			OrganizerID:  event.OrganizerID,
+			Image:        event.Image,
+			StartDate:    event.StartDate,
+			EndDate:      event.EndDate,
 			WorkingHours: event.WorkingHours,
 		})
 	}
@@ -207,16 +206,16 @@ func convertAttractionsToModel(attractions []cultural.TouristAttraction) []model
 	var attractionModels []model.TouristAttraction
 	for _, attraction := range attractions {
 		attractionModels = append(attractionModels, model.TouristAttraction{
-			ID:          attraction.ID,
-			Title:       attraction.Title,
-			Description: attraction.Description,
-			Location:    attraction.Location,
-			Price:      attraction.Price,
+			ID:           attraction.ID,
+			Title:        attraction.Title,
+			Description:  attraction.Description,
+			Location:     attraction.Location,
+			Price:        attraction.Price,
 			IsAccessible: attraction.IsAccessible,
-			OrganizerID: attraction.OrganizerID,
-			Image:      attraction.Image,
-			OpenDays:   attraction.OpenDays,
-			OpenTime:   attraction.OpenTime,
+			OrganizerID:  attraction.OrganizerID,
+			Image:        attraction.Image,
+			OpenDays:     attraction.OpenDays,
+			OpenTime:     attraction.OpenTime,
 		})
 	}
 	return attractionModels

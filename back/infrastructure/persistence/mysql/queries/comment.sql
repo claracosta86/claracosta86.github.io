@@ -1,14 +1,14 @@
--- name: save-commentary
+-- name: save-comment
 INSERT INTO comments (cultural_id, cultural_type, user_id, content, created_at)
 VALUES (?, ?, ?, ?, NOW())
 
--- name: fetch-commentaries-by-cultural
+-- name: fetch-comments-by-cultural
 SELECT
     c.id,
     c.cultural_id,
     c.cultural_type,
     u.name AS user_name,
-    c.content AS commentary,
+    c.content AS comment,
     c.created_at,
     c.updated_at
 FROM comments c
