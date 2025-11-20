@@ -1,11 +1,10 @@
 import React from 'react';
 
-export const NotificationModal = ({ isOpen, onClose, notifications, navigate, userID, userType }) => {
+export const NotificationModal = ({ isOpen, onClose, notifications, navigate }) => {
   if (!isOpen) return null;
 
   const handleLinkClick = (culturalID, culturalType) => async () => {
-    let isEvent = culturalType === 'event' ? true : false;
-    navigate(`/card/${culturalID}`, { state: { userID, userType, event: isEvent } });
+    navigate(`/card/${culturalType}/${culturalID}`);
   };
 
   const renderNotificationContent = (notif) => {

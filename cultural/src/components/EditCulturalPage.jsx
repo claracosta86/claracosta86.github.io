@@ -1,17 +1,12 @@
 import { useUser } from '../contexts/UserContext';
 import { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
 import ConfirmModal from './ConfirmModal/ConfirmComment';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
+import { useNotifications } from '../hooks/useNotifications';
 import './styles/create.css';
-import logo from '../assets/logo.png';
-import notificationsIcon from '../assets/notifications-icon.png';
-import logoutIcon from '../assets/logout-icon.png';
-import userIcon from '../assets/user-icon.png';
-import homeIcon from '../assets/home-icon.png';
-import addIcon from '../assets/add-icon.png';
-import favoriteIcon from '../assets/favorite-icon.png';
-import searchIcon from '../assets/search-icon.png';
 
 const EditCulturalPage = () => {
   const navigate = useNavigate();
@@ -20,11 +15,20 @@ const EditCulturalPage = () => {
   const userID = user.userID;
   const userType = user.type;
 
+  const {
+    notifications,
+    isNotificationModalOpen,
+    setNotificationModalOpen,
+    fetchNotifications,
+    markNotificationsAsSeen,
+  } = useNotifications(userID);
+
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState(null);
 
-   const { id, culturalType } = useParams();
+  const { id, culturalType: initialCulturalType } = useParams();
+  const [culturalType, setCulturalType] = useState(initialCulturalType);
 
   const [error, setError] = useState('');
 
@@ -34,7 +38,9 @@ const EditCulturalPage = () => {
     const fetchCulturalDetails = async () => {
       try {
         console.log(`Fetching cultural details for culturalType: ${culturalType}, id: ${id}`);
-        const culturalResponse = await fetch(`http://localhost:8080/culturais/${culturalType}/${id}`);
+        const culturalResponse = await fetch(
+          `http://localhost:8080/culturais/${culturalType}/${id}`
+        );
         const cultural = await culturalResponse.json();
         console.log('Cultural details received:', cultural);
         setCulturalDetails(cultural);
@@ -43,7 +49,7 @@ const EditCulturalPage = () => {
       }
     };
     fetchCulturalDetails();
-  }, [culturalType]);
+  }, [culturalType, id]);
 
   // Estado único para gerenciar todos os campos do formulário
   const [formData, setFormData] = useState({
@@ -58,26 +64,45 @@ const EditCulturalPage = () => {
     workingHours: culturalDetails ? culturalDetails.workingHours : '',
   });
 
+  // Converte uma string de data para o formato 'YYYY-MM-DDTHH:MM'
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return ''; // Retorna vazio se a data não existir
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return ''; // Retorna vazio se a data for inválida
+
+    // Pega os componentes da data
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    // Monta a string no formato correto
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     // Apenas preenche o formulário se culturalDetails não for nulo
     if (culturalDetails) {
-        setFormData({
+      setFormData({
         title: culturalDetails.title || '',
         description: culturalDetails.description || '',
         location: culturalDetails.location || '',
         price: culturalDetails.price || 'R$0,00',
         isAccessible: culturalDetails.isAccessible || false,
-        
+
         startDate: formatDateForInput(culturalDetails.event ? culturalDetails.event.startDate : ''),
         endDate: formatDateForInput(culturalDetails.event ? culturalDetails.event.endDate : ''),
         durationHours: culturalDetails.event ? culturalDetails.event.durationHours : '',
-        
-        workingHours: culturalDetails.touristAttraction ? culturalDetails.touristAttraction.workingHours : '',
+
+        workingHours: culturalDetails.touristAttraction
+          ? culturalDetails.touristAttraction.workingHours
+          : '',
         image: culturalDetails.image || '',
       });
     }
-   }, [culturalDetails]);
-   
+  }, [culturalDetails]);
 
   const handleTypeChange = (event) => {
     setCulturalType(event.target.value);
@@ -90,7 +115,7 @@ const EditCulturalPage = () => {
       startDate: '',
       endDate: '',
       durationHours: '',
-      workingHours: '',      
+      workingHours: '',
     });
   };
 
@@ -159,66 +184,6 @@ const EditCulturalPage = () => {
     }
   };
 
-  // Converte uma string de data para o formato 'YYYY-MM-DDTHH:MM'
-  const formatDateForInput = (dateString) => {
-    if (!dateString) return ''; // Retorna vazio se a data não existir
-
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return ''; // Retorna vazio se a data for inválida
-
-    // Pega os componentes da data
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    // Monta a string no formato correto
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
-
-  const [notification, setNotification] = useState([]);
-  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-
-  const handleNotificationIconClick = async () => {
-    const fetchNewNotifications = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setNotification(data.culturals);
-          console.log('Notificações recebidas:', data.culturals);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar por novas notificações:', error);
-      }
-    };
-    fetchNewNotifications();
-    setNotificationModalOpen(true, notification);
-  };
-
-  const handleNotificationCloseClick = async () => {
-    const setNotificationsAsSeen = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/notifications/${userID}/seen`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notificationIDs: notification.map((notif) => notif.ID) }),
-          credentials: 'include',
-        });
-        if (response.ok) {
-          console.log('Notificações marcadas como vistas com sucesso.');
-        }
-      } catch (error) {
-        console.error('Erro ao atualizar favorito:', error);
-      }
-    };
-    setNotificationsAsSeen();
-    setNotificationModalOpen(false);
-  };
-  
   const closeConfirmModal = () => {
     setConfirmModalOpen(false);
   };
@@ -231,8 +196,8 @@ const EditCulturalPage = () => {
     <>
       <NotificationModal
         isOpen={isNotificationModalOpen}
-        onClose={() => handleNotificationCloseClick()}
-        notifications={notification}
+        onClose={markNotificationsAsSeen}
+        notifications={notifications}
         navigate={navigate}
         userID={userID}
         userType={userType}
@@ -244,22 +209,10 @@ const EditCulturalPage = () => {
       />
 
       <section className="screen" id="tela-home">
-        <header className="top-bar">
-          <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-          <div className="right-section">
-            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
-              <img src={logoutIcon} alt="Log-out" className="icon" />
-            </div>
-            <div onClick={handleNotificationIconClick} className="icon-button-container">
-              <img
-                src={notificationsIcon}
-                id="notifications-icon"
-                alt="Notificações"
-                className="icon"
-              />
-            </div>
-          </div>
-        </header>
+        <Header
+          onLogoutClick={() => setConfirmModalOpen(true)}
+          onNotificationClick={fetchNotifications}
+        />
 
         <div className="create-box">
           <div className="header-title">
@@ -372,7 +325,7 @@ const EditCulturalPage = () => {
                                         Quarta-feira	11:00–23:00
                                         Quinta-feira	11:00–23:00
                                         Sexta-feira	11:00–23:00
-                                        Sábado	11:00–23:00"
+                                        Sábado 24 horas"
                       value={formData.workingHours}
                       onChange={handleInputChange}
                       required
@@ -422,37 +375,19 @@ const EditCulturalPage = () => {
                 {error && <span className="error">{error}</span>}
               </>
             )}
-              <div className="button-container">
-                <div className="button-container-row">
-                  <button type="button" className="btn" onClick={() => navigate(-1)}>
-                    Cancelar
-                  </button>
-                  <button type="submit" className="btn">
-                    Atualizar
-                  </button>
-                </div>
+            <div className="button-container">
+              <div className="button-container-row">
+                <button type="button" className="btn" onClick={() => navigate(-1)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn">
+                  Atualizar
+                </button>
+              </div>
             </div>
           </form>
         </div>
-        <footer className="footer">
-          <Link to={`/home`} state={{ userID, userType }}>
-            <img src={homeIcon} alt="Logo Cultural" />
-          </Link>
-          <Link to={`/search`} state={{ userID, userType }}>
-            <img src={searchIcon} alt="Buscar" />
-          </Link>
-          {userType === 'organizer' && (
-            <Link to={`/create-cultural`} state={{ userID, userType }}>
-              <img src={addIcon} alt="Adicionar" className="mostImportantButton" />
-            </Link>
-          )}
-          <Link to={`/user/favorites`} state={{ userID, userType }}>
-            <img src={favoriteIcon} alt="Favoritos" />
-          </Link>
-          <Link to={`/user/profile`} state={{ userID, userType }}>
-            <img src={userIcon} alt="Usuário" />
-          </Link>
-        </footer>
+        <Footer userType={userType} />
       </section>
     </>
   );

@@ -4,15 +4,10 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
 import ConfirmModal from './ConfirmModal/ConfirmComment';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
+import { useNotifications } from '../hooks/useNotifications';
 import './styles/organizer.css';
-import logo from '../assets/logo.png';
-import notificationsIcon from '../assets/notifications-icon.png';
-import logoutIcon from '../assets/logout-icon.png';
-import userIcon from '../assets/user-icon.png';
-import homeIcon from '../assets/home-icon.png';
-import addIcon from '../assets/add-icon.png';
-import favoriteIcon from '../assets/favorite-icon.png';
-import searchIcon from '../assets/search-icon.png';
 
 const OrganizerPage = () => {
   const navigate = useNavigate();
@@ -22,6 +17,14 @@ const OrganizerPage = () => {
   const userType = user.type;
 
   const { id: organizerID } = useParams();
+
+  const {
+    notifications,
+    isNotificationModalOpen,
+    setNotificationModalOpen,
+    fetchNotifications,
+    markNotificationsAsSeen,
+  } = useNotifications(userID);
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
@@ -35,101 +38,61 @@ const OrganizerPage = () => {
 
   useEffect(() => {
     const fetchOrganizerData = async () => {
-            if (!userID) return;
+      if (!userID) return;
 
-            try {
-            const response = await fetch(`http://localhost:8080/users/${organizerID}/culturais/organizer`);
-            if (!response.ok) {
-                console.error('Falha ao buscar dados do organizador.');
-                return; 
-            }
+      try {
+        const response = await fetch(
+          `http://localhost:8080/users/${organizerID}/culturais/organizer`
+        );
+        if (!response.ok) {
+          console.error('Falha ao buscar dados do organizador.');
+          return;
+        }
 
-            const data = await response.json();
-            setOrganizerData({
-                name: data.name,
-                email: data.email,
-                organizerSince: data.organizerSince,
-                id: data.id,
-            });
+        const data = await response.json();
+        setOrganizerData({
+          name: data.name,
+          email: data.email,
+          organizerSince: data.organizerSince,
+          id: data.id,
+        });
 
-            if (data.culturalItems && data.culturalItems.length > 0) {
-                const culturaisWithDetails = await Promise.all(
-                data.culturalItems.map(async (cult) => {
-                    if (cult.type && cult.id) {
-                    const detailResponse = await fetch(
-                        `http://localhost:8080/culturais/${cult.type}/${cult.id}`
-                    );
-                    if (detailResponse.ok) {
-                        const detailData = await detailResponse.json();
-                        return {
-                        ...cult, 
-                        Title: detailData.title,
-                        Image: detailData.image,
-                        Location: detailData.location,
-                        Price: detailData.price,
-                        Event: cult.type === 'event' ? detailData.event : null,
-                        TouristAttraction: cult.type === 'tourist_attraction' ? detailData.touristAttraction : null,
-                        };
-                    }
-                    }
-                    return cult;
-                })
+        if (data.culturalItems && data.culturalItems.length > 0) {
+          const culturaisWithDetails = await Promise.all(
+            data.culturalItems.map(async (cult) => {
+              if (cult.type && cult.id) {
+                const detailResponse = await fetch(
+                  `http://localhost:8080/culturais/${cult.type}/${cult.id}`
                 );
-                setCulturais(culturaisWithDetails);
-            } else {
-                setCulturais([]);
-            }
-
-            } catch (error) {
-            console.error('Erro na requisição:', error);
-            }
-        };
-
-        fetchOrganizerData();
-    }, [userID]);
-
-  const [notification, setNotification] = useState([]);
-  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-
-  const handleNotificationIconClick = async () => {
-    const fetchNewNotifications = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setNotification(data.culturals);
-          console.log('Notificações recebidas:', data.culturals);
+                if (detailResponse.ok) {
+                  const detailData = await detailResponse.json();
+                  return {
+                    ...cult,
+                    Title: detailData.title,
+                    Image: detailData.image,
+                    Location: detailData.location,
+                    Price: detailData.price,
+                    Event: cult.type === 'event' ? detailData.event : null,
+                    TouristAttraction:
+                      cult.type === 'tourist_attraction' ? detailData.touristAttraction : null,
+                  };
+                }
+              }
+              return cult;
+            })
+          );
+          setCulturais(culturaisWithDetails);
+        } else {
+          setCulturais([]);
         }
       } catch (error) {
-        console.error('Erro ao buscar por novas notificações:', error);
+        console.error('Erro na requisição:', error);
       }
     };
-    fetchNewNotifications();
-    setNotificationModalOpen(true, notification);
-  };
 
-  const handleNotificationCloseClick = async () => {
-    const setNotificationsAsSeen = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/notifications/${userID}/seen`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notificationIDs: notification.map((notif) => notif.ID) }),
-          credentials: 'include',
-        });
-        if (response.ok) {
-          console.log('Notificações marcadas como vistas com sucesso.');
-        }
-      } catch (error) {
-        console.error('Erro ao atualizar favorito:', error);
-      }
-    };
-    setNotificationsAsSeen();
-    setNotificationModalOpen(false);
-  };
-  
+    fetchOrganizerData();
+  }, [userID, organizerID]);
+
   const closeConfirmModal = () => {
     setConfirmModalOpen(false);
   };
@@ -146,8 +109,8 @@ const OrganizerPage = () => {
     <>
       <NotificationModal
         isOpen={isNotificationModalOpen}
-        onClose={() => handleNotificationCloseClick()}
-        notifications={notification}
+        onClose={markNotificationsAsSeen}
+        notifications={notifications}
         navigate={navigate}
         userID={userID}
         userType={userType}
@@ -159,31 +122,25 @@ const OrganizerPage = () => {
       />
 
       <section className="screen" id="tela-home">
-        <header className="top-bar">
-          <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-          <div className="right-section">
-            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
-              <img src={logoutIcon} alt="Log-out" className="icon" />
-            </div>
-            <div onClick={handleNotificationIconClick} className="icon-button-container">
-              <img
-                src={notificationsIcon}
-                id="notifications-icon"
-                alt="Notificações"
-                className="icon"
-              />
-            </div>
-          </div>
-        </header>
+        <Header
+          onLogoutClick={() => setConfirmModalOpen(true)}
+          onNotificationClick={fetchNotifications}
+        />
         <div className="profile-box">
           <div className="header-title">
             <h2>Conheça o Organizador</h2>
           </div>
 
           <div key={organizerData.id} className="organizer-info">
-            <p><b>Nome:</b> {organizerData.name}</p>
-            <p><b>Contato:</b> {organizerData.email}</p>
-            <p><b>Tempo na plataforma:</b> {organizerData.organizerSince}</p>
+            <p>
+              <b>Nome:</b> {organizerData.name}
+            </p>
+            <p>
+              <b>Contato:</b> {organizerData.email}
+            </p>
+            <p>
+              <b>Tempo na plataforma:</b> {organizerData.organizerSince}
+            </p>
           </div>
           <p className="separator-unique"></p>
           <div className="favorites-list">
@@ -209,15 +166,15 @@ const OrganizerPage = () => {
                           <h3>{cult.Title}</h3>
                           <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
                           <div className="details-box">
-                            <span id='Working Hours'>
-                                {cult.type === 'event' && cult.Event && (
-                                  cult.Event.endDate === "" 
-                                    ? ` ${cult.Event.startDate}, de ${cult.Event.durationHours}`
-                                    : ` ${cult.Event.startDate} - ${cult.Event.endDate}, de ${cult.Event.durationHours}`
-                                )}
-                                {cult.type !== 'event' &&
-                                  cult.TouristAttraction &&
-                                  ` ${cult.TouristAttraction.workingHours}`}
+                            <span id="Working Hours">
+                              {cult.type === 'event' &&
+                                cult.Event &&
+                                (cult.Event.endDate === ''
+                                  ? ` ${cult.Event.startDate}, de ${cult.Event.durationHours}`
+                                  : ` ${cult.Event.startDate} - ${cult.Event.endDate}, de ${cult.Event.durationHours}`)}
+                              {cult.type !== 'event' &&
+                                cult.TouristAttraction &&
+                                ` ${cult.TouristAttraction.workingHours}`}
                             </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
@@ -244,25 +201,7 @@ const OrganizerPage = () => {
             </div>
           </div>
         </div>
-        <footer className="footer">
-          <Link to={`/home`} state={{ userID, userType }}>
-            <img src={homeIcon} alt="Logo Cultural" />
-          </Link>
-          <Link to={`/search`} state={{ userID, userType }}>
-            <img src={searchIcon} alt="Buscar" />
-          </Link>
-          {userType === 'organizer' && (
-            <Link to={`/create-cultural`} state={{ userID, userType }}>
-              <img src={addIcon} alt="Adicionar" className="mostImportantButton" />
-            </Link>
-          )}
-          <Link to={`/user/favorites`} state={{ userID, userType }}>
-            <img src={favoriteIcon} alt="Favoritos" />
-          </Link>
-          <Link to={`/user/profile`} state={{ userID, userType }}>
-            <img src={userIcon} alt="Usuário" />
-          </Link>
-        </footer>
+        <Footer userType={userType} />
       </section>
     </>
   );

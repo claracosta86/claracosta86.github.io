@@ -1,20 +1,15 @@
 // src/components/ManageCulturalPage.jsx
 import { useUser } from '../contexts/UserContext';
-import RemoveModal from './RemoveModal/RemoveFromApp'; 
+import RemoveModal from './RemoveModal/RemoveFromApp';
 import NotificationModal from './NotificationModal/NotificationModal';
 import ConfirmModal from './ConfirmModal/ConfirmComment';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
+import { useNotifications } from '../hooks/useNotifications';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/profile.css';
 import './styles/manage.css';
-import logo from '../assets/logo.png';
-import notificationsIcon from '../assets/notifications-icon.png';
-import logoutIcon from '../assets/logout-icon.png';
-import userIcon from '../assets/user-icon.png';
-import homeIcon from '../assets/home-icon.png';
-import addIcon from '../assets/add-icon.png';
-import favoriteIcon from '../assets/favorite-icon.png';
-import searchIcon from '../assets/search-icon.png';
 
 const ManageCulturalPage = () => {
   const navigate = useNavigate();
@@ -22,6 +17,14 @@ const ManageCulturalPage = () => {
   const { user } = useUser();
   const userID = user.userID;
   const userType = user.type;
+
+  const {
+    notifications,
+    isNotificationModalOpen,
+    setNotificationModalOpen,
+    fetchNotifications,
+    markNotificationsAsSeen,
+  } = useNotifications(userID);
 
   useEffect(() => {
     if (userID) {
@@ -32,52 +35,9 @@ const ManageCulturalPage = () => {
     }
   }, [userID, userType]);
 
-  const [notification, setNotification] = useState([]);
-  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-
   const [isRemoveModalOpen, setRemoveModalOpen] = useState(false);
   const [culturalToRemove, setCulturalToRemove] = useState(null);
-
-  const handleNotificationIconClick = async () => {
-    const fetchNewNotifications = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/notifications/${userID}`, {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setNotification(data.culturals);
-          console.log('Notificações recebidas:', data.culturals);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar por novas notificações:', error);
-      }
-    };
-    fetchNewNotifications();
-    setNotificationModalOpen(true, notification);
-  };
-
-  const handleNotificationCloseClick = async () => {
-    const setNotificationsAsSeen = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/notifications/${userID}/seen`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notificationIDs: notification.map((notif) => notif.ID) }),
-          credentials: 'include',
-        });
-        if (response.ok) {
-          console.log('Notificações marcadas como vistas com sucesso.');
-        }
-      } catch (error) {
-        console.error('Erro ao atualizar favorito:', error);
-      }
-    };
-    setNotificationsAsSeen();
-    setNotificationModalOpen(false);
-  };
 
   const handleGoBackClick = () => {
     navigate(-1);
@@ -106,7 +66,8 @@ const ManageCulturalPage = () => {
                     Location: detailData.location,
                     Price: detailData.price,
                     Event: cult.type === 'event' ? detailData.event : null,
-                    TouristAttraction: cult.type === 'tourist_attraction' ? detailData.touristAttraction : null,
+                    TouristAttraction:
+                      cult.type === 'tourist_attraction' ? detailData.touristAttraction : null,
                   };
                 }
               }
@@ -161,7 +122,7 @@ const ManageCulturalPage = () => {
       closeRemoveModal();
     }
   };
-  
+
   const closeConfirmModal = () => {
     setConfirmModalOpen(false);
   };
@@ -170,13 +131,12 @@ const ManageCulturalPage = () => {
     navigate('/');
   };
 
-
   return (
     <>
       <NotificationModal
         isOpen={isNotificationModalOpen}
-        onClose={() => handleNotificationCloseClick()}
-        notifications={notification}
+        onClose={markNotificationsAsSeen}
+        notifications={notifications}
         navigate={navigate}
         userID={userID}
         userType={userType}
@@ -186,29 +146,17 @@ const ManageCulturalPage = () => {
         onClose={closeRemoveModal}
         onConfirm={handleConfirmRemove}
       />
-       <ConfirmModal
+      <ConfirmModal
         isOpen={isConfirmModalOpen}
         onClose={closeConfirmModal}
         onConfirm={handleConfirmLogout}
       />
 
       <section className="screen" id="tela-home">
-        <header className="top-bar">
-          <img src={logo} alt="Logo Cultural" className="logo-tiny" />
-          <div className="right-section">
-            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
-              <img src={logoutIcon} alt="Log-out" className="icon" />
-            </div>
-            <div onClick={handleNotificationIconClick} className="icon-button-container">
-              <img
-                src={notificationsIcon}
-                id="notifications-icon"
-                alt="Notificações"
-                className="icon"
-              />
-            </div>
-          </div>
-        </header>
+        <Header
+          onLogoutClick={() => setConfirmModalOpen(true)}
+          onNotificationClick={fetchNotifications}
+        />
         <div className="profile-box">
           <div className="header-title">
             <h2>Meus Culturais</h2>
@@ -217,8 +165,7 @@ const ManageCulturalPage = () => {
             {culturais.length > 0 ? (
               culturais.map(
                 (cult) =>
-                  cult.Title &&
-                   (
+                  cult.Title && (
                     <div key={cult.id} className="manage-card">
                       <Link
                         to={`/card/${cult.type}/${cult.id}`}
@@ -231,32 +178,28 @@ const ManageCulturalPage = () => {
                           className="manage-img"
                         />
                         <div className="manage-details">
-                          <h3>{cult.Title}</h3> 
+                          <h3>{cult.Title}</h3>
                           <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
                           <div className="details-content">
                             <span>{cult.Location}</span> <br />
-                            <span>
-                                {cult.type === 'event' && cult.Event && (
-                                  cult.Event.endDate === "" 
-                                    ? ` ${cult.Event.startDate}, de ${cult.Event.durationHours}`
-                                    : ` ${cult.Event.startDate} - ${cult.Event.endDate}, de ${cult.Event.durationHours}`
-                                )}
-                                {cult.type !== 'event' &&
-                                  cult.TouristAttraction &&
-                                  ` ${cult.TouristAttraction.workingHours}`}
-                            </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'
                                 ? 'Gratuito'
                                 : `${cult.Price}`}
                             </span>
-
                           </div>
                         </div>
                       </Link>
                       <div className="actions-row">
-                        <button onClick={() => handleEditClick(cult.id, cult.type)} className="edit-btn">Editar</button>
-                      <button onClick={() => openRemoveModal(cult)} className="remove-btn">Excluir</button>
+                        <button
+                          onClick={() => handleEditClick(cult.id, cult.type)}
+                          className="edit-btn"
+                        >
+                          Editar
+                        </button>
+                        <button onClick={() => openRemoveModal(cult)} className="remove-btn">
+                          Excluir
+                        </button>
                       </div>
                     </div>
                   )
@@ -275,25 +218,7 @@ const ManageCulturalPage = () => {
             </div>
           </div>
         </div>
-        <footer className="footer">
-          <Link to={`/home`} state={{ userID, userType }}>
-            <img src={homeIcon} alt="Logo Cultural" />
-          </Link>
-          <Link to={`/search`} state={{ userID, userType }}>
-            <img src={searchIcon} alt="Buscar" />
-          </Link>
-          {userType === 'organizer' && (
-            <Link to={`/create-cultural`} state={{ userID, userType }}>
-              <img src={addIcon} alt="Adicionar" className="mostImportantButton" />
-            </Link>
-          )}
-          <Link to={`/user/favorites`} state={{ userID, userType }}>
-            <img src={favoriteIcon} alt="Favoritos" />
-          </Link>
-          <Link to={`/user/profile`} state={{ userID, userType }}>
-            <img src={userIcon} alt="Usuário" />
-          </Link>
-        </footer>
+        <Footer userType={userType} />
       </section>
     </>
   );
