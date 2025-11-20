@@ -158,7 +158,7 @@ const OrganizerPage = () => {
                         className="card-link"
                       >
                         <img
-                          src={`/thumb-size/${cult.Image}`}
+                          src={`http://localhost:8080/static/culturalthumbs/${cult.Image}`}
                           alt={cult.Title}
                           className="favorite-img"
                         />
@@ -166,15 +166,8 @@ const OrganizerPage = () => {
                           <h3>{cult.Title}</h3>
                           <p>{cult.type === 'event' ? 'Evento' : 'Ponto Turístico'}</p>
                           <div className="details-box">
-                            <span id="Working Hours">
-                              {cult.type === 'event' &&
-                                cult.Event &&
-                                (cult.Event.endDate === ''
-                                  ? ` ${cult.Event.startDate}, de ${cult.Event.durationHours}`
-                                  : ` ${cult.Event.startDate} - ${cult.Event.endDate}, de ${cult.Event.durationHours}`)}
-                              {cult.type !== 'event' &&
-                                cult.TouristAttraction &&
-                                ` ${cult.TouristAttraction.workingHours}`}
+                            <span id="Location">
+                              {cult.Location}
                             </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'

@@ -11,33 +11,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	gomock "go.uber.org/mock/gomock"
 
 	"poc2/back/interface/http/handlers"
 	commentModel "poc2/back/interface/model"
 )
 
-// MockCommentUseCase is a mock of comment.UseCase
-type MockCommentUseCase struct {
-	mock.Mock
-}
-
-func (m *MockCommentUseCase) CreateComment(ctx context.Context, req commentModel.CreateCommentRequest) error {
-	args := m.Called(ctx, req)
-	return args.Error(0)
-}
-
-func (m *MockCommentUseCase) GetComments(ctx context.Context, culturalID int, culturalType string) (commentModel.GetCommentsResponse, error) {
-	args := m.Called(ctx, culturalID, culturalType)
-	if args.Get(0) == nil {
-		return commentModel.GetCommentsResponse{}, args.Error(1)
-	}
-	return args.Get(0).(commentModel.GetCommentsResponse), args.Error(1)
-}
-
 func TestHandleCreateComment(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockCommentUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(commentModel.CreateCommentRequest{
@@ -50,16 +35,18 @@ func TestHandleCreateComment(t *testing.T) {
 		req, _ := http.NewRequest("POST", "/comments/", bytes.NewBuffer(requestBody))
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("CreateComment", mock.Anything, mock.AnythingOfType("commentModel.CreateCommentRequest")).Return(nil)
+		mockUseCase.EXPECT().CreateComment(gomock.Any(), gomock.AssignableToTypeOf(commentModel.CreateCommentRequest{})).Return(nil)
 
 		handler.HandleCreateComment(rr, req)
 
 		assert.Equal(t, http.StatusCreated, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 
 	t.Run("cultural not found", func(t *testing.T) {
-		mockUseCase := new(MockCommentUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(commentModel.CreateCommentRequest{
@@ -72,18 +59,20 @@ func TestHandleCreateComment(t *testing.T) {
 		req, _ := http.NewRequest("POST", "/comments/", bytes.NewBuffer(requestBody))
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("CreateComment", mock.Anything, mock.AnythingOfType("commentModel.CreateCommentRequest")).Return(errors.New("cultural not found"))
+		mockUseCase.EXPECT().CreateComment(gomock.Any(), gomock.AssignableToTypeOf(commentModel.CreateCommentRequest{})).Return(errors.New("cultural not found"))
 
 		handler.HandleCreateComment(rr, req)
 
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 }
 
 func TestHandleGetComment(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockCommentUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		req, _ := http.NewRequest("GET", "/comments/event/1", nil)
@@ -99,7 +88,7 @@ func TestHandleGetComment(t *testing.T) {
 				{UserName: "User1", Comment: "Comment 1"},
 			},
 		}
-		mockUseCase.On("GetComments", mock.Anything, 1, "event").Return(expectedResponse, nil)
+		mockUseCase.EXPECT().GetComments(gomock.Any(), 1, "event").Return(expectedResponse, nil)
 
 		handler.HandleGetComment(rr, req)
 
@@ -107,11 +96,13 @@ func TestHandleGetComment(t *testing.T) {
 		var resp commentModel.GetCommentsResponse
 		json.Unmarshal(rr.Body.Bytes(), &resp)
 		assert.Equal(t, expectedResponse, resp)
-		mockUseCase.AssertExpectations(t)
 	})
 
 	t.Run("not found", func(t *testing.T) {
-		mockUseCase := new(MockCommentUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		req, _ := http.NewRequest("GET", "/comments/event/99", nil)
@@ -122,11 +113,10 @@ func TestHandleGetComment(t *testing.T) {
 		chiCtx.URLParams.Add("culturalID", "99")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		mockUseCase.On("GetComments", mock.Anything, 99, "event").Return(nil, errors.New("comments not found"))
+		mockUseCase.EXPECT().GetComments(gomock.Any(), 99, "event").Return(commentModel.GetCommentsResponse{}, errors.New("comments not found"))
 
 		handler.HandleGetComment(rr, req)
 
 		assert.Equal(t, http.StatusNotFound, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 }
