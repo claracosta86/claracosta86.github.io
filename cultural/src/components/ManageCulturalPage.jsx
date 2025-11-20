@@ -1,7 +1,8 @@
 // src/components/ManageCulturalPage.jsx
 import { useUser } from '../contexts/UserContext';
-import RemoveModal from './RemoveModal/RemoveModal'; 
+import RemoveModal from './RemoveModal/RemoveFromApp'; 
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/profile.css';
@@ -33,6 +34,8 @@ const ManageCulturalPage = () => {
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const [isRemoveModalOpen, setRemoveModalOpen] = useState(false);
   const [culturalToRemove, setCulturalToRemove] = useState(null);
@@ -150,7 +153,7 @@ const ManageCulturalPage = () => {
       if (response.ok) {
         setCulturais((prevCulturais) => prevCulturais.filter((cult) => cult.id !== id));
       } else {
-        alert('Não foi possível excluir o cultural. Tente novamente.');
+        console.error('Não foi possível excluir o cultural. Tente novamente.');
       }
     } catch (error) {
       console.error('Erro de rede ao remover cultural:', error);
@@ -158,6 +161,15 @@ const ManageCulturalPage = () => {
       closeRemoveModal();
     }
   };
+  
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
+
 
   return (
     <>
@@ -174,13 +186,19 @@ const ManageCulturalPage = () => {
         onClose={closeRemoveModal}
         onConfirm={handleConfirmRemove}
       />
-      <section className="screen" id="tela-profile">
+       <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
+
+      <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}
@@ -200,8 +218,7 @@ const ManageCulturalPage = () => {
               culturais.map(
                 (cult) =>
                   cult.Title &&
-                  cult.Image &&
-                  cult.Location && (
+                   (
                     <div key={cult.id} className="manage-card">
                       <Link
                         to={`/card/${cult.type}/${cult.id}`}

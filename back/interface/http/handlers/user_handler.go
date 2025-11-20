@@ -2,25 +2,22 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
-	"fmt"
 
 	chi "github.com/go-chi/chi/v5"
 
 	"poc2/back/application/user"
 	userModel "poc2/back/interface/model"
-	"poc2/back/interface/http/middlewares/session"
 )
-
 
 const (
 	sessionName = "app-session"
 	userTypeKey = "userType"
 )
-
 
 type UserHandler struct {
 	userUseCase user.UseCase
@@ -237,7 +234,7 @@ func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Re
 // [404] User not found
 // [405] Invalid HTTP method
 // [500] Internal Server Error
-// [200] User deleted successfully
+// [204] User deleted successfully
 // /users/{userID}/profile/delete [DELETE]
 // HandleDeleteUser removes a user account
 func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -265,35 +262,34 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(map[string]string{"status": "user deleted successfully"})
 }
 
+// // /users/select-type [POST]
+// func (h *UserHandler) HandleUserTypeSelection(w http.ResponseWriter, r *http.Request) {
+// 	if err := r.ParseForm(); err != nil {
+// 		http.Error(w, "bad request", http.StatusBadRequest)
+// 		return
+// 	}
 
-// /users/select-type [POST]
-func (h *UserHandler) HandleUserTypeSelection(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
-		return
-	}
+// 	userType := r.Form.Get("userType")
+// 	if userType != "organizer" {
+// 		userType = "common"
+// 	}
 
-	userType := r.Form.Get("userType")
-	if userType != "organizer" {
-		userType = "common"
-	}
+// 	sess, _ := session.Store.Get(r, sessionName)
+// 	sess.Values[userTypeKey] = userType
+// 	_ = sess.Save(r, w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	json.NewEncoder(w).Encode(userModel.Type{Type: userType})
+// }
 
-	sess, _ := session.Store.Get(r, sessionName)
-	sess.Values[userTypeKey] = userType
-	_ = sess.Save(r, w)
-	w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(userModel.Type{Type: userType})
-}
-
-// // [400] Invalid data
-// // [404] User not found
-// // [405] Invalid HTTP method
-// // [500] Internal Server Error
-// // [200] User favorites recovered successfully
+// [400] Invalid data
+// [404] User not found
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [204] User favorites recovered successfully
 // /users/{userID}/profile/favorites [PATCH]
 func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
@@ -327,7 +323,7 @@ func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(map[string]string{"status": "favorites updated successfully"})
 }
 
@@ -342,7 +338,7 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 
@@ -371,14 +367,14 @@ func (h *UserHandler) HandleGetUserFavorites(w http.ResponseWriter, r *http.Requ
 // [404] User not found
 // [405] Invalid HTTP method
 // [500] Internal Server Error
-// [200] Organizer recovered successfully
+// [204] Organizer recovered successfully
 // /users/favorites/last-seen [PATCH]
 func (h *UserHandler) HandleLastSeenFavorite(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
@@ -404,7 +400,7 @@ func (h *UserHandler) HandleLastSeenFavorite(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(map[string]string{"status": "last seen favorite updated successfully"})
 }
 
@@ -419,7 +415,7 @@ func (h *UserHandler) HandleGetOrganizerCulturais(w http.ResponseWriter, r *http
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 
@@ -449,13 +445,13 @@ func (h *UserHandler) HandleGetOrganizerCulturais(w http.ResponseWriter, r *http
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [200] User favorites recovered successfully
-// HandleGetOrganizerInfo  
+// HandleGetOrganizerInfo
 func (h *UserHandler) HandleGetOrganizerInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	userIDStr := chi.URLParam(r, "userID")
 	userID, err := strconv.Atoi(userIDStr)
 

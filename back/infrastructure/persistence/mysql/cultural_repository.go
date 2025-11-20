@@ -10,12 +10,11 @@ import (
 	"github.com/nleof/goyesql"
 
 	"poc2/back/domain/cultural"
-
 )
 
 var (
 	//go:embed queries/cultural.sql
-	culturalEmbed []byte
+	culturalEmbed   []byte
 	culturalQueries goyesql.Queries
 )
 
@@ -34,15 +33,14 @@ func NewCulturalRepository(db *sql.DB) cultural.Repository {
 	}
 }
 
-
 func (r *culturalRepository) SaveEvent(ctx context.Context, title, description, location string,
 	startDate, finishDate, workingHours, price string, isAccessible bool, organizerID int, image string) (int, error) {
 	result, err := r.db.ExecContext(ctx, culturalQueries["create-event"],
 		title,
 		description,
 		location,
-		startDate, 
-		finishDate, 
+		startDate,
+		finishDate,
 		workingHours,
 		price,
 		isAccessible,
@@ -106,7 +104,7 @@ func (r *culturalRepository) FindEventByID(ctx context.Context, id int) (cultura
 			fmt.Println("No rows found for event ID:", id)
 			return cultural.Event{}, errors.New("cultural event not found")
 		}
-					fmt.Println(err)
+		fmt.Println(err)
 
 		return cultural.Event{}, err
 	}
@@ -143,7 +141,7 @@ func (r *culturalRepository) FindTouristAttractionByID(ctx context.Context, id i
 func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title, description, location string,
 	startDate, finishDate, workingHours string, price string, isAccessible bool, organizerID int, image string) error {
 
-	_, err := r.db.ExecContext(ctx, culturalQueries["update-event"], id,
+	_, err := r.db.ExecContext(ctx, culturalQueries["update-event"],
 		title,
 		description,
 		location,
@@ -153,14 +151,16 @@ func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title,
 		isAccessible,
 		organizerID,
 		image,
+		id,
 	)
-	return fmt.Errorf("failed to update event: %w", err)
+	return err
 }
 
 func (r *culturalRepository) UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, openDays, openTime string,
 	price string, isAccessible bool, organizerID int, image string) error {
 
-	_, err := r.db.ExecContext(ctx, culturalQueries["update-tourist-attraction"], id,
+	fmt.Println(title, description, location, openDays, openTime, price, isAccessible, organizerID, image, id)
+	_, err := r.db.ExecContext(ctx, culturalQueries["update-tourist-attraction"],
 		title,
 		description,
 		location,
@@ -170,19 +170,21 @@ func (r *culturalRepository) UpdateTouristAttractionByID(ctx context.Context, id
 		isAccessible,
 		organizerID,
 		image,
+		id,
 	)
-	return fmt.Errorf("failed to update tourist attraction: %w", err)
+
+	return err
 }
 
 func (r *culturalRepository) DeleteEventByID(ctx context.Context, id int) error {
 	_, err := r.db.ExecContext(ctx, culturalQueries["delete-event"], id)
 
-	return fmt.Errorf("failed to delete event: %w", err)
+	return err
 }
 
 func (r *culturalRepository) DeleteTouristAttractionByID(ctx context.Context, id int) error {
 	_, err := r.db.ExecContext(ctx, culturalQueries["delete-tourist-attraction"], id)
-	return fmt.Errorf("failed to delete tourist attraction: %w", err)
+	return err
 }
 
 func (r *culturalRepository) FindEventsIDsByOrganizer(ctx context.Context, organizerID int) ([]int, error) {

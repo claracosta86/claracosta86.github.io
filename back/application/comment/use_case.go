@@ -3,6 +3,7 @@ package comment
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"poc2/back/domain/comment"
 	"poc2/back/domain/cultural"
@@ -65,13 +66,14 @@ func (uc *commentaryUseCase) GetComments(ctx context.Context, culturalID int, cu
 		}
 	}
 
-	commentaries, err := uc.commentaryService.GetComments(ctx, culturalID, culturalType)
+	comments, err := uc.commentaryService.GetComments(ctx, culturalID, culturalType)
 	if err != nil {
-		return model.GetCommentsResponse{}, errors.New("commentaries not found")
+		fmt.Println(err)
+		return model.GetCommentsResponse{}, errors.New("comments not found")
 	}
 
 	var response []model.Comment
-	for _, comment := range commentaries {
+	for _, comment := range comments {
 		response = append(response, model.Comment{
 			ID:           comment.ID,
 			CulturalID:   comment.CulturalID,
@@ -79,7 +81,6 @@ func (uc *commentaryUseCase) GetComments(ctx context.Context, culturalID int, cu
 			UserName:     comment.UserName,
 			Comment:      comment.Comment,
 			CreatedAt:    comment.CreatedAt,
-			UpdatedAt:    comment.UpdatedAt,
 		})
 	}
 

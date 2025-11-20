@@ -21,6 +21,8 @@ const CommentaryPage = () => {
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
 
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+
   const { id, culturalType } = useParams();
 
   const [error, setError] = useState('');
@@ -92,6 +94,15 @@ const CommentaryPage = () => {
     setNotificationsAsSeen();
     setNotificationModalOpen(false);
   };
+  
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
+
 
   const handleGoBackClick = () => {
     navigate(-1);
@@ -104,7 +115,7 @@ const CommentaryPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/commentarys/`, {
+      const response = await fetch(`http://localhost:8080/comments/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -138,13 +149,18 @@ const CommentaryPage = () => {
         userID={userID}
         userType={userType}
       />
+       <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
       <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}

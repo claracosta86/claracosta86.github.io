@@ -47,7 +47,7 @@ func (r *commentaryRepository) SaveComment(ctx context.Context, culturalID int, 
 }
 
 func (r *commentaryRepository) FindCommentsByCultural(ctx context.Context, culturalID int, culturalType string) (comment.Comments, error) {
-	rows, err := r.db.QueryContext(ctx, commentaryQueries["fetch-commentaries-by-cultural"], culturalID, culturalType)
+	rows, err := r.db.QueryContext(ctx, commentaryQueries["fetch-comments-by-cultural"], culturalID, culturalType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch commentaries: %w", err)
 	}
@@ -56,13 +56,11 @@ func (r *commentaryRepository) FindCommentsByCultural(ctx context.Context, cultu
 	var commentaries []comment.Comment
 	for rows.Next() {
 		var c comment.Comment
-		if err := rows.Scan(&c.ID, &c.CulturalID, &c.CulturalType, &c.UserName, &c.Comment, &c.CreatedAt, &c.UpdatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.CulturalID, &c.CulturalType, &c.UserName, &c.Comment, &c.CreatedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan comment: %w", err)
 		}
 		commentaries = append(commentaries, c)
 	}
-
-	fmt.Println("Fetched commentaries:", commentaries)
 
 	return commentaries, nil
 }

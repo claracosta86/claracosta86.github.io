@@ -3,6 +3,7 @@ import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import './styles/home.css';
 import './styles/search.css';
 import logo from '../assets/logo.png';
@@ -23,6 +24,8 @@ const SearchPage = () => {
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const { user } = useUser();
 
@@ -101,6 +104,14 @@ const SearchPage = () => {
     setNotificationModalOpen(false);
   };
 
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
+
   return (
     <>
       <NotificationModal
@@ -111,13 +122,19 @@ const SearchPage = () => {
         userID={userID}
         userType={userType}
       />
+       <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
+
       <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}

@@ -11,7 +11,6 @@ import (
 	"strconv"
 
 	chi "github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 
 	"poc2/back/application/cultural"
 	culturalModel "poc2/back/interface/model"
@@ -64,6 +63,11 @@ func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(map[string]string{"status": "Cultural created successfully", "id": strconv.Itoa(result.ID), "type": result.Type})
 }
 
+// [400] Invalid data
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] Cultural data recovered successfully
+// /cultural/all [GET]
 // HandleGetAllCulturais retrieves all cultural events and attractions
 func (h *CulturalHandler) HandleGetAllCulturais(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -82,6 +86,11 @@ func (h *CulturalHandler) HandleGetAllCulturais(w http.ResponseWriter, r *http.R
 	json.NewEncoder(w).Encode(culturals)
 }
 
+// [400] Invalid data
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [200] Cultural data recovered successfully
+// /cultural/home [GET]
 // HandleGetAllCulturais retrieves all cultural events and attractions
 func (h *CulturalHandler) HandleGetHomeCulturais(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -143,8 +152,13 @@ func (h *CulturalHandler) HandleGetCultural(w http.ResponseWriter, r *http.Reque
 	json.NewEncoder(w).Encode(culturalData)
 }
 
+// [400] Invalid data
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [204] Cultural updated successfully
+// /cultural/all [GET]
 func (h *CulturalHandler) HandleUpdateCultural(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
+	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -157,7 +171,7 @@ func (h *CulturalHandler) HandleUpdateCultural(w http.ResponseWriter, r *http.Re
 
 	imageName, err := processImageUpload(r, "./static/culturalthumbs")
 	if err != nil && err != http.ErrMissingFile {
-		fmt.Printf("Error processing image upload: %v\n", err)
+		fmt.Printf("Error processing image upload: %v\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -165,15 +179,19 @@ func (h *CulturalHandler) HandleUpdateCultural(w http.ResponseWriter, r *http.Re
 
 	err = h.culturalUseCase.UpdateCultural(r.Context(), updateReq)
 	if err != nil {
-		fmt.Printf("Error updating cultural: %v\n", err)
 		http.Error(w, "Error updating cultural: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"status": "Cultural created successfully", "id": strconv.Itoa(updateReq.ID), "type": updateReq.Type})
+	w.WriteHeader(http.StatusNoContent)
 }
 
+// [400] Invalid data
+// [405] Invalid HTTP method
+// [500] Internal Server Error
+// [204] Cultural deleted successfully
+// /cultural/{type}/{id} [DELETE]
+// HandleDeleteCultural deletes a cultural entry
 func (h *CulturalHandler) HandleDeleteCultural(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -195,10 +213,11 @@ func (h *CulturalHandler) HandleDeleteCultural(w http.ResponseWriter, r *http.Re
 
 	err = h.culturalUseCase.DeleteCultural(r.Context(), ID, culturalType)
 	if err != nil {
-		fmt.Printf("Error deleting cultural: %v\n", err)
 		http.Error(w, "Error deleting cultural: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func parseCreateCulturalRequest(r *http.Request) (culturalModel.CreateCulturalRequest, error) {
@@ -249,8 +268,7 @@ func processImageUpload(r *http.Request, destinationPath string) (string, error)
 	}
 	defer file.Close()
 
-	fileName := uuid.New().String() + filepath.Ext(header.Filename)
-	fullPath := filepath.Join(destinationPath, fileName)
+	fullPath := filepath.Join(destinationPath, header.Filename)
 
 	dst, err := os.Create(fullPath)
 	if err != nil {
@@ -262,5 +280,5 @@ func processImageUpload(r *http.Request, destinationPath string) (string, error)
 		return "", fmt.Errorf("não foi possível salvar o arquivo: %w", err)
 	}
 
-	return fileName, nil
+	return header.Filename, nil
 }

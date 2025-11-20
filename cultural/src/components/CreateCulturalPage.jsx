@@ -2,6 +2,7 @@ import { useUser } from '../contexts/UserContext';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import './styles/create.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -22,6 +23,8 @@ const CreateCulturalPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [culturalType, setCulturalType] = useState('');
   const [error, setError] = useState('');
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   // Estado único para gerenciar todos os campos do formulário
   const [formData, setFormData] = useState({
@@ -70,6 +73,14 @@ const CreateCulturalPage = () => {
       }
     });
   };
+  
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -88,20 +99,17 @@ const CreateCulturalPage = () => {
       description: formData.description,
       price: formData.price,
       is_accessible: formData.is_accessible,
-      organizer: {
-        id: userID,
-      },
+      organizer_id: userID,
+      location: formData.location,
     };
 
     if (culturalType === 'event') {
-      finalPayload.location = formData.location;
       finalPayload.event = {
         start_date: formData.start_date,
         end_date: formData.end_date,
         working_hours: formData.working_hours,
       };
-    } else if (culturalType === 'attraction') {
-      finalPayload.location = formData.location;
+    } else if (culturalType === 'tourist_attraction') {
       finalPayload.tourist_attraction = {
         open_days: formData.open_days.join(', '),
         open_time: formData.open_time,
@@ -188,13 +196,19 @@ const CreateCulturalPage = () => {
         userID={userID}
         userType={userType}
       />
-      <section className="screen" id="tela-create">
+     <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
+
+      <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}

@@ -3,8 +3,9 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"strings"
 	_ "embed"
+	"fmt"
+	"strings"
 
 	"github.com/nleof/goyesql"
 
@@ -14,7 +15,7 @@ import (
 
 var (
 	//go:embed queries/users.sql
-	userEmbed []byte
+	userEmbed   []byte
 	userQueries goyesql.Queries
 )
 
@@ -35,7 +36,7 @@ func NewUserRepository(db *sql.DB) user.Repository {
 
 func (r *userRepository) Save(ctx context.Context, user *user.User) error {
 	documentType := user.GetDocumentType()
-	
+
 	_, err := r.db.ExecContext(ctx, userQueries["register-user"],
 		user.Name,
 		user.Email,
@@ -64,14 +65,14 @@ func (r *userRepository) FindByID(ctx context.Context, id int) (*user.User, erro
 		&u.Type,
 		&u.CreatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.ErrUserNotFound
 		}
 		return nil, err
 	}
-	
+
 	return &u, nil
 }
 
@@ -81,14 +82,14 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*user.U
 		&u.ID,
 		&u.Type,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.ErrUserNotFound
 		}
 		return nil, err
 	}
-	
+
 	return &u, nil
 }
 
@@ -130,12 +131,24 @@ func (r *userRepository) UpdatePassword(ctx context.Context, userID int, newPass
 }
 
 func (r *userRepository) RemoveEvent(ctx context.Context, eventIDs []int) error {
-	_, err := r.db.ExecContext(ctx, userQueries["delete-users-favorites-by-event-id"], eventIDs)
+	params := make([]any, len(eventIDs))
+	for i, id := range eventIDs {
+		params[i] = id
+	}
+
+	query := fmt.Sprintf(userQueries["delete-users-favorites-by-event-id"], strings.Repeat("?,", len(eventIDs)-1)+"?")
+	_, err := r.db.ExecContext(ctx, query, params...)
 	return err
 }
 
 func (r *userRepository) RemoveTouristAttraction(ctx context.Context, touristAttractionIDs []int) error {
-	_, err := r.db.ExecContext(ctx, userQueries["delete-users-favorites-by-tourist-attraction-id"], touristAttractionIDs)
+	params := make([]any, len(touristAttractionIDs))
+	for i, id := range touristAttractionIDs {
+		params[i] = id
+	}
+
+	query := fmt.Sprintf(userQueries["delete-users-favorites-by-tourist-attraction-id"], strings.Repeat("?,", len(touristAttractionIDs)-1)+"?")
+	_, err := r.db.ExecContext(ctx, query, params...)
 	return err
 }
 

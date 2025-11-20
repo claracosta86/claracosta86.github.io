@@ -6,9 +6,7 @@ import './styles/login.css';
 const PasswordRecoveryPage = () => {
   return (
     <section className="screen" id="tela-login">
-      <a href="/">
-        <img src={logo} alt="Logo Cultural" className="logo-img" />
-      </a>
+      <img src={logo} alt="Logo Cultural" className="logo-img" />
       <div className="login-box">
         <h2>Recuperação de Senha</h2>
         <label>Email</label>
@@ -18,7 +16,7 @@ const PasswordRecoveryPage = () => {
 
         <p className="small-letters">
           Lembrou sua senha?{' '}
-          <Link to="/user/login" state={{ userType }} className="link">
+          <Link to="/user/login" className="link">
             Login
           </Link>
         </p>

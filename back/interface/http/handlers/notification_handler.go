@@ -2,15 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
-	"log"
 
 	chi "github.com/go-chi/chi/v5"
 
 	"poc2/back/application/notification"
 	notificationModel "poc2/back/interface/model"
-
 )
 
 type NotificationHandler struct {
@@ -48,6 +47,7 @@ func (h *NotificationHandler) HandleGetUserNotifications(w http.ResponseWriter, 
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(notifications)
 }
 
@@ -58,7 +58,7 @@ func (h *NotificationHandler) HandleGetUserNotifications(w http.ResponseWriter, 
 // [204] Notifications marked as seen successfully
 // /notifications/{userID}/seen [PATCH]
 // HandleMarkNotificationsAsSeen handles marking notifications as seen
-func (h *NotificationHandler) HandleMarkNotificationsAsSeen(w http.ResponseWriter, r *http.Request) {	
+func (h *NotificationHandler) HandleMarkNotificationsAsSeen(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -87,5 +87,4 @@ func (h *NotificationHandler) HandleMarkNotificationsAsSeen(w http.ResponseWrite
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	w.Write([]byte("Notifications marked as seen"))
 }

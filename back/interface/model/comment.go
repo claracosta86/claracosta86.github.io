@@ -7,7 +7,6 @@ type Comment struct {
 	CulturalType string `json:"cultural_type"`
 	Comment      string `json:"comment"`
 	CreatedAt    string `json:"created_at"`
-	UpdatedAt    string `json:"updated_at"`
 }
 
 type GetCommentsResponse struct {

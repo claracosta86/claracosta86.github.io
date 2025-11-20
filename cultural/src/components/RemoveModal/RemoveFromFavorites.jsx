@@ -9,7 +9,7 @@ const RemoveModal = ({ isOpen, onClose, onConfirm }) => {
         <h2 className="modal-title">Confirmar Remoção</h2>
         <div className="modal-content">
           <p>
-            Você realmente deseja excluir o evento/ponto turístico da plataforma?
+            Você realmente deseja remover o cultural de seus favoritos?
           </p>
         </div>
         <div className="modal-actions">

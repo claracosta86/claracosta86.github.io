@@ -3,6 +3,7 @@ import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import './styles/card.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -24,6 +25,8 @@ const CardPage = () => {
 
   const [notification, setNotification] = useState([]);
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const { id, culturalType } = useParams();
 
@@ -79,7 +82,7 @@ const CardPage = () => {
     };
     const fetchCulturalCommentary = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/commentarys/${culturalType}/${id}`);
+        const response = await fetch(`http://localhost:8080/comments/${culturalType}/${id}`);
         const data = await response.json();
         console.log('Comentários culturais recebidos:', data);
         setCommentarys(data.commentaries);
@@ -158,6 +161,14 @@ const CardPage = () => {
     setNotificationModalOpen(false);
   };
 
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
+
   const handleGoBackClick = () => {
     navigate(-1);
   };
@@ -176,13 +187,19 @@ const CardPage = () => {
         userID={userID}
         userType={userType}
       />
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
+
       <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}
@@ -260,7 +277,7 @@ const CardPage = () => {
                 {commentarys != null ? (
                   commentarys.map((commentary) => (
                     <div key={commentary.id} className="comment-item">
-                      <p><strong>{commentary.user_name}:</strong> {commentary.commentary}</p>
+                      <p><strong>{commentary.user_name}:</strong> {commentary.comment}</p>
                     </div>
                   ))
                 ) : (

@@ -81,21 +81,21 @@ func (h *CommentHandler) HandleGetComment(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	commentaries, err := h.commentUseCase.GetComments(r.Context(), culturalID, culturalType)
+	comments, err := h.commentUseCase.GetComments(r.Context(), culturalID, culturalType)
 	if err != nil {
 		switch err.Error() {
-		case "commentaries not found":
-			http.Error(w, "Error retrieving commentaries: "+err.Error(), http.StatusNotFound)
+		case "comments not found":
+			http.Error(w, "Error retrieving comments: "+err.Error(), http.StatusNotFound)
 			return
 		default:
-			http.Error(w, "Error retrieving commentaries: "+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Error retrieving comments: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(commentaries)
+	json.NewEncoder(w).Encode(comments)
 }
 
 func (h *CommentHandler) HandleUpdateComment(w http.ResponseWriter, r *http.Request) {

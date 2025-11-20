@@ -3,6 +3,7 @@ package cultural
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"poc2/back/domain/cultural"
 	"poc2/back/domain/user"
@@ -50,7 +51,7 @@ func (uc *culturalUseCase) CreateCultural(ctx context.Context, data model.Create
 	switch data.Type {
 	case CulturalTypeEvent:
 		id, err := uc.culturalService.CreateEvent(ctx, data.Title, data.Description, data.Location,
-			data.Event.StartDate, data.Event.EndDate, data.Event.WorkingHours, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
+			data.Event.StartDate, data.Event.EndDate, data.Event.WorkingHours, data.Price, data.IsAccessible, data.OrganizerID, data.Image)
 		if err != nil {
 			return model.CreateCulturalResponse{}, err
 		}
@@ -60,7 +61,7 @@ func (uc *culturalUseCase) CreateCultural(ctx context.Context, data model.Create
 		}, nil
 	case CulturalTypeTouristAttraction:
 		id, err := uc.culturalService.CreateTouristAttraction(ctx, data.Title, data.Description, data.Location,
-			data.TouristAttraction.OpenDays, data.TouristAttraction.OpenTime, data.Price, data.IsAccessible, data.Organizer.ID, data.Image)
+			data.TouristAttraction.OpenDays, data.TouristAttraction.OpenTime, data.Price, data.IsAccessible, data.OrganizerID, data.Image)
 		if err != nil {
 			return model.CreateCulturalResponse{}, err
 		}
@@ -96,6 +97,7 @@ func (uc *culturalUseCase) GetCultural(ctx context.Context, id int, culturalType
 		}, err
 	case CulturalTypeTouristAttraction:
 		attraction, err := uc.culturalService.GetTouristAttractionByID(ctx, id)
+		fmt.Println(attraction)
 		return model.CulturalResponse{
 			ID:           attraction.ID,
 			Title:        attraction.Title,

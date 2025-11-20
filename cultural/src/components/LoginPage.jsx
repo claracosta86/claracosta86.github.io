@@ -1,12 +1,11 @@
 // src/components/LoginPage.jsx
 import { useUser } from '../contexts/UserContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import './styles/login.css';
 import logo from '../assets/logo.png';
 import visiblePassword from '../assets/visiblepassword-icon.png';
 import invisiblePassword from '../assets/invisiblepassword-icon.png';
-import logoutIcon from '../assets/logout-icon.png';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -89,13 +88,6 @@ const LoginPage = () => {
       <header className="top-bar">
         <img src={logo} alt="Logo Cultural" className="logo-tiny" />
         <div className="right-section">
-          <Link to="/">
-            <img 
-            src={logoutIcon} 
-            alt="Voltar para a página inicial" 
-            className={`icon ${isTypeError ? 'highlight-logout-btn' : ''}`} 
-          />
-          </Link>
         </div>
       </header>
       <div className="login-box">

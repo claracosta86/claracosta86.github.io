@@ -2,6 +2,7 @@ import { useUser } from '../contexts/UserContext';
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import './styles/create.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -18,6 +19,8 @@ const EditCulturalPage = () => {
   const { user } = useUser();
   const userID = user.userID;
   const userType = user.type;
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -125,25 +128,23 @@ const EditCulturalPage = () => {
 
     let finalPayload = {
       // Use as chaves exatas do seu `json tag` no Go
+      id: parseInt(id, 10),
       title: formData.title,
       type: culturalType,
       description: formData.description,
       price: formData.price,
       is_accessible: formData.is_accessible,
-      organizer: {
-        id: userID,
-      },
+      location: formData.location,
+      organizer_id: userID,
     };
 
     if (culturalType === 'event') {
-      finalPayload.location = formData.location;
       finalPayload.event = {
         start_date: formData.start_date,
         end_date: formData.end_date,
         working_hours: formData.working_hours,
       };
-    } else if (culturalType === 'attraction') {
-      finalPayload.location = formData.location;
+    } else if (culturalType === 'tourist_attraction') {
       finalPayload.tourist_attraction = {
         open_days: formData.open_days.join(', '),
         open_time: formData.open_time,
@@ -155,7 +156,7 @@ const EditCulturalPage = () => {
     console.log('Enviando para a API:', JSON.stringify(finalPayload, null, 2));
 
     try {
-      const response = await fetch('http://localhost:8080/culturais', {
+      const response = await fetch('http://localhost:8080/culturais/', {
         method: 'PATCH',
         body: submissionFormData,
         credentials: 'include',
@@ -163,7 +164,7 @@ const EditCulturalPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        navigate(`/card/${result.type}/${result.id}`);
+        navigate(`/card/${culturalType}/${id}`);
       } else {
         const errorData = await response.json();
         console.error('Erro da API:', errorData);
@@ -235,6 +236,15 @@ const EditCulturalPage = () => {
     setNotificationsAsSeen();
     setNotificationModalOpen(false);
   };
+  
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
+
 
  
   const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -249,13 +259,19 @@ const EditCulturalPage = () => {
         userID={userID}
         userType={userType}
       />
-      <section className="screen" id="tela-create">
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
+
+      <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}

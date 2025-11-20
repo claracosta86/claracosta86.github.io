@@ -2,11 +2,11 @@ package user
 
 import (
 	"context"
-	"time"
 	"fmt"
+	"time"
 
-	"poc2/back/domain/user"
 	"poc2/back/domain/cultural"
+	"poc2/back/domain/user"
 	"poc2/back/interface/model"
 )
 
@@ -43,18 +43,18 @@ type UseCase interface {
 	GetOrganizerCulturais(ctx context.Context, organizerID int) ([]model.CulturalList, error)
 
 	// GetOrganizerInfo retrieves organizer information
-	GetOrganizerInfo(ctx context.Context, organizerID int) (*model.GetOrganizerInfoResponse, error) 
+	GetOrganizerInfo(ctx context.Context, organizerID int) (*model.GetOrganizerInfoResponse, error)
 }
 
 type useCase struct {
-	userService    user.Service
+	userService     user.Service
 	culturalService cultural.Service
 }
 
 // NewUseCase creates a new user use case
 func NewUseCase(userService user.Service, culturalService cultural.Service) UseCase {
 	return &useCase{
-		userService:    userService,
+		userService:     userService,
 		culturalService: culturalService,
 	}
 }
@@ -65,7 +65,7 @@ func (uc *useCase) RegisterUser(ctx context.Context, request model.RegisterUserR
 	if err != nil {
 		return err
 	}
-	
+
 	return uc.userService.RegisterUser(
 		ctx,
 		request.Name,
@@ -83,7 +83,7 @@ func (uc *useCase) LoginUser(ctx context.Context, request model.LoginUserRequest
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &model.LoginUserResponse{
 		UserID: user.ID,
 		Type:   user.Type,
@@ -96,7 +96,7 @@ func (uc *useCase) GetUserProfile(ctx context.Context, userID int) (*model.GetUs
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &model.GetUserProfileResponse{
 		UserID:      user.ID,
 		Name:        user.Name,
@@ -130,12 +130,12 @@ func (uc *useCase) ChangePassword(ctx context.Context, userID int, request model
 // DeleteUser removes a user account
 func (uc *useCase) DeleteUser(ctx context.Context, userID int, userType string) error {
 	if userType == "organizer" {
-		eventsIDs, err := uc.culturalService.GetEventsIDsByOrganizer(ctx, userID); 
+		eventsIDs, err := uc.culturalService.GetEventsIDsByOrganizer(ctx, userID)
 		if err != nil {
 			return err
 		}
 
-		attractionsIDs, err := uc.culturalService.GetTouristAttractionsIDsByOrganizer(ctx, userID);
+		attractionsIDs, err := uc.culturalService.GetTouristAttractionsIDsByOrganizer(ctx, userID)
 		if err != nil {
 			return err
 		}
@@ -169,15 +169,15 @@ func (uc *useCase) GetUserFavorites(ctx context.Context, userID int) ([]model.Cu
 	if err != nil {
 		return nil, err
 	}
-	
-	result := make([]model.CulturalList, len(favorites))
+
+	result := make([]model.CulturalList, 0)
 	for _, favorite := range favorites {
 		result = append(result, model.CulturalList{
 			ID:   favorite.ID,
 			Type: favorite.Type,
 		})
 	}
-	
+
 	return result, nil
 }
 
@@ -193,7 +193,7 @@ func (uc *useCase) GetOrganizerCulturais(ctx context.Context, organizerID int) (
 		return nil, err
 	}
 
-	result := make([]model.CulturalList, 0, len(culturais))
+	result := make([]model.CulturalList, 0)
 	for _, cultural := range culturais {
 		result = append(result, model.CulturalList{
 			ID:   cultural.ID,
@@ -224,17 +224,17 @@ func (uc *useCase) GetOrganizerInfo(ctx context.Context, organizerID int) (*mode
 	yearsSince := formatTimeSince(years)
 
 	return &model.GetOrganizerInfoResponse{
-		Name:            organizer.Name,
-		Email:           organizer.Email,
-		ID:              organizer.ID,
-		CulturalItems:   culturalItems,
-		OrganizerSince:  yearsSince,
+		Name:           organizer.Name,
+		Email:          organizer.Email,
+		ID:             organizer.ID,
+		CulturalItems:  culturalItems,
+		OrganizerSince: yearsSince,
 	}, nil
 }
 
 func formatTimeSince(t time.Time) string {
 	now := time.Now()
-	
+
 	years := now.Year() - t.Year()
 	months := int(now.Month() - t.Month())
 	days := now.Day() - t.Day()
@@ -261,7 +261,7 @@ func formatTimeSince(t time.Time) string {
 		}
 		return fmt.Sprintf("%d meses", months)
 	}
-	
+
 	if days == 1 {
 		return "1 dia"
 	}

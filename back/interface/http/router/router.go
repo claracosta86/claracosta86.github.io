@@ -34,7 +34,7 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 		r.Get("/home", culturalHandler.HandleGetHomeCulturais)
 		r.Post("/", culturalHandler.HandleCreateCultural)
 		r.Get("/{type}/{id:[0-9]+}", culturalHandler.HandleGetCultural)
-		r.Patch("/{type}/{id:[0-9]+}", culturalHandler.HandleUpdateCultural)
+		r.Patch("/", culturalHandler.HandleUpdateCultural)
 		r.Delete("/{type}/{id:[0-9]+}", culturalHandler.HandleDeleteCultural)
 	})
 
@@ -65,7 +65,6 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 				r.Get("/organizer", userHandler.HandleGetOrganizerInfo)
 			})
 		})
-		r.Post("/select-type", userHandler.HandleUserTypeSelection)
 	})
 
 	// Servidor de arquivos para assets estáticos

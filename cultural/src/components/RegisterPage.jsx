@@ -102,9 +102,6 @@ const RegisterPage = () => {
       <header className="top-bar">
         <img src={logo} alt="Logo Cultural" className="logo-tiny" />
         <div className="right-section">
-          <Link to="/">
-            <img src={logoutIcon} alt="Log-out" className="icon" />
-          </Link>
         </div>
       </header>
       <div className="register-box">

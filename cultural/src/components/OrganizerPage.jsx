@@ -3,6 +3,7 @@ import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import './styles/organizer.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
@@ -21,6 +22,8 @@ const OrganizerPage = () => {
   const userType = user.type;
 
   const { id: organizerID } = useParams();
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const [organizerData, setOrganizerData] = useState({
     name: '',
@@ -126,6 +129,14 @@ const OrganizerPage = () => {
     setNotificationsAsSeen();
     setNotificationModalOpen(false);
   };
+  
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    navigate('/');
+  };
 
   const handleGoBackClick = () => {
     navigate(-1);
@@ -141,13 +152,19 @@ const OrganizerPage = () => {
         userID={userID}
         userType={userType}
       />
-      <section className="screen" id="tela-profile">
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmLogout}
+      />
+
+      <section className="screen" id="tela-home">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">
-            <Link to="/">
+            <div onClick={() => setConfirmModalOpen(true)} className="icon-button-container">
               <img src={logoutIcon} alt="Log-out" className="icon" />
-            </Link>
+            </div>
             <div onClick={handleNotificationIconClick} className="icon-button-container">
               <img
                 src={notificationsIcon}
