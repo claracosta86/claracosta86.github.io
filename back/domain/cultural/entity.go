@@ -15,8 +15,8 @@ type TouristAttraction struct {
 	Title          string
 	Description    string
 	WorkingHours   string
-	Location       string
-	Price          string
+	Location       Location
+	Price          Price
 	IsAccessible   bool
 	OrganizerID    int
 	OrganizerEmail string
@@ -29,8 +29,8 @@ type Event struct {
 	StartDate      string
 	EndDate        string
 	DurationHours  string
-	Location       string
-	Price          string
+	Location       Location
+	Price          Price
 	IsAccessible   bool
 	OrganizerID    int
 	OrganizerEmail string

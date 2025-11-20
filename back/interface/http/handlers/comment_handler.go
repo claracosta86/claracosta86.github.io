@@ -76,11 +76,6 @@ func (h *CommentHandler) HandleGetComment(w http.ResponseWriter, r *http.Request
 	}
 
 	culturalType := chi.URLParam(r, "culturalType")
-	if culturalType != comment.CulturalTypeEvent && culturalType != comment.CulturalTypeTouristAttraction {
-		http.Error(w, "Invalid cultural type", http.StatusBadRequest)
-		return
-	}
-
 	comments, err := h.commentUseCase.GetComments(r.Context(), culturalID, culturalType)
 	if err != nil {
 		switch err.Error() {

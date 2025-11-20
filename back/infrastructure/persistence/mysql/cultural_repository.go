@@ -33,8 +33,8 @@ func NewCulturalRepository(db *sql.DB) cultural.Repository {
 	}
 }
 
-func (r *culturalRepository) SaveEvent(ctx context.Context, title, description, location string,
-	startDate, finishDate, durationHours, price string, isAccessible bool, organizerID int, image string) (int, error) {
+func (r *culturalRepository) SaveEvent(ctx context.Context, title, description string, location cultural.Location,
+	startDate, finishDate, durationHours string, price cultural.Price, isAccessible bool, organizerID int, image string) (int, error) {
 	result, err := r.db.ExecContext(ctx, culturalQueries["create-event"],
 		title,
 		description,
@@ -57,8 +57,8 @@ func (r *culturalRepository) SaveEvent(ctx context.Context, title, description, 
 	return int(id), nil
 }
 
-func (r *culturalRepository) SaveTouristAttraction(ctx context.Context, title, description, location, workingHours string,
-	price string, isAccessible bool, organizerID int, image string) (int, error) {
+func (r *culturalRepository) SaveTouristAttraction(ctx context.Context, title, description string, location cultural.Location, workingHours string,
+	price cultural.Price, isAccessible bool, organizerID int, image string) (int, error) {
 
 	result, err := r.db.ExecContext(ctx, culturalQueries["create-tourist-attraction"],
 		title,
@@ -134,8 +134,8 @@ func (r *culturalRepository) FindTouristAttractionByID(ctx context.Context, id i
 	return attraction, nil
 }
 
-func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title, description, location string,
-	startDate, finishDate, durationHours string, price string, isAccessible bool, organizerID int, image string) error {
+func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title, description string, location cultural.Location,
+	startDate, finishDate, durationHours string, price cultural.Price, isAccessible bool, organizerID int, image string) error {
 
 	_, err := r.db.ExecContext(ctx, culturalQueries["update-event"],
 		title,
@@ -153,8 +153,8 @@ func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title,
 	return err
 }
 
-func (r *culturalRepository) UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, workingHours string,
-	price string, isAccessible bool, organizerID int, image string) error {
+func (r *culturalRepository) UpdateTouristAttractionByID(ctx context.Context, id int, title, description string, location cultural.Location, workingHours string,
+	price cultural.Price, isAccessible bool, organizerID int, image string) error {
 
 	_, err := r.db.ExecContext(ctx, culturalQueries["update-tourist-attraction"],
 		title,

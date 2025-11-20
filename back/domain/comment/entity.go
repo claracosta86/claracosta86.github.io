@@ -1,8 +1,13 @@
 package comment
 
+const (
+	CulturalTypeEvent             = "event"
+	CulturalTypeTouristAttraction = "tourist_attraction"
+)
+
 type Comment struct {
 	CulturalType string
-	Comment      string
+	Comment      CommentContent
 	CreatedAt    string
 	ID           int
 	CulturalID   int

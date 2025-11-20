@@ -10,11 +10,6 @@ import (
 	"poc2/back/interface/model"
 )
 
-const (
-	CulturalTypeEvent             = "event"
-	CulturalTypeTouristAttraction = "tourist_attraction"
-)
-
 type UseCase interface {
 	// CreateComment creates a new comment entry
 	CreateComment(ctx context.Context, data model.CreateCommentRequest) error
@@ -36,7 +31,12 @@ func NewUseCase(commentService comment.Service, culturalService cultural.Service
 }
 
 func (uc *commentUseCase) CreateComment(ctx context.Context, data model.CreateCommentRequest) error {
-	err := uc.commentService.CreateComment(ctx, data.CulturalID, data.CulturalType, data.UserID, data.Comment)
+	commentVO, err := comment.NewCommentContent(data.Comment)
+	if err != nil {
+		return err
+	}
+
+	err = uc.commentService.CreateComment(ctx, data.CulturalID, data.CulturalType, data.UserID, commentVO)
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (uc *commentUseCase) CreateComment(ctx context.Context, data model.CreateCo
 
 func (uc *commentUseCase) GetComments(ctx context.Context, culturalID int, culturalType string) (model.GetCommentsResponse, error) {
 	switch culturalType {
-	case CulturalTypeEvent:
+	case comment.CulturalTypeEvent:
 		event, err := uc.culturalService.GetEventByID(ctx, culturalID)
 		if err != nil {
 			return model.GetCommentsResponse{}, errors.New("cultural not found")
@@ -55,7 +55,7 @@ func (uc *commentUseCase) GetComments(ctx context.Context, culturalID int, cultu
 			return model.GetCommentsResponse{}, errors.New("cultural not found")
 		}
 
-	case CulturalTypeTouristAttraction:
+	case comment.CulturalTypeTouristAttraction:
 		attraction, err := uc.culturalService.GetTouristAttractionByID(ctx, culturalID)
 		if err != nil {
 			return model.GetCommentsResponse{}, errors.New("cultural not found")
@@ -64,6 +64,8 @@ func (uc *commentUseCase) GetComments(ctx context.Context, culturalID int, cultu
 		if attraction.ID == 0 {
 			return model.GetCommentsResponse{}, errors.New("cultural not found")
 		}
+	default:
+		return model.GetCommentsResponse{}, errors.New("invalid cultural type")
 	}
 
 	comments, err := uc.commentService.GetComments(ctx, culturalID, culturalType)
@@ -73,14 +75,19 @@ func (uc *commentUseCase) GetComments(ctx context.Context, culturalID int, cultu
 	}
 
 	var response []model.Comment
-	for _, comment := range comments {
+	for _, c := range comments {
+		commentContent, err := comment.NewCommentContent(c.Comment.String())
+		if err != nil {
+			return model.GetCommentsResponse{}, err
+		}
+
 		response = append(response, model.Comment{
-			ID:           comment.ID,
-			CulturalID:   comment.CulturalID,
-			CulturalType: comment.CulturalType,
-			UserName:     comment.UserName,
-			Comment:      comment.Comment,
-			CreatedAt:    comment.CreatedAt,
+			ID:           c.ID,
+			CulturalID:   c.CulturalID,
+			CulturalType: c.CulturalType,
+			UserName:     c.UserName,
+			Comment:      commentContent.String(),
+			CreatedAt:    c.CreatedAt,
 		})
 	}
 

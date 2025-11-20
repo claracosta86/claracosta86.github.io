@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"poc2/back/domain/notification"
-	"poc2/back/interface/model"
 	"poc2/back/domain/user"
+	"poc2/back/interface/model"
 )
 
 // UseCase defines the application use cases for user operations
@@ -19,7 +19,7 @@ type UseCase interface {
 
 type useCase struct {
 	notificationService notification.Service
-	userService    user.Service
+	userService         user.Service
 }
 
 // NewUseCase creates a new user use case
@@ -49,11 +49,16 @@ func (uc *useCase) GetNotifications(ctx context.Context, userID int) (*model.Get
 
 	culturals := make([]model.NotificationCulturalList, len(notificationCulturals))
 	for _, cultural := range notificationCulturals {
+		notificationType, err := notification.NewNotificationType(cultural.Type.String())
+		if err != nil {
+			return nil, err
+		}
+
 		culturals = append(culturals, model.NotificationCulturalList{
-			ID:              cultural.CulturalID,
-			Title:           cultural.Title,
-			Type:            cultural.CulturalType,
-			NotificationType: cultural.Type,
+			ID:               cultural.CulturalID,
+			Title:            cultural.Title,
+			Type:             cultural.CulturalType,
+			NotificationType: notificationType.String(),
 			NotificationID:   cultural.ID,
 		})
 	}

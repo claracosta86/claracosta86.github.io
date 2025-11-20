@@ -6,7 +6,7 @@ import (
 
 type Service interface {
 	// CreateComment creates a new comment entry
-	CreateComment(ctx context.Context, culturalID int, culturalType string, userID int, comment string) error
+	CreateComment(ctx context.Context, culturalID int, culturalType string, userID int, comment CommentContent) error
 
 	// GetComments retrieves comments for a specific cultural entry
 	GetComments(ctx context.Context, culturalID int, culturalType string) (Comments, error)
@@ -23,7 +23,7 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s *service) CreateComment(ctx context.Context, culturalID int, culturalType string, userID int, comment string) error {
+func (s *service) CreateComment(ctx context.Context, culturalID int, culturalType string, userID int, comment CommentContent) error {
 	return s.repository.SaveComment(
 		ctx,
 		culturalID,

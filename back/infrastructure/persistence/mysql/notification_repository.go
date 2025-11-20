@@ -4,18 +4,17 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
-	"strings"
 	"fmt"
+	"strings"
 
 	"github.com/nleof/goyesql"
 
 	"poc2/back/domain/notification"
-
 )
 
 var (
 	//go:embed queries/notification.sql
-	notificationEmbed []byte
+	notificationEmbed   []byte
 	notificationQueries goyesql.Queries
 )
 
@@ -42,18 +41,14 @@ func (r *notificationRepository) FindByUserIDAndFavorites(ctx context.Context, u
 			eventsIDs = append(eventsIDs, favoriteID)
 		} else if favoriteType == "tourist_attraction" {
 			touristAttractionIDs = append(touristAttractionIDs, favoriteID)
-		}	
+		}
 	}
-fmt.Printf("Fetching notifications for user %d with favorite events: %v and favorite tourist attractions: %v\n", userID, eventsIDs, touristAttractionIDs)
+	fmt.Printf("Fetching notifications for user %d with favorite events: %v and favorite tourist attractions: %v\n", userID, eventsIDs, touristAttractionIDs)
 	if len(eventsIDs) == 0 && len(touristAttractionIDs) == 0 {
-        return nil, nil 
-    }
+		return nil, nil
+	}
 
-    args := make([]any, 0, 2)
-    args = append(args, userID)
-    args = append(args, userID)
-
-   rows, err := r.db.QueryContext(ctx, notificationQueries["fetch-notifications-by-user-id"], userID, userID)
+	rows, err := r.db.QueryContext(ctx, notificationQueries["fetch-notifications-by-user-id"], userID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -62,38 +57,38 @@ fmt.Printf("Fetching notifications for user %d with favorite events: %v and favo
 
 	notifications := make([]notification.NotificationCulturalList, 0)
 	for rows.Next() {
-		var notification notification.NotificationCulturalList
-		if err := rows.Scan(&notification.ID, 
-			&notification.Title, 
-			&notification.CulturalType,
-			&notification.CulturalID,
-			&notification.Type,
+		var n notification.NotificationCulturalList
+		if err := rows.Scan(&n.ID,
+			&n.Title,
+			&n.CulturalType,
+			&n.CulturalID,
+			&n.Type,
 		); err != nil {
 			return nil, err
 		}
-		if notification.Type == "updated" {
-			notificationID, err := insertNotifications(ctx, r.db, userID, notification, 1)
+		if n.Type == notification.NotificationTypeUpdated {
+			notificationID, err := insertNotifications(ctx, r.db, userID, n, 1)
 			if err != nil {
 				return nil, err
 			}
-			notification.ID = notificationID
+			n.ID = notificationID
 		}
 
-		notifications = append(notifications, notification)
+		notifications = append(notifications, n)
 	}
 
 	if err = rows.Err(); err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
 	fmt.Printf("Retrieved %d notifications for user %d\n", len(notifications), userID)
 
 	return notifications, nil
 }
-	
+
 func (r *notificationRepository) MarkAsSeen(ctx context.Context, userID int, notificationIDs []int) error {
 	if len(notificationIDs) == 0 {
-		return nil 
+		return nil
 	}
 
 	placeholders := strings.Repeat("?,", len(notificationIDs))
@@ -110,22 +105,21 @@ func (r *notificationRepository) MarkAsSeen(ctx context.Context, userID int, not
 }
 
 func insertNotifications(ctx context.Context, db *sql.DB, userID int, notification notification.NotificationCulturalList, seen int) (int, error) {
-    result, err := db.ExecContext(ctx, notificationQueries["create-notification"], 
+	result, err := db.ExecContext(ctx, notificationQueries["create-notification"],
 		userID,
-		notification.CulturalID, 
-		notification.CulturalType, 
+		notification.CulturalID,
+		notification.CulturalType,
 		notification.Type,
 		seen,
 	)
-    if err != nil {
-        return 0, fmt.Errorf("erro ao inserir notificações em massa: %w", err)
-    }
+	if err != nil {
+		return 0, fmt.Errorf("erro ao inserir notificações em massa: %w", err)
+	}
 
-    id, err := result.LastInsertId()
-    if err != nil {
-        return 0, fmt.Errorf("erro ao obter ID da notificação inserida: %w", err)
-    }
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("erro ao obter ID da notificação inserida: %w", err)
+	}
 
-    return int(id), nil
+	return int(id), nil
 }
-	
