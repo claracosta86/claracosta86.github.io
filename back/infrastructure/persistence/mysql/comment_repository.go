@@ -13,28 +13,28 @@ import (
 
 var (
 	//go:embed queries/comment.sql
-	commentaryEmbed   []byte
-	commentaryQueries goyesql.Queries
+	commentEmbed   []byte
+	commentQueries goyesql.Queries
 )
 
-type commentaryRepository struct {
+type commentRepository struct {
 	db *sql.DB
 }
 
 func init() {
-	commentaryQueries = goyesql.MustParseBytes(commentaryEmbed)
+	commentQueries = goyesql.MustParseBytes(commentEmbed)
 }
 
 // NewCommentRepository creates a new MySQL comment repository
 func NewCommentRepository(db *sql.DB) comment.Repository {
-	return &commentaryRepository{
+	return &commentRepository{
 		db: db,
 	}
 }
 
-func (r *commentaryRepository) SaveComment(ctx context.Context, culturalID int, culturalType string, userID int, comment string) error {
+func (r *commentRepository) SaveComment(ctx context.Context, culturalID int, culturalType string, userID int, comment string) error {
 	fmt.Printf("Saving comment for culturalID: %d, culturalType: %s, userID: %d\n", culturalID, culturalType, userID)
-	_, err := r.db.ExecContext(ctx, commentaryQueries["save-comment"],
+	_, err := r.db.ExecContext(ctx, commentQueries["save-comment"],
 		culturalID,
 		culturalType,
 		userID,
@@ -46,21 +46,21 @@ func (r *commentaryRepository) SaveComment(ctx context.Context, culturalID int, 
 	return nil
 }
 
-func (r *commentaryRepository) FindCommentsByCultural(ctx context.Context, culturalID int, culturalType string) (comment.Comments, error) {
-	rows, err := r.db.QueryContext(ctx, commentaryQueries["fetch-comments-by-cultural"], culturalID, culturalType)
+func (r *commentRepository) FindCommentsByCultural(ctx context.Context, culturalID int, culturalType string) (comment.Comments, error) {
+	rows, err := r.db.QueryContext(ctx, commentQueries["fetch-comments-by-cultural"], culturalID, culturalType)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch commentaries: %w", err)
+		return nil, fmt.Errorf("failed to fetch comments: %w", err)
 	}
 	defer rows.Close()
 
-	var commentaries []comment.Comment
+	var comments []comment.Comment
 	for rows.Next() {
 		var c comment.Comment
 		if err := rows.Scan(&c.ID, &c.CulturalID, &c.CulturalType, &c.UserName, &c.Comment, &c.CreatedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan comment: %w", err)
 		}
-		commentaries = append(commentaries, c)
+		comments = append(comments, c)
 	}
 
-	return commentaries, nil
+	return comments, nil
 }

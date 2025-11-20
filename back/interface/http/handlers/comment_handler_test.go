@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"poc2/back/interface/http/handlers"
-	commentaryModel "poc2/back/interface/model"
+	commentModel "poc2/back/interface/model"
 )
 
 // MockCommentUseCase is a mock of comment.UseCase
@@ -22,17 +22,17 @@ type MockCommentUseCase struct {
 	mock.Mock
 }
 
-func (m *MockCommentUseCase) CreateComment(ctx context.Context, req commentaryModel.CreateCommentRequest) error {
+func (m *MockCommentUseCase) CreateComment(ctx context.Context, req commentModel.CreateCommentRequest) error {
 	args := m.Called(ctx, req)
 	return args.Error(0)
 }
 
-func (m *MockCommentUseCase) GetComments(ctx context.Context, culturalID int, culturalType string) (commentaryModel.GetCommentsResponse, error) {
+func (m *MockCommentUseCase) GetComments(ctx context.Context, culturalID int, culturalType string) (commentModel.GetCommentsResponse, error) {
 	args := m.Called(ctx, culturalID, culturalType)
 	if args.Get(0) == nil {
-		return commentaryModel.GetCommentsResponse{}, args.Error(1)
+		return commentModel.GetCommentsResponse{}, args.Error(1)
 	}
-	return args.Get(0).(commentaryModel.GetCommentsResponse), args.Error(1)
+	return args.Get(0).(commentModel.GetCommentsResponse), args.Error(1)
 }
 
 func TestHandleCreateComment(t *testing.T) {
@@ -40,7 +40,7 @@ func TestHandleCreateComment(t *testing.T) {
 		mockUseCase := new(MockCommentUseCase)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
-		requestBody, _ := json.Marshal(commentaryModel.CreateCommentRequest{
+		requestBody, _ := json.Marshal(commentModel.CreateCommentRequest{
 			UserID:       1,
 			CulturalID:   1,
 			CulturalType: "event",
@@ -50,7 +50,7 @@ func TestHandleCreateComment(t *testing.T) {
 		req, _ := http.NewRequest("POST", "/comments/", bytes.NewBuffer(requestBody))
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("CreateComment", mock.Anything, mock.AnythingOfType("commentaryModel.CreateCommentRequest")).Return(nil)
+		mockUseCase.On("CreateComment", mock.Anything, mock.AnythingOfType("commentModel.CreateCommentRequest")).Return(nil)
 
 		handler.HandleCreateComment(rr, req)
 
@@ -62,7 +62,7 @@ func TestHandleCreateComment(t *testing.T) {
 		mockUseCase := new(MockCommentUseCase)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
-		requestBody, _ := json.Marshal(commentaryModel.CreateCommentRequest{
+		requestBody, _ := json.Marshal(commentModel.CreateCommentRequest{
 			UserID:       1,
 			CulturalID:   99,
 			CulturalType: "event",
@@ -72,7 +72,7 @@ func TestHandleCreateComment(t *testing.T) {
 		req, _ := http.NewRequest("POST", "/comments/", bytes.NewBuffer(requestBody))
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("CreateComment", mock.Anything, mock.AnythingOfType("commentaryModel.CreateCommentRequest")).Return(errors.New("cultural not found"))
+		mockUseCase.On("CreateComment", mock.Anything, mock.AnythingOfType("commentModel.CreateCommentRequest")).Return(errors.New("cultural not found"))
 
 		handler.HandleCreateComment(rr, req)
 
@@ -94,8 +94,8 @@ func TestHandleGetComment(t *testing.T) {
 		chiCtx.URLParams.Add("culturalID", "1")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		expectedResponse := commentaryModel.GetCommentsResponse{
-			Comments: []commentaryModel.Comment{
+		expectedResponse := commentModel.GetCommentsResponse{
+			Comments: []commentModel.Comment{
 				{UserName: "User1", Comment: "Comment 1"},
 			},
 		}
@@ -104,7 +104,7 @@ func TestHandleGetComment(t *testing.T) {
 		handler.HandleGetComment(rr, req)
 
 		assert.Equal(t, http.StatusOK, rr.Code)
-		var resp commentaryModel.GetCommentsResponse
+		var resp commentModel.GetCommentsResponse
 		json.Unmarshal(rr.Body.Bytes(), &resp)
 		assert.Equal(t, expectedResponse, resp)
 		mockUseCase.AssertExpectations(t)
@@ -122,7 +122,7 @@ func TestHandleGetComment(t *testing.T) {
 		chiCtx.URLParams.Add("culturalID", "99")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		mockUseCase.On("GetComments", mock.Anything, 99, "event").Return(nil, errors.New("commentaries not found"))
+		mockUseCase.On("GetComments", mock.Anything, 99, "event").Return(nil, errors.New("comments not found"))
 
 		handler.HandleGetComment(rr, req)
 

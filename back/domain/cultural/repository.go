@@ -2,17 +2,16 @@ package cultural
 
 import (
 	"context"
-
 )
 
 type Repository interface {
 
 	// SaveEvent saves a new cultural event
 	SaveEvent(ctx context.Context, title, description, location string,
-		startDate, finishDate, workingHours string, price string, isAccessible bool, organizerID int, image string) (int, error)
+		startDate, finishDate, durationHours string, price string, isAccessible bool, organizerID int, image string) (int, error)
 
 	// SaveTouristAttraction saves a new cultural tourist attraction
-	SaveTouristAttraction(ctx context.Context, title, description, location, openDays, openTime string,
+	SaveTouristAttraction(ctx context.Context, title, description, location, workingHours string,
 		price string, isAccessible bool, organizerID int, image string) (int, error)
 
 	// FindEventByID retrieves a cultural event by its ID
@@ -23,10 +22,10 @@ type Repository interface {
 
 	// UpdateEventByID updates a cultural event by its ID
 	UpdateEventByID(ctx context.Context, id int, title, description, location string,
-		startDate, finishDate, workingHours string, price string, isAccessible bool, organizerID int, image string) error
+		startDate, finishDate, durationHours string, price string, isAccessible bool, organizerID int, image string) error
 
 	// UpdateTouristAttractionByID updates a cultural tourist attraction by its ID
-	UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, openDays, openTime string,
+	UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, workingHours string,
 		price string, isAccessible bool, organizerID int, image string) error
 
 	// DeleteEventByID deletes a cultural event by its ID
@@ -47,4 +46,3 @@ type Repository interface {
 	// FindAllTouristAttractions retrieves all cultural tourist attractions
 	FindAllTouristAttractions(ctx context.Context) ([]TouristAttraction, error)
 }
-

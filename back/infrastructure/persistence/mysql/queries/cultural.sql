@@ -1,11 +1,11 @@
 -- name: create-event
-INSERT INTO events (title, description, location, start_date, end_date, working_hours,
+INSERT INTO events (title, description, location, start_date, end_date, duration_hours,
 price, is_accessible, organizer_id, image, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 
 -- name: create-tourist-attraction
-INSERT INTO tourist_attractions (title, description, location, open_days, open_time, price, is_accessible, organizer_id, image, created_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+INSERT INTO tourist_attractions (title, description, location, working_hours, price, is_accessible, organizer_id, image, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
 
 
 -- name: fetch-event-by-id
@@ -16,7 +16,7 @@ SELECT
     IFNULL(e.location, ''),
     IFNULL(e.start_date, ''), 
     IFNULL(e.end_date, ''), 
-    IFNULL(e.working_hours, ''), 
+    IFNULL(e.duration_hours, ''), 
     e.price, 
     e.is_accessible, 
     IFNULL(e.organizer_id, 0), 
@@ -32,8 +32,7 @@ SELECT
     IFNULL(ta.title, ''),
     IFNULL(ta.description, ''), 
     IFNULL(ta.location, ''), 
-    IFNULL(ta.open_days, ''), 
-    IFNULL(ta.open_time, ''), 
+    IFNULL(ta.working_hours, ''), 
     ta.price, 
     ta.is_accessible, 
     IFNULL(ta.organizer_id, 0), 
@@ -45,14 +44,14 @@ WHERE ta.id = ?
 
 -- name: update-event
 UPDATE events
-SET title = ?, description = ?, location = ?, start_date = ?, end_date = ?, 
+SET title = ?, description = ?, location = ?, start_date = ?, end_date = ?, duration_hours = ?, 
 price = ?, is_accessible = ?, organizer_id = ?, image = ?,
 updated_at = NOW()
 WHERE id = ?
 
 -- name: update-tourist-attraction
 UPDATE tourist_attractions
-SET title = ?, description = ?, location = ?, open_days = ?, open_time = ?,
+SET title = ?, description = ?, location = ?, working_hours = ?,
 price = ?, is_accessible = ?, organizer_id = ?, image = ?,
 updated_at = NOW()
 WHERE id = ?

@@ -51,12 +51,11 @@ const EditCulturalPage = () => {
     description: culturalDetails ? culturalDetails.description : '',
     location: culturalDetails ? culturalDetails.location : '',
     price: culturalDetails ? culturalDetails.price : 'R$0,00',
-    is_accessible: culturalDetails ? culturalDetails.is_accessible : false,
-    start_date: culturalDetails ? culturalDetails.start_date : '',
-    end_date: culturalDetails ? culturalDetails.end_date : '',
-    working_hours: culturalDetails ? culturalDetails.working_hours : '',
-    open_days: culturalDetails ? culturalDetails.open_days : [],
-    open_time: culturalDetails ? culturalDetails.open_time : '',
+    isAccessible: culturalDetails ? culturalDetails.isAccessible : false,
+    startDate: culturalDetails ? culturalDetails.startDate : '',
+    endDate: culturalDetails ? culturalDetails.endDate : '',
+    durationHours: culturalDetails ? culturalDetails.durationHours : '',
+    workingHours: culturalDetails ? culturalDetails.workingHours : '',
   });
 
   useEffect(() => {
@@ -67,20 +66,18 @@ const EditCulturalPage = () => {
         description: culturalDetails.description || '',
         location: culturalDetails.location || '',
         price: culturalDetails.price || 'R$0,00',
-        is_accessible: culturalDetails.is_accessible || false,
+        isAccessible: culturalDetails.isAccessible || false,
         
-        // Lida com dados aninhados de eventos
-        start_date: formatDateForInput(culturalDetails.event ? culturalDetails.event.start_date : ''),
-        end_date: formatDateForInput(culturalDetails.event ? culturalDetails.event.end_date : ''),
-        working_hours: culturalDetails.event ? culturalDetails.event.working_hours : '',
+        startDate: formatDateForInput(culturalDetails.event ? culturalDetails.event.startDate : ''),
+        endDate: formatDateForInput(culturalDetails.event ? culturalDetails.event.endDate : ''),
+        durationHours: culturalDetails.event ? culturalDetails.event.durationHours : '',
         
-        // Lida com dados aninhados de pontos turísticos
-        // A API envia como string "Segunda, Terça", então transformamos em array
-        open_days: culturalDetails.tourist_attraction ? culturalDetails.tourist_attraction.open_days.split(', ') : [],
-        open_time: culturalDetails.tourist_attraction ? culturalDetails.tourist_attraction.open_time : '',
-        });
+        workingHours: culturalDetails.touristAttraction ? culturalDetails.touristAttraction.workingHours : '',
+        image: culturalDetails.image || '',
+      });
     }
    }, [culturalDetails]);
+   
 
   const handleTypeChange = (event) => {
     setCulturalType(event.target.value);
@@ -89,12 +86,11 @@ const EditCulturalPage = () => {
       description: '',
       location: '',
       price: 'R$0,00',
-      is_accessible: false,
-      start_date: '',
-      end_date: '',
-      working_hours: '',
-      open_days: [],
-      open_time: '',
+      isAccessible: false,
+      startDate: '',
+      endDate: '',
+      durationHours: '',
+      workingHours: '',      
     });
   };
 
@@ -102,18 +98,6 @@ const EditCulturalPage = () => {
     const { name, value, type, checked } = event.target;
     const finalValue = type === 'checkbox' ? checked : value;
     setFormData((prevData) => ({ ...prevData, [name]: finalValue }));
-  };
-
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    setFormData((prevData) => {
-      const currentDays = prevData.open_days;
-      if (checked) {
-        return { ...prevData, open_days: [...currentDays, value] };
-      } else {
-        return { ...prevData, open_days: currentDays.filter((day) => day !== value) };
-      }
-    });
   };
 
   const handleSubmit = async (event) => {
@@ -127,27 +111,26 @@ const EditCulturalPage = () => {
     }
 
     let finalPayload = {
-      // Use as chaves exatas do seu `json tag` no Go
       id: parseInt(id, 10),
       title: formData.title,
       type: culturalType,
       description: formData.description,
       price: formData.price,
-      is_accessible: formData.is_accessible,
+      isAccessible: formData.isAccessible,
       location: formData.location,
-      organizer_id: userID,
+      organizerID: userID,
+      image: formData.image || (culturalDetails ? culturalDetails.image : ''),
     };
 
     if (culturalType === 'event') {
       finalPayload.event = {
-        start_date: formData.start_date,
-        end_date: formData.end_date,
-        working_hours: formData.working_hours,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        durationHours: formData.durationHours,
       };
     } else if (culturalType === 'tourist_attraction') {
-      finalPayload.tourist_attraction = {
-        open_days: formData.open_days.join(', '),
-        open_time: formData.open_time,
+      finalPayload.touristAttraction = {
+        workingHours: formData.workingHours,
       };
     }
 
@@ -162,8 +145,7 @@ const EditCulturalPage = () => {
         credentials: 'include',
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 204) {
         navigate(`/card/${culturalType}/${id}`);
       } else {
         const errorData = await response.json();
@@ -173,7 +155,7 @@ const EditCulturalPage = () => {
       }
     } catch (err) {
       console.error('Erro de rede:', err);
-      setError('Não foi possível criar seu cultural no momento, tente novamente mais tarde :(');
+      setError('Não foi possível atualizar seu cultural no momento, tente novamente mais tarde :(');
     }
   };
 
@@ -245,10 +227,6 @@ const EditCulturalPage = () => {
     navigate('/');
   };
 
-
- 
-  const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-
   return (
     <>
       <NotificationModal
@@ -305,13 +283,13 @@ const EditCulturalPage = () => {
               <div className="radio-option">
                 <input
                   type="radio"
-                  id="tourist_attraction"
+                  id="tourist-attraction"
                   name="culturalType"
                   value="tourist_attraction"
                   checked={culturalType === 'tourist_attraction'}
                   onChange={handleTypeChange}
                 />
-                <label htmlFor="tourist_attraction">Ponto Turístico</label>
+                <label htmlFor="tourist-attraction">Ponto Turístico</label>
               </div>
             </fieldset>
 
@@ -345,69 +323,57 @@ const EditCulturalPage = () => {
 
                 {culturalType === 'event' ? (
                   <>
-                    <label htmlFor="start_date" className="required">
+                    <label htmlFor="start-date" className="required">
                       Data e Hora de Início
                     </label>
                     <input
                       type="datetime-local"
-                      id="start_date"
-                      name="start_date"
-                      value={formData.start_date}
+                      id="start-date"
+                      name="startDate"
+                      value={formData.startDate}
                       onChange={handleInputChange}
                       required
                     />
 
-                    <label htmlFor="end_date" className="required">
+                    <label htmlFor="end-date" className="required">
                       Data e Hora de Fim
                     </label>
                     <input
                       type="datetime-local"
-                      id="end_date"
-                      name="end_date"
-                      value={formData.end_date}
+                      id="end-date"
+                      name="endDate"
+                      value={formData.endDate}
                       onChange={handleInputChange}
                       required
                     />
 
-                    <label htmlFor="working_hours" className="required">
-                      Horário de Funcionamento
+                    <label htmlFor="duration-hours" className="required">
+                      Horário de Duração
                     </label>
                     <input
                       type="text"
-                      id="working_hours"
-                      name="working_hours"
-                      placeholder="HH:MM"
-                      value={formData.working_hours}
+                      id="duration-hours"
+                      name="durationHours"
+                      placeholder="HH:MM às HH:MM"
+                      value={formData.durationHours}
                       onChange={handleInputChange}
                       required
                     />
                   </>
                 ) : (
                   <>
-                    <label className="required">Dias de Funcionamento</label>
-                    <div className="checkbox-group">
-                      {daysOfWeek.map((day) => (
-                        <div key={day} className="checkbox-option">
-                          <input
-                            type="checkbox"
-                            id={day}
-                            value={day}
-                            checked={formData.open_days.includes(day)}
-                            onChange={handleCheckboxChange}
-                          />
-                          <label htmlFor={day}>{day}</label>
-                        </div>
-                      ))}
-                    </div>
-
-                    <label htmlFor="open_time" className="required">
-                      Horário de Funcionamento
-                    </label>
+                    <label className="required">Horário de Funcionamento</label>
                     <textarea
-                      id="open_time"
-                      name="open_time"
-                      placeholder="ex: Dom - Sab 09:00 às 17:00"
-                      value={formData.open_time}
+                      id="working-hours"
+                      name="workingHours"
+                      placeholder="ex:  Domingo	Fechado
+                                        Segunda-feira	11:00–15:00
+                                        Terça-feira	11:00–23:00
+                                        Quarta-feira	11:00–23:00
+                                        Quinta-feira	11:00–23:00
+                                        Sexta-feira	11:00–23:00
+                                        Sábado	11:00–23:00"
+                      value={formData.workingHours}
                       onChange={handleInputChange}
                       required
                     />
@@ -437,12 +403,12 @@ const EditCulturalPage = () => {
                 <div className="checkbox-option accessibility-option">
                   <input
                     type="checkbox"
-                    id="is_accessible"
-                    name="is_accessible"
-                    checked={formData.is_accessible}
+                    id="is-accessible"
+                    name="isAccessible"
+                    checked={formData.isAccessible}
                     onChange={handleInputChange}
                   />
-                  <label htmlFor="is_accessible">Possui estrutura de acessibilidade</label>
+                  <label htmlFor="is-accessible">Possui estrutura de acessibilidade</label>
                 </div>
 
                 <label htmlFor="image">Imagem do Cultural</label>

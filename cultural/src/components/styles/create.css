@@ -18,6 +18,14 @@ a {
     color: inherit; /* herda a cor do elemento pai */
 }
 
+textarea {
+  resize: both; 
+  min-height: 80px; 
+  max-height: 500px;
+  min-width: 100px;
+  max-width: 300px;
+}
+
 .screen {
   width: 375px; 
   height: 812px;

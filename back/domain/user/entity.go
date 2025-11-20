@@ -7,28 +7,28 @@ import (
 
 // User represents the core user entity in the domain
 type User struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	Document    string `json:"document"`
-	CompanyName string `json:"companyName"`
-	Password    string `json:"password"`
-	Type        string `json:"type"`
-	CreatedAt   string `json:"created_at"`
+	ID          int
+	Name        string
+	Email       string
+	Document    string
+	CompanyName string
+	Password    string
+	Type        string
+	CreatedAt   string
 }
 
 // UserType represents valid user types
 type UserType string
 
 const (
-	UserTypeCommon   UserType = "common"
+	UserTypeCommon    UserType = "common"
 	UserTypeOrganizer UserType = "organizer"
 )
 
 type CulturalList struct {
-	ID    int    `json:"id"`
-	Title  string `json:"title"`
-	Type   string `json:"type"`
+	ID    int
+	Title string
+	Type  string
 }
 
 // Validate checks if the UserType is valid
@@ -76,7 +76,7 @@ func (u *User) ChangePassword(currentPassword, newPassword string) error {
 	if u.Password != currentPassword {
 		return errors.New("current password is incorrect")
 	}
-	
+
 	u.Password = newPassword
 	return nil
 }

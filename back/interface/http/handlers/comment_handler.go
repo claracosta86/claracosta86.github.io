@@ -97,11 +97,3 @@ func (h *CommentHandler) HandleGetComment(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(comments)
 }
-
-func (h *CommentHandler) HandleUpdateComment(w http.ResponseWriter, r *http.Request) {
-	// Implementation for updating comment content
-}
-
-func (h *CommentHandler) HandleDeleteComment(w http.ResponseWriter, r *http.Request) {
-	// Implementation for deleting comment content
-}

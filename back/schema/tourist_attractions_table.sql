@@ -3,8 +3,7 @@ CREATE TABLE tourist_attractions (
     title VARCHAR(255) NOT NULL,
     location VARCHAR(255),
     description TEXT,
-    open_days VARCHAR(255) NOT NULL,
-    open_time VARCHAR(255) NOT NULL,
+    working_hours VARCHAR(255) NOT NULL,
     is_accessible BOOLEAN DEFAULT TRUE,
     price DECIMAL(10, 2) DEFAULT 0.00,
     image VARCHAR(255),
@@ -25,3 +24,8 @@ ALTER TABLE tourist_attractions MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRE
 ALTER TABLE tourist_attractions DROP COLUMN organizer_contact;
 
 ALTER TABLE tourist_attractions MODIFY COLUMN price VARCHAR(255) NOT NULL DEFAULT 'R$0,00';
+
+ALTER TABLE tourist_attractions DROP COLUMN open_time;
+ALTER TABLE tourist_attractions DROP COLUMN open_days;
+
+ALTER TABLE tourist_attractions ADD COLUMN working_hours VARCHAR(255) NOT NULL AFTER description;

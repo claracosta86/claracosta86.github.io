@@ -28,7 +28,7 @@ const OrganizerPage = () => {
   const [organizerData, setOrganizerData] = useState({
     name: '',
     email: '',
-    organizer_since: '',
+    organizerSince: '',
     id: organizerID,
   });
   const [culturais, setCulturais] = useState([]);
@@ -48,13 +48,13 @@ const OrganizerPage = () => {
             setOrganizerData({
                 name: data.name,
                 email: data.email,
-                organizer_since: data.organizer_since,
+                organizerSince: data.organizerSince,
                 id: data.id,
             });
 
-            if (data.cultural_items && data.cultural_items.length > 0) {
+            if (data.culturalItems && data.culturalItems.length > 0) {
                 const culturaisWithDetails = await Promise.all(
-                data.cultural_items.map(async (cult) => {
+                data.culturalItems.map(async (cult) => {
                     if (cult.type && cult.id) {
                     const detailResponse = await fetch(
                         `http://localhost:8080/culturais/${cult.type}/${cult.id}`
@@ -68,7 +68,7 @@ const OrganizerPage = () => {
                         Location: detailData.location,
                         Price: detailData.price,
                         Event: cult.type === 'event' ? detailData.event : null,
-                        TouristAttraction: cult.type === 'tourist_attraction' ? detailData.tourist_attraction : null,
+                        TouristAttraction: cult.type === 'tourist_attraction' ? detailData.touristAttraction : null,
                         };
                     }
                     }
@@ -183,7 +183,7 @@ const OrganizerPage = () => {
           <div key={organizerData.id} className="organizer-info">
             <p><b>Nome:</b> {organizerData.name}</p>
             <p><b>Contato:</b> {organizerData.email}</p>
-            <p><b>Tempo na plataforma:</b> {organizerData.organizer_since}</p>
+            <p><b>Tempo na plataforma:</b> {organizerData.organizerSince}</p>
           </div>
           <p className="separator-unique"></p>
           <div className="favorites-list">
@@ -211,13 +211,13 @@ const OrganizerPage = () => {
                           <div className="details-box">
                             <span id='Working Hours'>
                                 {cult.type === 'event' && cult.Event && (
-                                  cult.Event.end_date === "" 
-                                    ? ` ${cult.Event.start_date}, de ${cult.Event.working_hours}`
-                                    : ` ${cult.Event.start_date} - ${cult.Event.end_date}, de ${cult.Event.working_hours}`
+                                  cult.Event.endDate === "" 
+                                    ? ` ${cult.Event.startDate}, de ${cult.Event.durationHours}`
+                                    : ` ${cult.Event.startDate} - ${cult.Event.endDate}, de ${cult.Event.durationHours}`
                                 )}
                                 {cult.type !== 'event' &&
                                   cult.TouristAttraction &&
-                                  ` ${cult.TouristAttraction.open_days}, ${cult.TouristAttraction.open_time}`}
+                                  ` ${cult.TouristAttraction.workingHours}`}
                             </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'

@@ -34,12 +34,12 @@ func (m *MockCulturalUseCase) CreateCultural(ctx context.Context, req culturalMo
 	return args.Get(0).(culturalModel.CreateCulturalResponse), args.Error(1)
 }
 
-func (m *MockCulturalUseCase) GetCultural(ctx context.Context, id int, culturalType string) (culturalModel.CulturalResponse, error) {
+func (m *MockCulturalUseCase) GetCultural(ctx context.Context, id int, culturalType string) (culturalModel.GetCulturalResponse, error) {
 	args := m.Called(ctx, id, culturalType)
 	if args.Get(0) == nil {
-		return culturalModel.CulturalResponse{}, args.Error(1)
+		return culturalModel.GetCulturalResponse{}, args.Error(1)
 	}
-	return args.Get(0).(culturalModel.CulturalResponse), args.Error(1)
+	return args.Get(0).(culturalModel.GetCulturalResponse), args.Error(1)
 }
 
 func (m *MockCulturalUseCase) UpdateCultural(ctx context.Context, req culturalModel.UpdateCulturalRequest) error {
@@ -52,20 +52,20 @@ func (m *MockCulturalUseCase) DeleteCultural(ctx context.Context, id int, cultur
 	return args.Error(0)
 }
 
-func (m *MockCulturalUseCase) GetAllCulturais(ctx context.Context) (culturalModel.AllCulturaisResponse, error) {
+func (m *MockCulturalUseCase) GetAllCulturais(ctx context.Context) (culturalModel.GetAllCulturaisResponse, error) {
 	args := m.Called(ctx)
 	if args.Get(0) == nil {
-		return culturalModel.AllCulturaisResponse{}, args.Error(1)
+		return culturalModel.GetAllCulturaisResponse{}, args.Error(1)
 	}
-	return args.Get(0).(culturalModel.AllCulturaisResponse), args.Error(1)
+	return args.Get(0).(culturalModel.GetAllCulturaisResponse), args.Error(1)
 }
 
-func (m *MockCulturalUseCase) GetHomeCulturais(ctx context.Context) (culturalModel.AllCulturaisResponse, error) {
+func (m *MockCulturalUseCase) GetHomeCulturais(ctx context.Context) (culturalModel.GetAllCulturaisResponse, error) {
 	args := m.Called(ctx)
 	if args.Get(0) == nil {
-		return culturalModel.AllCulturaisResponse{}, args.Error(1)
+		return culturalModel.GetAllCulturaisResponse{}, args.Error(1)
 	}
-	return args.Get(0).(culturalModel.AllCulturaisResponse), args.Error(1)
+	return args.Get(0).(culturalModel.GetAllCulturaisResponse), args.Error(1)
 }
 
 func TestHandleCreateCultural(t *testing.T) {

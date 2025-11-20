@@ -84,7 +84,7 @@ const LoginPage = () => {
   };
 
   return (
-    <section className="screen" id="tela-login">
+    <section className="screen" id="login-page">
       <header className="top-bar">
         <img src={logo} alt="Logo Cultural" className="logo-tiny" />
         <div className="right-section">
@@ -92,7 +92,7 @@ const LoginPage = () => {
       </header>
       <div className="login-box">
         <h2>Login</h2>
-        <form id="loginForm" onSubmit={handleSubmit}>
+        <form id="login-form" onSubmit={handleSubmit}>
           <label htmlFor="email">Email</label>
           <input
             id="email"

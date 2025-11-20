@@ -15,17 +15,15 @@ func SetupRoutes(container *container.Container) *chi.Mux {
 	r.Use(enableCors, logging.LoggingMiddleware)
 
 	// Use handlers from the container
-	commentaryHandler := container.CommentHandler
+	commentHandler := container.CommentHandler
 	culturalHandler := container.CulturalHandler
 	notificationHandler := container.NotificationHandler
 	userHandler := container.UserHandler
 
 	// Rotas de comentários
 	r.Route("/comments", func(r chi.Router) {
-		r.Post("/", commentaryHandler.HandleCreateComment)
-		r.Get("/{culturalType}/{culturalID:[0-9]+}", commentaryHandler.HandleGetComment)
-		r.Patch("/{commentID:[0-9]+}", commentaryHandler.HandleUpdateComment)
-		r.Delete("/{commentID:[0-9]+}", commentaryHandler.HandleDeleteComment)
+		r.Post("/", commentHandler.HandleCreateComment)
+		r.Get("/{culturalType}/{culturalID:[0-9]+}", commentHandler.HandleGetComment)
 	})
 
 	// Rotas de culturais

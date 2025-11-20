@@ -31,7 +31,7 @@ const CardPage = () => {
   const { id, culturalType } = useParams();
 
   const [culturalData, setCulturalData] = useState(null);
-  const [commentarys, setCommentarys] = useState([]);
+  const [comments, setComments] = useState([]);
 
   const { user } = useUser();
   const userID = user.userID;
@@ -80,18 +80,18 @@ const CardPage = () => {
         console.error('Erro ao buscar detalhes ou favoritos:', error);
       }
     };
-    const fetchCulturalCommentary = async () => {
+    const fetchCulturalComment = async () => {
       try {
         const response = await fetch(`http://localhost:8080/comments/${culturalType}/${id}`);
         const data = await response.json();
         console.log('Comentários culturais recebidos:', data);
-        setCommentarys(data.commentaries);
+        setComments(data.comments);
       } catch (error) {
         console.error('Erro ao buscar comentários culturais:', error);
       }
     };
     fetchCulturalDataAndFavorites();
-    fetchCulturalCommentary();
+    fetchCulturalComment();
   }, [id, culturalType, userID]);
 
   const handleNotificationIconClick = async () => {
@@ -173,6 +173,31 @@ const CardPage = () => {
     navigate(-1);
   };
 
+  const getWorkingHoursLines = (wh) => {
+    if (!wh) return [];
+
+    const dias = [
+        'Domingo',
+        'Segunda-feira',
+        'Terça-feira',
+        'Quarta-feira',
+        'Quinta-feira',
+        'Sexta-feira',
+        'Sábado',
+    ];
+
+    const regexDias = new RegExp(`(${dias.join('|')})`, 'g');
+    let s = wh.trim();
+    
+    s = s.replace(regexDias, (match) => `\n${match}`);
+
+    s = s.trim();
+
+    return s.split('\n')
+            .map((linha) => linha.trim())
+            .filter(Boolean);
+};
+
   if (!culturalData) {
     return <div>Carregando...</div>; 
   }
@@ -235,14 +260,21 @@ const CardPage = () => {
                   ) : (
                     <strong>Horário de Funcionamento:</strong>
                   )}
+                  <br />
                   {culturalType === 'event' && culturalData.event && (
-                    culturalData.event.end_date === "" 
-                    ? ` ${culturalData.event.start_date}, de ${culturalData.event.working_hours}`
-                    : ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`
+                    culturalData.event.endDate === "" 
+                    ? ` ${culturalData.event.startDate}, de ${culturalData.event.durationHours}`
+                    : ` ${culturalData.event.startDate} - ${culturalData.event.endDate}, de ${culturalData.event.durationHours}`
                   )}
-                  {culturalType !== 'event' &&
-                    culturalData.tourist_attraction &&
-                    ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}
+                  {culturalType !== 'event' && culturalData.touristAttraction && (
+                   <span>
+                      {getWorkingHoursLines(culturalData.touristAttraction.workingHours).map(
+                          (linha, idx) => (
+                              <div key={idx}>{linha}</div> 
+                          )
+                      )}
+                  </span>
+                  )}
                 </p>
                 <p>
                   <img src={priceIcon} alt="Preço" className="info-icon" />
@@ -253,7 +285,7 @@ const CardPage = () => {
                 </p>
                 <p>
                   <img src={accessibleIcon} alt="Acessível" className="info-icon" />
-                  <strong>Acessível:</strong> {culturalData.is_accessible ? 'Sim' : 'Não'}
+                  <strong>Acessível:</strong> {culturalData.isAccessible ? 'Sim' : 'Não'}
                 </p>
                 <p>
                   <img src={mailIcon} alt="Contato" className="info-icon" />
@@ -274,17 +306,17 @@ const CardPage = () => {
             <div className="comments-section">
               <h3>Comentários</h3>
               <div className="comment-box">
-                {commentarys != null ? (
-                  commentarys.map((commentary) => (
-                    <div key={commentary.id} className="comment-item">
-                      <p><strong>{commentary.user_name}:</strong> {commentary.comment}</p>
+                {comments != null ? (
+                  comments.map((comment) => (
+                    <div key={comment.id} className="comment-item">
+                      <p><strong>{comment.userName}:</strong> {comment.comment}</p>
                     </div>
                   ))
                 ) : (
                   <p>Não há comentários ainda. Seja o primeiro a comentar!</p>
                 )}
               </div>
-              <Link to={`/commentaries/${culturalType}/${culturalData.id}`} className="add-comment-btn">Adicionar Comentário</Link>
+              <Link to={`/comments/${culturalType}/${culturalData.id}`} className="add-comment-btn">Adicionar Comentário</Link>
             </div>
           </section>
           <div className="down-actions-container">

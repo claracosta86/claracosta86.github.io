@@ -5,19 +5,23 @@ import './styles/login.css';
 
 const PasswordRecoveryPage = () => {
   return (
-    <section className="screen" id="tela-login">
-      <img src={logo} alt="Logo Cultural" className="logo-img" />
+    <section className="screen" id="recovery-page">
+      <header className="top-bar">
+        <img src={logo} alt="Logo Cultural" className="logo-tiny" />
+        <div className="right-section">
+        </div>
+      </header>
       <div className="login-box">
         <h2>Recuperação de Senha</h2>
         <label>Email</label>
         <input type="email" placeholder="email@exemplo.com" />
 
-        <button className="btn">Enviar link de recuperação</button>
+        <button className="btn">Enviar link de recuperação</button> <br />
 
         <p className="small-letters">
           Lembrou sua senha?{' '}
           <Link to="/user/login" className="link">
-            Login
+            Volte ao login
           </Link>
         </p>
       </div>

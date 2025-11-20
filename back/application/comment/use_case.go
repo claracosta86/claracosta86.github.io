@@ -19,31 +19,31 @@ type UseCase interface {
 	// CreateComment creates a new comment entry
 	CreateComment(ctx context.Context, data model.CreateCommentRequest) error
 
-	// GetComments retrieves commentaries for a specific cultural entry
+	// GetComments retrieves comments for a specific cultural entry
 	GetComments(ctx context.Context, culturalID int, culturalType string) (model.GetCommentsResponse, error)
 }
 
-type commentaryUseCase struct {
-	commentaryService comment.Service
-	culturalService   cultural.Service
+type commentUseCase struct {
+	commentService  comment.Service
+	culturalService cultural.Service
 }
 
-func NewUseCase(commentaryService comment.Service, culturalService cultural.Service) UseCase {
-	return &commentaryUseCase{
-		commentaryService: commentaryService,
-		culturalService:   culturalService,
+func NewUseCase(commentService comment.Service, culturalService cultural.Service) UseCase {
+	return &commentUseCase{
+		commentService:  commentService,
+		culturalService: culturalService,
 	}
 }
 
-func (uc *commentaryUseCase) CreateComment(ctx context.Context, data model.CreateCommentRequest) error {
-	err := uc.commentaryService.CreateComment(ctx, data.CulturalID, data.CulturalType, data.UserID, data.Comment)
+func (uc *commentUseCase) CreateComment(ctx context.Context, data model.CreateCommentRequest) error {
+	err := uc.commentService.CreateComment(ctx, data.CulturalID, data.CulturalType, data.UserID, data.Comment)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (uc *commentaryUseCase) GetComments(ctx context.Context, culturalID int, culturalType string) (model.GetCommentsResponse, error) {
+func (uc *commentUseCase) GetComments(ctx context.Context, culturalID int, culturalType string) (model.GetCommentsResponse, error) {
 	switch culturalType {
 	case CulturalTypeEvent:
 		event, err := uc.culturalService.GetEventByID(ctx, culturalID)
@@ -66,7 +66,7 @@ func (uc *commentaryUseCase) GetComments(ctx context.Context, culturalID int, cu
 		}
 	}
 
-	comments, err := uc.commentaryService.GetComments(ctx, culturalID, culturalType)
+	comments, err := uc.commentService.GetComments(ctx, culturalID, culturalType)
 	if err != nil {
 		fmt.Println(err)
 		return model.GetCommentsResponse{}, errors.New("comments not found")

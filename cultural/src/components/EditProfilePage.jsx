@@ -53,17 +53,15 @@ const EditProfilePage = () => {
           }
         }
       } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
-        setUserType('common');
+        console.error('Erro ao buscar dados do usuário:', error);      
       }
     };
     fetchUserData();
   }, [userID]);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-
     setError('');
+    event.preventDefault();
 
     try {
       const response = await fetch(`http://localhost:8080/users/${userID}/profile/edit`, {
@@ -215,15 +213,16 @@ const EditProfilePage = () => {
             <input
               id="new-name"
               type="text"
-              placeholder={name}
+              value={name}
+              placeholder="Novo nome (se tiver alteração)"
               onChange={(e) => setName(e.target.value)}
             />
-
             <label htmlFor="new-email">E-mail</label>
             <input
               id="new-email"
               type="email"
-              placeholder={email}
+              value={email}
+              placeholder="Novo e-mail (se tiver alteração)"
               onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -233,7 +232,8 @@ const EditProfilePage = () => {
                 <input
                   id="new-company-name"
                   type="text"
-                  placeholder={companyName}
+                  value={companyName}
+                  placeholder="Novo nome da empresa (se tiver alteração)"
                   onChange={(e) => setCompanyName(e.target.value)}
                 />
               </>

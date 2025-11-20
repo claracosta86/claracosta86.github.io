@@ -16,7 +16,7 @@ import UserProvider from './contexts/UserContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import OrganizerPage from './components/OrganizerPage';
 import EditCulturalPage from './components/EditCulturalPage';
-import CommentaryPage from './components/CommentaryPage';
+import CommentPage from './components/CommentPage';
 import SearchPage from './components/SearchPage';
 
 function App() {
@@ -39,7 +39,7 @@ function App() {
             <Route path="/create-cultural" element={<CreateCulturalPage />} />
             <Route path="/organizer/:id" element={<OrganizerPage />} />
             <Route path="/edit-cultural/:culturalType/:id" element={<EditCulturalPage />} />
-            <Route path="/commentaries/:culturalType/:id" element={<CommentaryPage />} />
+            <Route path="/comments/:culturalType/:id" element={<CommentPage />} />
             <Route path="/search" element={<SearchPage />} />
           </Route>
         </Routes>

@@ -5,7 +5,7 @@ CREATE TABLE events (
     description TEXT,
     start_date VARCHAR(255) NOT NULL,
     end_date VARCHAR(255) NOT NULL,
-    duration VARCHAR(50) NOT NULL,
+    duration_hours VARCHAR(50) NOT NULL,
     is_accessible BOOLEAN DEFAULT TRUE,
     price DECIMAL(10, 2) DEFAULT 0.00,
     image VARCHAR(255),
@@ -30,3 +30,6 @@ ALTER TABLE events MODIFY COLUMN price VARCHAR(255) NOT NULL DEFAULT 'R$0,00';
 ALTER TABLE events MODIFY COLUMN working_hours VARCHAR(255) NOT NULL;
 
 ALTER TABLE events RENAME COLUMN duration TO working_hours;
+
+ALTER TABLE events RENAME COLUMN working_hours TO duration_hours;
+

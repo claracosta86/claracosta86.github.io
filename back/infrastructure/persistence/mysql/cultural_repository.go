@@ -34,14 +34,14 @@ func NewCulturalRepository(db *sql.DB) cultural.Repository {
 }
 
 func (r *culturalRepository) SaveEvent(ctx context.Context, title, description, location string,
-	startDate, finishDate, workingHours, price string, isAccessible bool, organizerID int, image string) (int, error) {
+	startDate, finishDate, durationHours, price string, isAccessible bool, organizerID int, image string) (int, error) {
 	result, err := r.db.ExecContext(ctx, culturalQueries["create-event"],
 		title,
 		description,
 		location,
 		startDate,
 		finishDate,
-		workingHours,
+		durationHours,
 		price,
 		isAccessible,
 		organizerID,
@@ -57,15 +57,14 @@ func (r *culturalRepository) SaveEvent(ctx context.Context, title, description, 
 	return int(id), nil
 }
 
-func (r *culturalRepository) SaveTouristAttraction(ctx context.Context, title, description, location, openDays, openTime string,
+func (r *culturalRepository) SaveTouristAttraction(ctx context.Context, title, description, location, workingHours string,
 	price string, isAccessible bool, organizerID int, image string) (int, error) {
 
 	result, err := r.db.ExecContext(ctx, culturalQueries["create-tourist-attraction"],
 		title,
 		description,
 		location,
-		openDays,
-		openTime,
+		workingHours,
 		price,
 		isAccessible,
 		organizerID,
@@ -78,7 +77,7 @@ func (r *culturalRepository) SaveTouristAttraction(ctx context.Context, title, d
 	if err != nil {
 		return 0, fmt.Errorf("failed to get last insert id: %w", err)
 	}
-	fmt.Printf("Inserted tourist attraction with ID: %d\n", id)
+
 	return int(id), nil
 }
 
@@ -91,7 +90,7 @@ func (r *culturalRepository) FindEventByID(ctx context.Context, id int) (cultura
 		&event.Location,
 		&event.StartDate,
 		&event.EndDate,
-		&event.WorkingHours,
+		&event.DurationHours,
 		&event.Price,
 		&event.IsAccessible,
 		&event.OrganizerID,
@@ -101,10 +100,8 @@ func (r *culturalRepository) FindEventByID(ctx context.Context, id int) (cultura
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println("No rows found for event ID:", id)
 			return cultural.Event{}, errors.New("cultural event not found")
 		}
-		fmt.Println(err)
 
 		return cultural.Event{}, err
 	}
@@ -119,8 +116,7 @@ func (r *culturalRepository) FindTouristAttractionByID(ctx context.Context, id i
 		&attraction.Title,
 		&attraction.Description,
 		&attraction.Location,
-		&attraction.OpenDays,
-		&attraction.OpenTime,
+		&attraction.WorkingHours,
 		&attraction.Price,
 		&attraction.IsAccessible,
 		&attraction.OrganizerID,
@@ -139,7 +135,7 @@ func (r *culturalRepository) FindTouristAttractionByID(ctx context.Context, id i
 }
 
 func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title, description, location string,
-	startDate, finishDate, workingHours string, price string, isAccessible bool, organizerID int, image string) error {
+	startDate, finishDate, durationHours string, price string, isAccessible bool, organizerID int, image string) error {
 
 	_, err := r.db.ExecContext(ctx, culturalQueries["update-event"],
 		title,
@@ -147,6 +143,7 @@ func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title,
 		location,
 		startDate,
 		finishDate,
+		durationHours,
 		price,
 		isAccessible,
 		organizerID,
@@ -156,16 +153,14 @@ func (r *culturalRepository) UpdateEventByID(ctx context.Context, id int, title,
 	return err
 }
 
-func (r *culturalRepository) UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, openDays, openTime string,
+func (r *culturalRepository) UpdateTouristAttractionByID(ctx context.Context, id int, title, description, location, workingHours string,
 	price string, isAccessible bool, organizerID int, image string) error {
 
-	fmt.Println(title, description, location, openDays, openTime, price, isAccessible, organizerID, image, id)
 	_, err := r.db.ExecContext(ctx, culturalQueries["update-tourist-attraction"],
 		title,
 		description,
 		location,
-		openDays,
-		openTime,
+		workingHours,
 		price,
 		isAccessible,
 		organizerID,

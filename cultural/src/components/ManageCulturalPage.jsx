@@ -106,7 +106,7 @@ const ManageCulturalPage = () => {
                     Location: detailData.location,
                     Price: detailData.price,
                     Event: cult.type === 'event' ? detailData.event : null,
-                    TouristAttraction: cult.type === 'tourist_attraction' ? detailData.tourist_attraction : null,
+                    TouristAttraction: cult.type === 'tourist_attraction' ? detailData.touristAttraction : null,
                   };
                 }
               }
@@ -237,13 +237,13 @@ const ManageCulturalPage = () => {
                             <span>{cult.Location}</span> <br />
                             <span>
                                 {cult.type === 'event' && cult.Event && (
-                                  cult.Event.end_date === "" 
-                                    ? ` ${cult.Event.start_date}, de ${cult.Event.working_hours}`
-                                    : ` ${cult.Event.start_date} - ${cult.Event.end_date}, de ${cult.Event.working_hours}`
+                                  cult.Event.endDate === "" 
+                                    ? ` ${cult.Event.startDate}, de ${cult.Event.durationHours}`
+                                    : ` ${cult.Event.startDate} - ${cult.Event.endDate}, de ${cult.Event.durationHours}`
                                 )}
                                 {cult.type !== 'event' &&
                                   cult.TouristAttraction &&
-                                  ` ${cult.TouristAttraction.open_days}, ${cult.TouristAttraction.open_time}`}
+                                  ` ${cult.TouristAttraction.workingHours}`}
                             </span>
                             <span className="price">
                               {cult.Price === 'R$0,00' || cult.Price === 'Gratuito'

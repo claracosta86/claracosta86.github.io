@@ -3,9 +3,10 @@ import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import NotificationModal from './NotificationModal/NotificationModal';
+import ConfirmModal from './ConfirmModal/ConfirmComment';
 import './styles/card.css';
 import './styles/favorites.css';
-import './styles/commentary.css';
+import './styles/comment.css';
 import logo from '../assets/logo.png';
 import notificationsIcon from '../assets/notifications-icon.png';
 import homeIcon from '../assets/home-icon.png';
@@ -15,7 +16,7 @@ import favoriteIcon from '../assets/favorite-icon.png';
 import userIcon from '../assets/user-icon.png';
 import logoutIcon from '../assets/logout-icon.png';
 
-const CommentaryPage = () => {
+const CommentPage = () => {
   const navigate = useNavigate();
 
   const [notification, setNotification] = useState([]);
@@ -29,7 +30,7 @@ const CommentaryPage = () => {
 
   const [culturalData, setCulturalData] = useState(null);
 
-  const [commentary, setCommentary] = useState('');
+  const [comment, setComment] = useState('');
 
   const { user } = useUser();
   const userID = user.userID;
@@ -108,8 +109,8 @@ const CommentaryPage = () => {
     navigate(-1);
   };
 
-  const handleAddCommentaryClick = async () => {
-    if (commentary.trim() === '') {
+  const handleAddCommentClick = async () => {
+    if (comment.trim() === '') {
       setError('Seu comentário não pode estar vazio.');
       return;
     }
@@ -120,9 +121,9 @@ const CommentaryPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cultural_type: culturalType,
-          cultural_id: culturalData.id,
+          culturalID: culturalData.id,
           user_id: userID,
-          commentary: commentary,
+          comment: comment,
         }),
         credentials: 'include',
       });
@@ -193,8 +194,8 @@ const CommentaryPage = () => {
                           : ` ${culturalData.event.start_date} - ${culturalData.event.end_date}, de ${culturalData.event.working_hours}`
                       )}
                       {culturalType !== 'event' &&
-                        culturalData.tourist_attraction &&
-                        ` ${culturalData.tourist_attraction.open_days}, ${culturalData.tourist_attraction.open_time}`}
+                        culturalData.touristAttraction &&
+                        ` ${culturalData.touristAttraction.open_days}, ${culturalData.touristAttraction.open_time}`}
                   </span>
 
                   <span className="price">
@@ -212,10 +213,10 @@ const CommentaryPage = () => {
               </div>
               <textarea
                 className="comment-text-box"
-                name="commentary"
+                name="comment"
                 placeholder="Escreva seu comentário aqui..." 
-                value={commentary}
-                onChange={(e) => setCommentary(e.target.value)}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
               />
 
               {error && <span className="error">{error}</span>}
@@ -227,7 +228,7 @@ const CommentaryPage = () => {
                 Voltar
               </button>
               <button
-                onClick={handleAddCommentaryClick}
+                onClick={handleAddCommentClick}
                 className="down-btn"
               >
                 Adicionar Comentário
@@ -259,4 +260,4 @@ const CommentaryPage = () => {
   );
 };
 
-export default CommentaryPage;
+export default CommentPage;

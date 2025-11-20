@@ -14,11 +14,6 @@ import (
 	userModel "poc2/back/interface/model"
 )
 
-const (
-	sessionName = "app-session"
-	userTypeKey = "userType"
-)
-
 type UserHandler struct {
 	userUseCase user.UseCase
 }
@@ -289,7 +284,7 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 // [404] User not found
 // [405] Invalid HTTP method
 // [500] Internal Server Error
-// [204] User favorites recovered successfully
+// [204] User favorites saved successfully
 // /users/{userID}/profile/favorites [PATCH]
 func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
@@ -303,7 +298,6 @@ func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
 		return
 	}
-	log.Printf("UserID: %d", userID)
 
 	var request userModel.FavoriteRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {

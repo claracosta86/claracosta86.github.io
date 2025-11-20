@@ -2,29 +2,20 @@ package model
 
 type Comment struct {
 	ID           int    `json:"id"`
-	CulturalID   int    `json:"cultural_id"`
-	UserName     string `json:"user_name"`
-	CulturalType string `json:"cultural_type"`
+	CulturalID   int    `json:"culturalID"`
+	UserName     string `json:"userName"`
+	CulturalType string `json:"culturalType"`
 	Comment      string `json:"comment"`
-	CreatedAt    string `json:"created_at"`
+	CreatedAt    string `json:"createdAt"`
 }
 
 type GetCommentsResponse struct {
-	Comments []Comment `json:"commentaries"`
+	Comments []Comment `json:"comments"`
 }
 
 type CreateCommentRequest struct {
 	Comment      string `json:"comment"`
-	CulturalType string `json:"cultural_type"`
-	CulturalID   int    `json:"cultural_id"`
-	UserID       int    `json:"user_id"`
-}
-
-type UpdateCommentsRequest struct {
-	Comment string `json:"comment"`
-	ID      int    `json:"id"`
-}
-
-type DeleteCommentsRequest struct {
-	ID int `json:"id"`
+	CulturalType string `json:"culturalType"`
+	CulturalID   int    `json:"culturalID"`
+	UserID       int    `json:"userID"`
 }

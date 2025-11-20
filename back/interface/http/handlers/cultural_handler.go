@@ -175,7 +175,10 @@ func (h *CulturalHandler) HandleUpdateCultural(w http.ResponseWriter, r *http.Re
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	updateReq.Image = imageName
+
+	if imageName != "" {
+		updateReq.Image = imageName
+	}
 
 	err = h.culturalUseCase.UpdateCultural(r.Context(), updateReq)
 	if err != nil {

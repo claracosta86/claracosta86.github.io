@@ -1,6 +1,5 @@
 package model
 
-
 // RegisterUserRequest represents the request for user registration
 type RegisterUserRequest struct {
 	Name        string `json:"name"`
@@ -52,8 +51,8 @@ type Type struct {
 
 // Information represents the user information for the application
 type Information struct {
-	Type  string `json:"userType"`
-	ID    string `json:"userID"`
+	Type string `json:"userType"`
+	ID   string `json:"userID"`
 }
 
 // Organizer represents the organizer information for cultural events
@@ -64,20 +63,20 @@ type Organizer struct {
 }
 
 type FavoriteRequest struct {
-	CulturalType string `json:"culturalType"` // "event" or "tourist_attraction"
-	CulturalID   int    `json:"culturalID"`   // ID of the event or tourist attraction
-	IsFavorite   bool   `json:"isFavorite"`   // true to add to favorites, false to remove from favorites
+	CulturalType string `json:"culturalType"`
+	CulturalID   int    `json:"culturalID"`
+	IsFavorite   bool   `json:"isFavorite"`
 }
 
 type CulturalList struct {
-	ID    int    `json:"id"`
-	Type   string `json:"type"`
+	ID   int    `json:"id"`
+	Type string `json:"type"`
 }
 
 type GetOrganizerInfoResponse struct {
-	Name            string         `json:"name"`
-	Email           string         `json:"email"`
-	OrganizerSince  string         `json:"organizer_since"`
-	CulturalItems   []CulturalList `json:"cultural_items"`
-	ID              int            `json:"id"`
+	Name           string         `json:"name"`
+	Email          string         `json:"email"`
+	OrganizerSince string         `json:"organizerSince"`
+	CulturalItems  []CulturalList `json:"culturalItems"`
+	ID             int            `json:"id"`
 }

@@ -35,7 +35,7 @@ const HomePage = () => {
         const response = await fetch('http://localhost:8080/culturais/home');
         const data = await response.json();
         setEvents(data.events || []);
-        setAttractions(data.tourist_attractions || []);
+        setAttractions(data.touristAttractions || []);
       } catch (error) {
         console.error('Erro ao buscar culturais:', error);
       }
@@ -100,13 +100,13 @@ const HomePage = () => {
         userID={userID}
         userType={userType}
       />
-       <ConfirmModal
+      <ConfirmModal
         isOpen={isConfirmModalOpen}
         onClose={closeConfirmModal}
         onConfirm={handleConfirmLogout}
       />
 
-      <section className="screen" id="tela-home">
+      <section className="screen" id="home-page">
         <header className="top-bar">
           <img src={logo} alt="Logo Cultural" className="logo-tiny" />
           <div className="right-section">

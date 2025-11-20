@@ -172,7 +172,6 @@ const ProfilePage = () => {
               </Link>
               <Link
                 to="/user/profile/change-password"
-                state={{ userType, userID }}
                 className="profile-btn"
               >
                 Alterar Senha
@@ -190,21 +189,21 @@ const ProfilePage = () => {
           </div>
         </div>
         <footer className="footer">
-          <Link to={`/home`} state={{ userID, userType }}>
+          <Link to={`/home`}>
             <img src={homeIcon} alt="Logo Cultural" />
           </Link>
-          <Link to={`/search`} state={{ userID, userType }}>
+          <Link to={`/search`}>
             <img src={searchIcon} alt="Buscar" />
           </Link>
           {userType === 'organizer' && (
-            <Link to={`/create-cultural`} state={{ userID, userType }}>
+            <Link to={`/create-cultural`}>
               <img src={addIcon} alt="Adicionar" className="mostImportantButton" />
             </Link>
           )}
-          <Link to={`/user/favorites`} state={{ userID, userType }}>
+          <Link to={`/user/favorites`}>
             <img src={favoriteIcon} alt="Favoritos" />
           </Link>
-          <Link to={`/user/profile`} state={{ userID, userType }}>
+          <Link to={`/user/profile`}>
             <img src={userIcon} alt="Usuário" />
           </Link>
         </footer>

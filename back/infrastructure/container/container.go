@@ -3,11 +3,11 @@ package container
 import (
 	"database/sql"
 
-	commentaryCase "poc2/back/application/comment"
+	commentCase "poc2/back/application/comment"
 	culturalCase "poc2/back/application/cultural"
 	notificationCase "poc2/back/application/notification"
 	userCase "poc2/back/application/user"
-	commentaryService "poc2/back/domain/comment"
+	commentService "poc2/back/domain/comment"
 	culturalService "poc2/back/domain/cultural"
 	notificationService "poc2/back/domain/notification"
 	userService "poc2/back/domain/user"
@@ -18,13 +18,13 @@ import (
 // Container holds all the dependencies for the application
 type Container struct {
 	// Domain services
-	CommentService      commentaryService.Service
+	CommentService      commentService.Service
 	CulturalService     culturalService.Service
 	NotificationService notificationService.Service
 	UserService         userService.Service
 
 	// Application use cases
-	CommentUseCase      commentaryCase.UseCase
+	CommentUseCase      commentCase.UseCase
 	CulturalUseCase     culturalCase.UseCase
 	NotificationUseCase notificationCase.UseCase
 	UserUseCase         userCase.UseCase
@@ -39,39 +39,39 @@ type Container struct {
 // NewContainer creates a new dependency injection container
 func NewContainer(db *sql.DB) *Container {
 	// Infrastructure layer - repositories
-	commentaryRepository := mysql.NewCommentRepository(db)
+	commentRepository := mysql.NewCommentRepository(db)
 	culturalRepository := mysql.NewCulturalRepository(db)
 	notificationRepository := mysql.NewNotificationRepository(db)
 	userRepository := mysql.NewUserRepository(db)
 
 	// Domain layer - services
-	commentaryService := commentaryService.NewService(commentaryRepository)
+	commentService := commentService.NewService(commentRepository)
 	culturalService := culturalService.NewService(culturalRepository)
 	notificationService := notificationService.NewService(notificationRepository)
 	userService := userService.NewService(userRepository)
 
 	// Application layer - use cases
-	commentaryUseCase := commentaryCase.NewUseCase(commentaryService, culturalService)
+	commentUseCase := commentCase.NewUseCase(commentService, culturalService)
 	culturalUseCase := culturalCase.NewUseCase(culturalService, userService)
 	notificationUseCase := notificationCase.NewUseCase(notificationService, userService)
 	userUseCase := userCase.NewUseCase(userService, culturalService)
 
 	// Interface layer - HTTP handlers
-	commentaryHandler := http.NewCommentHandler(commentaryUseCase)
+	commentHandler := http.NewCommentHandler(commentUseCase)
 	culturalHandler := http.NewCulturalHandler(culturalUseCase)
 	notificationHandler := http.NewNotificationHandler(notificationUseCase)
 	userHandler := http.NewUserHandler(userUseCase)
 
 	return &Container{
-		CommentService:      commentaryService,
+		CommentService:      commentService,
 		CulturalService:     culturalService,
 		UserService:         userService,
 		NotificationService: notificationService,
-		CommentUseCase:      commentaryUseCase,
+		CommentUseCase:      commentUseCase,
 		CulturalUseCase:     culturalUseCase,
 		NotificationUseCase: notificationUseCase,
 		UserUseCase:         userUseCase,
-		CommentHandler:      commentaryHandler,
+		CommentHandler:      commentHandler,
 		CulturalHandler:     culturalHandler,
 		NotificationHandler: notificationHandler,
 		UserHandler:         userHandler,

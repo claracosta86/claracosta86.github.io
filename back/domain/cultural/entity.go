@@ -1,39 +1,42 @@
 package cultural
 
-type Cultural struct{
-	Events EventCollection `json:"events"`
-	TouristAttractions TouristAttractionCollection `json:"touristAttractions"`
+const (
+	CulturalTypeEvent             = "event"
+	CulturalTypeTouristAttraction = "tourist_attraction"
+)
+
+type Cultural struct {
+	Events             []Event
+	TouristAttractions []TouristAttraction
 }
 
 type TouristAttraction struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	OpenDays    string `json:"open_days"`
-	OpenTime    string `json:"open_time"` // Time in HH:MM format
-	Location    string `json:"location"`
-	Price      string `json:"price"` // Price in R$
-	IsAccessible bool   `json:"is_accessible"` 
-	OrganizerID int  `json:"organizerID"`
-	OrganizerEmail string   `json:"organizerEmail"`
-	Image      string `json:"image"`
+	ID             int
+	Title          string
+	Description    string
+	WorkingHours   string
+	Location       string
+	Price          string
+	IsAccessible   bool
+	OrganizerID    int
+	OrganizerEmail string
+	Image          string
 }
-
-type TouristAttractionCollection []TouristAttraction
-
 type Event struct {
-	ID          int       `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	StartDate   string    `json:"start_date"` // YYYY-MM-DD HH:MM
-	EndDate     string    `json:"end_date"`   // YYYY-MM-DD HH:MM
-	WorkingHours string    `json:"working_hours"` // HH:MM
-	Location     string    `json:"location"`
-	Price       string    `json:"price"` // Price in R$
-	IsAccessible bool      `json:"is_accessible"` // Indica se um evento tem atenção à acessibilidade
-	OrganizerID int  `json:"organizerID"`
-	OrganizerEmail string   `json:"organizerEmail"`
-	Image       string     `json:"image"` // Image associated with the event
+	ID             int
+	Title          string
+	Description    string
+	StartDate      string
+	EndDate        string
+	DurationHours  string
+	Location       string
+	Price          string
+	IsAccessible   bool
+	OrganizerID    int
+	OrganizerEmail string
+	Image          string
 }
-
-type EventCollection []Event
+type CulturalList struct {
+	ID   int
+	Type string
+}

@@ -10,19 +10,19 @@ import (
 type Service interface {
 	// RegisterUser registers a new user in the system
 	RegisterUser(ctx context.Context, name, email, document, companyName, password string, userType UserType) error
-	
+
 	// AuthenticateUser authenticates a user with email and password
 	AuthenticateUser(ctx context.Context, email, password string) (*User, error)
-	
+
 	// GetUserByID retrieves a user by their ID
 	GetUserByID(ctx context.Context, id int) (*User, error)
-	
+
 	// UpdateUserProfile updates a user's profile information
 	UpdateUserProfile(ctx context.Context, id int, name, email, companyName string) error
-	
+
 	// ChangeUserPassword changes a user's password
 	ChangeUserPassword(ctx context.Context, id int, currentPassword, newPassword string) error
-	
+
 	// RemoveEventFromAllUsers removes an event from all users' favorites
 	RemoveEventFromAllUsers(ctx context.Context, eventIDs []int) error
 
@@ -62,13 +62,13 @@ func (s *service) RegisterUser(ctx context.Context, name, email, document, compa
 	if err != nil {
 		return err
 	}
-	
+
 	// Check if user already exists
 	existingUser, err := s.repository.FindByEmail(ctx, email)
 	if err == nil && existingUser != nil {
 		return errors.New("user already exists with this email")
 	}
-	
+
 	// Save the user
 	return s.repository.Save(ctx, user)
 }
@@ -79,17 +79,17 @@ func (s *service) AuthenticateUser(ctx context.Context, email, password string) 
 	if err != nil {
 		return nil, errors.New("user not found")
 	}
-	
+
 	// Verify password
 	valid, err := s.repository.CheckPassword(ctx, user.ID, password)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if !valid {
 		return nil, errors.New("invalid password")
 	}
-	
+
 	return user, nil
 }
 
@@ -98,7 +98,7 @@ func (s *service) GetUserByID(ctx context.Context, id int) (*User, error) {
 	if err != nil {
 		return nil, errors.New("user not found")
 	}
-	
+
 	return user, nil
 }
 
@@ -108,7 +108,11 @@ func (s *service) UpdateUserProfile(ctx context.Context, id int, name, email, co
 	if err != nil {
 		return errors.New("user not found")
 	}
-	
+
+	user.Name = name
+	user.Email = email
+	user.CompanyName = companyName
+
 	// Save changes
 	return s.repository.Update(ctx, user)
 }
@@ -120,7 +124,7 @@ func (s *service) ChangeUserPassword(ctx context.Context, id int, currentPasswor
 	} else if !valid {
 		return errors.New("current password is incorrect")
 	}
-	
+
 	// Save changes
 	return s.repository.UpdatePassword(ctx, id, newPassword)
 }
@@ -168,7 +172,7 @@ func (s *service) GetUserFavorites(ctx context.Context, userID int) ([]CulturalL
 	if err != nil {
 		return nil, errors.New("user not found")
 	}
-	
+
 	return s.repository.GetFavoritesByUserID(ctx, userID)
 }
 
@@ -177,7 +181,7 @@ func (s *service) UpdateLastSeenFavorite(ctx context.Context, userID, culturalID
 	if err != nil {
 		return errors.New("user not found")
 	}
-	
+
 	return s.repository.UpdateLastSeenFavorite(ctx, userID, culturalID, culturalType)
 }
 

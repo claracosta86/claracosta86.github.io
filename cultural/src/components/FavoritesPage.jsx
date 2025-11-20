@@ -52,7 +52,7 @@ const FavoritesPage = () => {
                     Image: detailData.image,
                     Price: fav.type === 'event' ? detailData.price : 'Gratuito',
                     Event: fav.type === 'event' ? detailData.event : null,
-                    TouristAttraction: fav.type === 'tourist_attraction' ? detailData.tourist_attraction : null,
+                    TouristAttraction: fav.type === 'tourist_attraction' ? detailData.touristAttraction : null,
                   };
                 }
               }
@@ -219,13 +219,13 @@ const FavoritesPage = () => {
                           <div className ="details-box">
                             <span>
                               {fav.type === 'event' && fav.Event && (
-                                fav.Event.end_date === "" 
-                                  ? ` ${fav.Event.start_date}, de ${fav.Event.working_hours}`
-                                  : ` ${fav.Event.start_date} - ${fav.Event.end_date}, de ${fav.Event.working_hours}`
+                                fav.Event.endDate === "" 
+                                  ? ` ${fav.Event.startDate}, de ${fav.Event.durationHours}`
+                                  : ` ${fav.Event.startDate} - ${fav.Event.endDate}, de ${fav.Event.durationHours}`
                               )}
                               {fav.type === 'tourist_attraction' &&
                                 fav.TouristAttraction &&
-                                ` ${fav.TouristAttraction.open_days}, ${fav.TouristAttraction.open_time}`}
+                                ` ${fav.TouristAttraction.workingHours}`}
                             </span>
 
                             <span className="price">

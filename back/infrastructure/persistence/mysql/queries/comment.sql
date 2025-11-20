@@ -7,8 +7,8 @@ SELECT
     c.id,
     c.cultural_id,
     c.cultural_type,
-    u.name AS user_name,
-    c.content AS comment,
+    u.name,
+    c.content,
     c.created_at
 FROM comments c
 LEFT JOIN users u ON c.user_id = u.id

@@ -49,7 +49,7 @@ back/
 │   │       │   ├── cultural.sql
 │   │       │   ├── notification.sql
 │   │       │   └── user.sql
-│   │       ├── commentary_repository.go
+│   │       ├── comment_repository.go
 │   │       ├── cultural_repository.go
 │   │       ├── notification_repository.go
 │   │       └── user_repository.go
@@ -58,7 +58,7 @@ back/
 ├── interface/       # Interface Layer - HTTP handlers
 │   ├── http/        # HTTP interface
 │   │   ├── handlers
-│   │   │   ├── commentary_handler.go
+│   │   │   ├── comment_handler.go
 │   │   │   ├── cultural_handler.go 
 │   │   │   ├── notification_handler.go 
 │   │   │   └── user_handler.go

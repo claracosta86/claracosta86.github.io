@@ -88,7 +88,7 @@ func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 		mockUseCase := new(MockNotificationUseCase)
 		handler := handlers.NewNotificationHandler(mockUseCase)
 
-		requestBody, _ := json.Marshal(notificationModel.SeenNotificationsRequest{
+		requestBody, _ := json.Marshal(notificationModel.SeenNotificationPost{
 			NotificationIDs: []int{1, 2},
 		})
 
@@ -111,7 +111,7 @@ func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 		mockUseCase := new(MockNotificationUseCase)
 		handler := handlers.NewNotificationHandler(mockUseCase)
 
-		requestBody, _ := json.Marshal(notificationModel.SeenNotificationsRequest{
+		requestBody, _ := json.Marshal(notificationModel.SeenNotificationPost{
 			NotificationIDs: []int{1, 2},
 		})
 
