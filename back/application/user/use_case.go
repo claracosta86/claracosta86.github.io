@@ -218,7 +218,6 @@ func (uc *useCase) GetOrganizerInfo(ctx context.Context, organizerID int) (*mode
 
 	years, err := time.Parse("2006-01-02 15:04:05", organizer.CreatedAt)
 	if err != nil {
-		fmt.Println("Error parsing organizer creation date:", err)
 		return nil, err
 	}
 	yearsSince := formatTimeSince(years)

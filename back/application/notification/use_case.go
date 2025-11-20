@@ -32,22 +32,12 @@ func NewUseCase(notificationService notification.Service, userService user.Servi
 
 // GetNotifications retrieves user notifications
 func (uc *useCase) GetNotifications(ctx context.Context, userID int) (*model.GetNotificationsResponse, error) {
-	favorites, err := uc.userService.GetUserFavorites(ctx, userID)
+	notificationCulturals, err := uc.notificationService.GetNotifications(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	favoritesMap := make(map[int]string)
-	for _, favorite := range favorites {
-		favoritesMap[favorite.ID] = favorite.Type
-	}
-
-	notificationCulturals, err := uc.notificationService.GetNotifications(ctx, userID, favoritesMap)
-	if err != nil {
-		return nil, err
-	}
-
-	culturals := make([]model.NotificationCulturalList, len(notificationCulturals))
+	culturals := make([]model.NotificationCulturalList, 0)
 	for _, cultural := range notificationCulturals {
 		notificationType, err := notification.NewNotificationType(cultural.Type.String())
 		if err != nil {
@@ -57,7 +47,7 @@ func (uc *useCase) GetNotifications(ctx context.Context, userID int) (*model.Get
 		culturals = append(culturals, model.NotificationCulturalList{
 			ID:               cultural.CulturalID,
 			Title:            cultural.Title,
-			Type:             cultural.CulturalType,
+			CulturalType:     cultural.CulturalType,
 			NotificationType: notificationType.String(),
 			NotificationID:   cultural.ID,
 		})

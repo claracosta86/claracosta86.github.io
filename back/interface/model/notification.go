@@ -8,7 +8,7 @@ type GetNotificationsResponse struct {
 type NotificationCulturalList struct {
 	ID               int    `json:"id"`
 	Title            string `json:"title"`
-	Type             string `json:"type"`
+	CulturalType     string `json:"culturalType"`
 	NotificationType string `json:"notificationType"`
 	NotificationID   int    `json:"notificationID"`
 }

@@ -3,7 +3,6 @@ package comment
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"poc2/back/domain/comment"
 	"poc2/back/domain/cultural"
@@ -70,7 +69,6 @@ func (uc *commentUseCase) GetComments(ctx context.Context, culturalID int, cultu
 
 	comments, err := uc.commentService.GetComments(ctx, culturalID, culturalType)
 	if err != nil {
-		fmt.Println(err)
 		return model.GetCommentsResponse{}, errors.New("comments not found")
 	}
 

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -39,14 +38,14 @@ func (h *CommentHandler) HandleCreateComment(w http.ResponseWriter, r *http.Requ
 		http.Error(w, "Invalid request data", http.StatusBadRequest)
 		return
 	}
-	fmt.Printf("Received comment creation request: %+v\n", request)
+
 	err := h.commentUseCase.CreateComment(r.Context(), request)
 	if err != nil {
 		if err.Error() == "cultural not found" {
 			http.Error(w, "Cultural not found", http.StatusBadRequest)
 			return
 		}
-		fmt.Printf("Error creating comment: %v\n", err)
+
 		http.Error(w, "Error creating comment: "+err.Error(), http.StatusInternalServerError)
 		return
 	}

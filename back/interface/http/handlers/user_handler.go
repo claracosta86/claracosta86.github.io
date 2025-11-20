@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -203,7 +202,6 @@ func (h *UserHandler) HandleChangeUserPassword(w http.ResponseWriter, r *http.Re
 
 	var request userModel.ChangePasswordRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		fmt.Println(request)
 		http.Error(w, "Invalid request data", http.StatusBadRequest)
 		return
 	}

@@ -46,7 +46,6 @@ func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Re
 
 	imageName, err := processImageUpload(r, "./static/culturalthumbs")
 	if err != nil && err != http.ErrMissingFile {
-		fmt.Printf("Error processing image upload: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -54,7 +53,6 @@ func (h *CulturalHandler) HandleCreateCultural(w http.ResponseWriter, r *http.Re
 
 	result, err := h.culturalUseCase.CreateCultural(r.Context(), createReq)
 	if err != nil {
-		fmt.Printf("Error creating cultural: %v\n", err)
 		http.Error(w, "Error creating cultural: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -130,11 +128,6 @@ func (h *CulturalHandler) HandleGetCultural(w http.ResponseWriter, r *http.Reque
 	}
 
 	culturalType := chi.URLParam(r, "type")
-	if culturalType != cultural.CulturalTypeEvent && culturalType != cultural.CulturalTypeTouristAttraction {
-		http.Error(w, "Invalid cultural type", http.StatusBadRequest)
-		return
-	}
-
 	culturalData, err := h.culturalUseCase.GetCultural(r.Context(), ID, culturalType)
 	if err != nil {
 		switch err.Error() {
@@ -142,6 +135,7 @@ func (h *CulturalHandler) HandleGetCultural(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error retrieving cultural data: "+err.Error(), http.StatusNotFound)
 			return
 		default:
+			fmt.Println(err)
 			http.Error(w, "Error retrieving cultural data: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -171,7 +165,6 @@ func (h *CulturalHandler) HandleUpdateCultural(w http.ResponseWriter, r *http.Re
 
 	imageName, err := processImageUpload(r, "./static/culturalthumbs")
 	if err != nil && err != http.ErrMissingFile {
-		fmt.Printf("Error processing image upload: %v\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
