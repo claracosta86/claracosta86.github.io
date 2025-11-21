@@ -81,11 +81,11 @@ func (r *notificationRepository) MarkAsSeen(ctx context.Context, userID int, not
 	placeholders = strings.TrimRight(placeholders, ",")
 	query := fmt.Sprintf(notificationQueries["mark-notifications-as-seen"], placeholders)
 	args := make([]any, 0, len(notificationIDs)+1)
+	args = append(args, userID)
 	for _, id := range notificationIDs {
 		args = append(args, id)
 	}
 
-	args = append(args, userID)
 	_, err := r.db.ExecContext(ctx, query, args...)
 	return err
 }

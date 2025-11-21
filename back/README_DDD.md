@@ -58,13 +58,9 @@ back/
 ├── interface/       # Interface Layer - HTTP handlers
 │   ├── http/        # HTTP interface
 │   │   ├── handlers
-│   │   │   ├── comment_handler_test.go
 │   │   │   ├── comment_handler.go
-│   │   │   ├── cultural_handler_test.go 
 │   │   │   ├── cultural_handler.go 
-│   │   │   ├── notification_handler_test.go 
 │   │   │   ├── notification_handler.go 
-│   │   │   ├── user_handler_test.go
 │   │   │   └── user_handler.go
 │   │   ├── middlewares
 │   │   │    └── session.go

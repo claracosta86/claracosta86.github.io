@@ -16,7 +16,7 @@ func NewNotificationType(value string) (NotificationType, error) {
 		"canceled":  true,
 		"updated":   true,
 	}
-	if !validTypes[value] && value != "" {
+	if !validTypes[value] {
 		return NotificationType(""), errors.New("invalid notification type")
 	}
 	return NotificationType(value), nil

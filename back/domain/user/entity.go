@@ -51,13 +51,43 @@ const (
 
 // NewUser creates a new user with validation
 func NewUser(name, email, document, companyName, password string, userType UserType) (*User, error) {
+	// Validate Name
+	nameVO, err := NewName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validate Email
+	email = strings.ToLower(strings.TrimSpace(email))
+	if !isValidEmailFormat(email) {
+		return nil, errors.New("invalid email format")
+	}
+
+	// Validate Document
+	documentVO, err := NewDocument(document)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validate Password
+	passwordVO, err := NewPassword(password)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validate UserType
+	validUserType, err := userType.Validate()
+	if err != nil {
+		return nil, err
+	}
+
 	user := &User{
-		Name:        strings.TrimSpace(name),
-		Email:       strings.ToLower(strings.TrimSpace(email)),
-		Document:    strings.TrimSpace(document),
+		Name:        nameVO.String(),
+		Email:       email,
+		Document:    documentVO.String(),
 		CompanyName: strings.TrimSpace(companyName),
-		Password:    password,
-		Type:        string(userType),
+		Password:    passwordVO.String(),
+		Type:        string(validUserType),
 	}
 
 	return user, nil
