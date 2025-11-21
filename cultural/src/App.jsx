@@ -24,11 +24,12 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/user/login" element={<LoginPage />} />
+          <Route path="/user/register" element={<RegisterPage />} />
+          <Route path="/user/password-recovery" element={<PasswordRecoveryPage />} />
+          
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/user/login" element={<LoginPage />} />
-            <Route path="/user/register" element={<RegisterPage />} />
-            <Route path="/user/password-recovery" element={<PasswordRecoveryPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/user/profile" element={<ProfilePage />} />
             <Route path="/user/profile/edit" element={<EditProfilePage />} />
