@@ -33,7 +33,6 @@ func NewCommentRepository(db *sql.DB) comment.Repository {
 }
 
 func (r *commentRepository) SaveComment(ctx context.Context, culturalID int, culturalType string, userID int, comment comment.CommentContent) error {
-	fmt.Printf("Saving comment for culturalID: %d, culturalType: %s, userID: %d\n", culturalID, culturalType, userID)
 	_, err := r.db.ExecContext(ctx, commentQueries["save-comment"],
 		culturalID,
 		culturalType,

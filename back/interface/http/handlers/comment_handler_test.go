@@ -15,6 +15,7 @@ import (
 
 	"poc2/back/interface/http/handlers"
 	commentModel "poc2/back/interface/model"
+	mock "poc2/back/mocks"
 )
 
 func TestHandleCreateComment(t *testing.T) {
@@ -22,7 +23,7 @@ func TestHandleCreateComment(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockUseCase := NewMockCommentUseCase(ctrl)
+		mockUseCase := mock.NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(commentModel.CreateCommentRequest{
@@ -38,7 +39,6 @@ func TestHandleCreateComment(t *testing.T) {
 		mockUseCase.EXPECT().CreateComment(gomock.Any(), gomock.AssignableToTypeOf(commentModel.CreateCommentRequest{})).Return(nil)
 
 		handler.HandleCreateComment(rr, req)
-
 		assert.Equal(t, http.StatusCreated, rr.Code)
 	})
 
@@ -46,7 +46,7 @@ func TestHandleCreateComment(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockUseCase := NewMockCommentUseCase(ctrl)
+		mockUseCase := mock.NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(commentModel.CreateCommentRequest{
@@ -62,7 +62,6 @@ func TestHandleCreateComment(t *testing.T) {
 		mockUseCase.EXPECT().CreateComment(gomock.Any(), gomock.AssignableToTypeOf(commentModel.CreateCommentRequest{})).Return(errors.New("cultural not found"))
 
 		handler.HandleCreateComment(rr, req)
-
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
 	})
 }
@@ -72,7 +71,7 @@ func TestHandleGetComment(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockUseCase := NewMockCommentUseCase(ctrl)
+		mockUseCase := mock.NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		req, _ := http.NewRequest("GET", "/comments/event/1", nil)
@@ -102,7 +101,7 @@ func TestHandleGetComment(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		mockUseCase := NewMockCommentUseCase(ctrl)
+		mockUseCase := mock.NewMockCommentUseCase(ctrl)
 		handler := handlers.NewCommentHandler(mockUseCase)
 
 		req, _ := http.NewRequest("GET", "/comments/event/99", nil)
@@ -116,7 +115,6 @@ func TestHandleGetComment(t *testing.T) {
 		mockUseCase.EXPECT().GetComments(gomock.Any(), 99, "event").Return(commentModel.GetCommentsResponse{}, errors.New("comments not found"))
 
 		handler.HandleGetComment(rr, req)
-
 		assert.Equal(t, http.StatusNotFound, rr.Code)
 	})
 }

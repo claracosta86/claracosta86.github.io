@@ -11,90 +11,19 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	gomock "go.uber.org/mock/gomock"
 
 	"poc2/back/interface/http/handlers"
 	userModel "poc2/back/interface/model"
+	mock "poc2/back/mocks"
 )
-
-// MockUseCase is a mock of user.UseCase
-type MockUserUseCase struct {
-	mock.Mock
-}
-
-func (m *MockUserUseCase) RegisterUser(ctx context.Context, request userModel.RegisterUserRequest) error {
-	args := m.Called(ctx, request)
-	return args.Error(0)
-}
-
-func (m *MockUserUseCase) LoginUser(ctx context.Context, request userModel.LoginUserRequest) (*userModel.LoginUserResponse, error) {
-	args := m.Called(ctx, request)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*userModel.LoginUserResponse), args.Error(1)
-}
-
-func (m *MockUserUseCase) GetUserProfile(ctx context.Context, userID int) (*userModel.GetUserProfileResponse, error) {
-	args := m.Called(ctx, userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*userModel.GetUserProfileResponse), args.Error(1)
-}
-
-func (m *MockUserUseCase) UpdateUserProfile(ctx context.Context, userID int, request userModel.UpdateUserProfileRequest) error {
-	args := m.Called(ctx, userID, request)
-	return args.Error(0)
-}
-
-func (m *MockUserUseCase) ChangePassword(ctx context.Context, userID int, request userModel.ChangePasswordRequest) error {
-	args := m.Called(ctx, userID, request)
-	return args.Error(0)
-}
-
-func (m *MockUserUseCase) DeleteUser(ctx context.Context, userID int, userType string) error {
-	args := m.Called(ctx, userID, userType)
-	return args.Error(0)
-}
-
-func (m *MockUserUseCase) ToggleFavorite(ctx context.Context, userID int, request userModel.FavoriteRequest) error {
-	args := m.Called(ctx, userID, request)
-	return args.Error(0)
-}
-
-func (m *MockUserUseCase) GetUserFavorites(ctx context.Context, userID int) ([]userModel.CulturalList, error) {
-	args := m.Called(ctx, userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]userModel.CulturalList), args.Error(1)
-}
-
-func (m *MockUserUseCase) UpdateLastSeenFavorite(ctx context.Context, userID int, request userModel.FavoriteRequest) error {
-	args := m.Called(ctx, userID, request)
-	return args.Error(0)
-}
-
-func (m *MockUserUseCase) GetOrganizerCulturais(ctx context.Context, userID int) ([]userModel.CulturalList, error) {
-	args := m.Called(ctx, userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]userModel.CulturalList), args.Error(1)
-}
-
-func (m *MockUserUseCase) GetOrganizerInfo(ctx context.Context, userID int) (*userModel.GetOrganizerInfoResponse, error) {
-	args := m.Called(ctx, userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*userModel.GetOrganizerInfoResponse), args.Error(1)
-}
 
 func TestHandleRegisterUser(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(userModel.RegisterUserRequest{
@@ -111,16 +40,17 @@ func TestHandleRegisterUser(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("RegisterUser", mock.Anything, mock.AnythingOfType("userModel.RegisterUserRequest")).Return(nil)
-
+		mockUseCase.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).Return(nil)
 		handler.HandleRegisterUser(rr, req)
 
 		assert.Equal(t, http.StatusCreated, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 
 	t.Run("user already exists", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(userModel.RegisterUserRequest{
@@ -137,18 +67,21 @@ func TestHandleRegisterUser(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("RegisterUser", mock.Anything, mock.AnythingOfType("userModel.RegisterUserRequest")).Return(errors.New("user already exists"))
+		mockUseCase.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).Return(errors.New("user already exists"))
 
 		handler.HandleRegisterUser(rr, req)
 
 		assert.Equal(t, http.StatusConflict, rr.Code)
-		mockUseCase.AssertExpectations(t)
+
 	})
 }
 
 func TestHandleUserLogin(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(userModel.LoginUserRequest{
@@ -168,7 +101,7 @@ func TestHandleUserLogin(t *testing.T) {
 			Type:   "common",
 		}
 
-		mockUseCase.On("LoginUser", mock.Anything, mock.AnythingOfType("userModel.LoginUserRequest")).Return(expectedResponse, nil)
+		mockUseCase.EXPECT().LoginUser(gomock.Any(), gomock.Any()).Return(expectedResponse, nil)
 
 		handler.HandleUserLogin(rr, req)
 
@@ -178,11 +111,13 @@ func TestHandleUserLogin(t *testing.T) {
 		json.Unmarshal(rr.Body.Bytes(), &actualResponse)
 		assert.Equal(t, *expectedResponse, actualResponse)
 
-		mockUseCase.AssertExpectations(t)
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(userModel.LoginUserRequest{
@@ -197,16 +132,19 @@ func TestHandleUserLogin(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("LoginUser", mock.Anything, mock.AnythingOfType("userModel.LoginUserRequest")).Return(nil, errors.New("user not found"))
+		mockUseCase.EXPECT().LoginUser(gomock.Any(), gomock.Any()).Return(nil, errors.New("user not found"))
 
 		handler.HandleUserLogin(rr, req)
 
 		assert.Equal(t, http.StatusNotFound, rr.Code)
-		mockUseCase.AssertExpectations(t)
+
 	})
 
 	t.Run("invalid password", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(userModel.LoginUserRequest{
@@ -221,18 +159,21 @@ func TestHandleUserLogin(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("LoginUser", mock.Anything, mock.AnythingOfType("userModel.LoginUserRequest")).Return(nil, errors.New("invalid password"))
+		mockUseCase.EXPECT().LoginUser(gomock.Any(), gomock.Any()).Return(nil, errors.New("invalid password"))
 
 		handler.HandleUserLogin(rr, req)
 
 		assert.Equal(t, http.StatusUnauthorized, rr.Code)
-		mockUseCase.AssertExpectations(t)
+
 	})
 }
 
 func TestHandleGetUserProfile(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		req, err := http.NewRequest("GET", "/users/1/profile/", nil)
@@ -251,7 +192,7 @@ func TestHandleGetUserProfile(t *testing.T) {
 			Email: "test@example.com",
 		}
 
-		mockUseCase.On("GetUserProfile", mock.Anything, 1).Return(expectedResponse, nil)
+		mockUseCase.EXPECT().GetUserProfile(gomock.Any(), 1).Return(expectedResponse, nil)
 
 		handler.HandleGetUserProfile(rr, req)
 
@@ -261,11 +202,13 @@ func TestHandleGetUserProfile(t *testing.T) {
 		json.Unmarshal(rr.Body.Bytes(), &actualResponse)
 		assert.Equal(t, *expectedResponse, actualResponse)
 
-		mockUseCase.AssertExpectations(t)
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		mockUseCase := new(MockUserUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
 		handler := handlers.NewUserHandler(mockUseCase)
 
 		req, err := http.NewRequest("GET", "/users/1/profile/", nil)
@@ -279,11 +222,378 @@ func TestHandleGetUserProfile(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.On("GetUserProfile", mock.Anything, 1).Return(nil, errors.New("user not found"))
+		mockUseCase.EXPECT().GetUserProfile(gomock.Any(), 1).Return(nil, errors.New("user not found"))
 
 		handler.HandleGetUserProfile(rr, req)
 
 		assert.Equal(t, http.StatusNotFound, rr.Code)
-		mockUseCase.AssertExpectations(t)
+
+	})
+}
+
+func TestHandleEditUserProfile(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.UpdateUserProfileRequest{
+			Name: "Updated Name",
+		})
+		req, _ := http.NewRequest("PATCH", "/users/1/profile/edit", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().UpdateUserProfile(gomock.Any(), 1, gomock.Any()).Return(nil)
+
+		handler.HandleEditUserProfile(rr, req)
+		assert.Equal(t, http.StatusNoContent, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.UpdateUserProfileRequest{
+			Name: "Updated Name",
+		})
+		req, _ := http.NewRequest("PATCH", "/users/1/profile/edit", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().UpdateUserProfile(gomock.Any(), 1, gomock.Any()).Return(errors.New("user not found"))
+
+		handler.HandleEditUserProfile(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
+	})
+}
+
+func TestHandleChangeUserPassword(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.ChangePasswordRequest{
+			CurrentPassword: "old",
+			NewPassword:     "new",
+		})
+		req, _ := http.NewRequest("PATCH", "/users/1/profile/change-password", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().ChangePassword(gomock.Any(), 1, gomock.Any()).Return(nil)
+
+		handler.HandleChangeUserPassword(rr, req)
+		assert.Equal(t, http.StatusNoContent, rr.Code)
+	})
+
+	t.Run("incorrect password", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.ChangePasswordRequest{
+			CurrentPassword: "old",
+			NewPassword:     "new",
+		})
+		req, _ := http.NewRequest("PATCH", "/users/1/profile/change-password", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().ChangePassword(gomock.Any(), 1, gomock.Any()).Return(errors.New("current password is incorrect"))
+
+		handler.HandleChangeUserPassword(rr, req)
+		assert.Equal(t, http.StatusUnauthorized, rr.Code)
+	})
+}
+
+func TestHandleDeleteUser(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("DELETE", "/users/1/profile/delete", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		chiCtx.URLParams.Add("userType", "common")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().DeleteUser(gomock.Any(), 1, "common").Return(nil)
+
+		handler.HandleDeleteUser(rr, req)
+		assert.Equal(t, http.StatusNoContent, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("DELETE", "/users/1/profile/delete", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		chiCtx.URLParams.Add("userType", "common")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().DeleteUser(gomock.Any(), 1, "common").Return(errors.New("user not found"))
+
+		handler.HandleDeleteUser(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
+	})
+}
+
+func TestHandleFavorites(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.FavoriteRequest{
+			CulturalID: 1,
+		})
+		req, _ := http.NewRequest("PATCH", "/users/1/profile/favorites", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().ToggleFavorite(gomock.Any(), 1, gomock.Any()).Return(nil)
+
+		handler.HandleFavorites(rr, req)
+		assert.Equal(t, http.StatusNoContent, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.FavoriteRequest{
+			CulturalID: 1,
+		})
+		req, _ := http.NewRequest("PATCH", "/users/1/profile/favorites", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().ToggleFavorite(gomock.Any(), 1, gomock.Any()).Return(errors.New("user not found"))
+
+		handler.HandleFavorites(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
+	})
+}
+
+func TestHandleGetUserFavorites(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("GET", "/users/1/favorites", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		expectedResponse := []userModel.CulturalList{{ID: 1}}
+		mockUseCase.EXPECT().GetUserFavorites(gomock.Any(), 1).Return(expectedResponse, nil)
+
+		handler.HandleGetUserFavorites(rr, req)
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("GET", "/users/1/favorites", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().GetUserFavorites(gomock.Any(), 1).Return(nil, errors.New("user not found"))
+
+		handler.HandleGetUserFavorites(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
+	})
+}
+
+func TestHandleLastSeenFavorite(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.FavoriteRequest{
+			CulturalID: 1,
+		})
+		req, _ := http.NewRequest("PATCH", "/users/favorites/last-seen", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().UpdateLastSeenFavorite(gomock.Any(), 1, gomock.Any()).Return(nil)
+
+		handler.HandleLastSeenFavorite(rr, req)
+		assert.Equal(t, http.StatusNoContent, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		requestBody, _ := json.Marshal(userModel.FavoriteRequest{
+			CulturalID: 1,
+		})
+		req, _ := http.NewRequest("PATCH", "/users/favorites/last-seen", bytes.NewBuffer(requestBody))
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().UpdateLastSeenFavorite(gomock.Any(), 1, gomock.Any()).Return(errors.New("user not found"))
+
+		handler.HandleLastSeenFavorite(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
+	})
+}
+
+func TestHandleGetOrganizerCulturais(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("GET", "/users/culturais/", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		expectedResponse := []userModel.CulturalList{{ID: 1}}
+		mockUseCase.EXPECT().GetOrganizerCulturais(gomock.Any(), 1).Return(expectedResponse, nil)
+
+		handler.HandleGetOrganizerCulturais(rr, req)
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("GET", "/users/culturais/", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().GetOrganizerCulturais(gomock.Any(), 1).Return(nil, errors.New("user not found"))
+
+		handler.HandleGetOrganizerCulturais(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
+	})
+}
+
+func TestHandleGetOrganizerInfo(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("GET", "/users/1/info", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		expectedResponse := &userModel.GetOrganizerInfoResponse{Name: "Organizer"}
+		mockUseCase.EXPECT().GetOrganizerInfo(gomock.Any(), 1).Return(expectedResponse, nil)
+
+		handler.HandleGetOrganizerInfo(rr, req)
+		assert.Equal(t, http.StatusOK, rr.Code)
+	})
+
+	t.Run("user not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockUserUseCase(ctrl)
+		handler := handlers.NewUserHandler(mockUseCase)
+
+		req, _ := http.NewRequest("GET", "/users/1/info", nil)
+		chiCtx := chi.NewRouteContext()
+		chiCtx.URLParams.Add("userID", "1")
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
+
+		rr := httptest.NewRecorder()
+
+		mockUseCase.EXPECT().GetOrganizerInfo(gomock.Any(), 1).Return(nil, errors.New("user not found"))
+
+		handler.HandleGetOrganizerInfo(rr, req)
+		assert.Equal(t, http.StatusNotFound, rr.Code)
 	})
 }

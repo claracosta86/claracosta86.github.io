@@ -11,33 +11,19 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	gomock "go.uber.org/mock/gomock"
 
 	"poc2/back/interface/http/handlers"
 	notificationModel "poc2/back/interface/model"
+	mock "poc2/back/mocks"
 )
-
-// MockNotificationUseCase is a mock of notification.UseCase
-type MockNotificationUseCase struct {
-	mock.Mock
-}
-
-func (m *MockNotificationUseCase) GetNotifications(ctx context.Context, userID int) (*notificationModel.GetNotificationsResponse, error) {
-	args := m.Called(ctx, userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*notificationModel.GetNotificationsResponse), args.Error(1)
-}
-
-func (m *MockNotificationUseCase) MarkNotificationsAsSeen(ctx context.Context, userID int, notificationIDs []int) error {
-	args := m.Called(ctx, userID, notificationIDs)
-	return args.Error(0)
-}
 
 func TestHandleGetUserNotifications(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockNotificationUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockNotificationUseCase(ctrl)
 		handler := handlers.NewNotificationHandler(mockUseCase)
 
 		req, _ := http.NewRequest("GET", "/notifications/1", nil)
@@ -52,7 +38,8 @@ func TestHandleGetUserNotifications(t *testing.T) {
 				{ID: 1, NotificationType: "update"},
 			},
 		}
-		mockUseCase.On("GetNotifications", mock.Anything, 1).Return(expectedResponse, nil)
+
+		mockUseCase.EXPECT().GetNotifications(gomock.Any(), 1).Return(&expectedResponse, nil)
 
 		handler.HandleGetUserNotifications(rr, req)
 
@@ -60,11 +47,13 @@ func TestHandleGetUserNotifications(t *testing.T) {
 		var resp notificationModel.GetNotificationsResponse
 		json.Unmarshal(rr.Body.Bytes(), &resp)
 		assert.Equal(t, expectedResponse, resp)
-		mockUseCase.AssertExpectations(t)
 	})
 
-	t.Run("internal server error", func(t *testing.T) {
-		mockUseCase := new(MockNotificationUseCase)
+	t.Run("error", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockNotificationUseCase(ctrl)
 		handler := handlers.NewNotificationHandler(mockUseCase)
 
 		req, _ := http.NewRequest("GET", "/notifications/1", nil)
@@ -74,18 +63,20 @@ func TestHandleGetUserNotifications(t *testing.T) {
 		chiCtx.URLParams.Add("userID", "1")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		mockUseCase.On("GetNotifications", mock.Anything, 1).Return(nil, errors.New("some error"))
+		mockUseCase.EXPECT().GetNotifications(gomock.Any(), 1).Return(nil, errors.New("some error"))
 
 		handler.HandleGetUserNotifications(rr, req)
 
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 }
 
 func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		mockUseCase := new(MockNotificationUseCase)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockNotificationUseCase(ctrl)
 		handler := handlers.NewNotificationHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(notificationModel.SeenNotificationPost{
@@ -99,16 +90,18 @@ func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 		chiCtx.URLParams.Add("userID", "1")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		mockUseCase.On("MarkNotificationsAsSeen", mock.Anything, 1, []int{1, 2}).Return(nil)
+		mockUseCase.EXPECT().MarkNotificationsAsSeen(gomock.Any(), 1, []int{1, 2}).Return(nil)
 
 		handler.HandleMarkNotificationsAsSeen(rr, req)
 
 		assert.Equal(t, http.StatusNoContent, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 
-	t.Run("internal server error", func(t *testing.T) {
-		mockUseCase := new(MockNotificationUseCase)
+	t.Run("error", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockUseCase := mock.NewMockNotificationUseCase(ctrl)
 		handler := handlers.NewNotificationHandler(mockUseCase)
 
 		requestBody, _ := json.Marshal(notificationModel.SeenNotificationPost{
@@ -122,11 +115,10 @@ func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 		chiCtx.URLParams.Add("userID", "1")
 		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, chiCtx))
 
-		mockUseCase.On("MarkNotificationsAsSeen", mock.Anything, 1, []int{1, 2}).Return(errors.New("some error"))
+		mockUseCase.EXPECT().MarkNotificationsAsSeen(gomock.Any(), 1, []int{1, 2}).Return(errors.New("some error"))
 
 		handler.HandleMarkNotificationsAsSeen(rr, req)
 
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
-		mockUseCase.AssertExpectations(t)
 	})
 }

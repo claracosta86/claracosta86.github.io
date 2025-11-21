@@ -1,12 +1,12 @@
-package handlers_test
+package mocks
 
 import (
 	"context"
 	"reflect"
 
-	model "poc2/back/interface/model"
-
 	gomock "go.uber.org/mock/gomock"
+
+	model "poc2/back/interface/model"
 )
 
 // MockCommentUseCase is a mock of UseCase interface.
@@ -41,7 +41,7 @@ func (m *MockCommentUseCase) CreateComment(ctx context.Context, data model.Creat
 }
 
 // CreateComment indicates an expected call of CreateComment.
-func (mr *MockCommentUseCaseMockRecorder) CreateComment(ctx, data interface{}) *gomock.Call {
+func (mr *MockCommentUseCaseMockRecorder) CreateComment(ctx, data any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateComment", reflect.TypeOf((*MockCommentUseCase)(nil).CreateComment), ctx, data)
 }
@@ -56,7 +56,7 @@ func (m *MockCommentUseCase) GetComments(ctx context.Context, culturalID int, cu
 }
 
 // GetComments indicates an expected call of GetComments.
-func (mr *MockCommentUseCaseMockRecorder) GetComments(ctx, culturalID, culturalType interface{}) *gomock.Call {
+func (mr *MockCommentUseCaseMockRecorder) GetComments(ctx, culturalID, culturalType any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetComments", reflect.TypeOf((*MockCommentUseCase)(nil).GetComments), ctx, culturalID, culturalType)
 }
