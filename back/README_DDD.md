@@ -62,8 +62,6 @@ back/
 │   │   │   ├── cultural_handler.go 
 │   │   │   ├── notification_handler.go 
 │   │   │   └── user_handler.go
-│   │   ├── middlewares
-│   │   │    └── session.go
 │   │   ├── router
 │   │   │    └── router.go
 │   └── model       # HTTP response/request models

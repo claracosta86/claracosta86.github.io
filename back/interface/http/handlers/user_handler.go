@@ -259,32 +259,13 @@ func (h *UserHandler) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "user deleted successfully"})
 }
 
-// // /users/select-type [POST]
-// func (h *UserHandler) HandleUserTypeSelection(w http.ResponseWriter, r *http.Request) {
-// 	if err := r.ParseForm(); err != nil {
-// 		http.Error(w, "bad request", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	userType := r.Form.Get("userType")
-// 	if userType != "organizer" {
-// 		userType = "common"
-// 	}
-
-// 	sess, _ := session.Store.Get(r, sessionName)
-// 	sess.Values[userTypeKey] = userType
-// 	_ = sess.Save(r, w)
-// 	w.Header().Set("Content-Type", "application/json")
-// 	json.NewEncoder(w).Encode(userModel.Type{Type: userType})
-// }
-
 // [400] Invalid data
 // [404] User not found
 // [405] Invalid HTTP method
 // [500] Internal Server Error
 // [204] User favorites saved successfully
 // /users/{userID}/profile/favorites [PATCH]
-func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) HandleUpdateFavorites(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -303,9 +284,9 @@ func (h *UserHandler) HandleFavorites(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userUseCase.ToggleFavorite(r.Context(), userID, request)
+	err = h.userUseCase.UpdateFavorites(r.Context(), userID, request)
 	if err != nil {
-		log.Printf("Error in ToggleFavorite: %v", err)
+		log.Printf("Error in UpdateFavorites: %v", err)
 		if strings.Contains(err.Error(), "user not found") {
 			http.Error(w, "User not found", http.StatusNotFound)
 			return

@@ -57,8 +57,8 @@ func (h *NotificationHandler) HandleGetUserNotifications(w http.ResponseWriter, 
 // [500] Internal Server Error
 // [204] Notifications marked as seen successfully
 // /notifications/{userID}/seen [PATCH]
-// HandleMarkNotificationsAsSeen handles marking notifications as seen
-func (h *NotificationHandler) HandleMarkNotificationsAsSeen(w http.ResponseWriter, r *http.Request) {
+// HandleUpdateNotifications handles marking notifications as seen
+func (h *NotificationHandler) HandleUpdateNotifications(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

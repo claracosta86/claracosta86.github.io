@@ -373,7 +373,7 @@ func TestHandleDeleteUser(t *testing.T) {
 	})
 }
 
-func TestHandleFavorites(t *testing.T) {
+func TestHandleUpdateFavorites(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -391,9 +391,9 @@ func TestHandleFavorites(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.EXPECT().ToggleFavorite(gomock.Any(), 1, gomock.Any()).Return(nil)
+		mockUseCase.EXPECT().UpdateFavorites(gomock.Any(), 1, gomock.Any()).Return(nil)
 
-		handler.HandleFavorites(rr, req)
+		handler.HandleUpdateFavorites(rr, req)
 		assert.Equal(t, http.StatusNoContent, rr.Code)
 	})
 
@@ -414,9 +414,9 @@ func TestHandleFavorites(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockUseCase.EXPECT().ToggleFavorite(gomock.Any(), 1, gomock.Any()).Return(errors.New("user not found"))
+		mockUseCase.EXPECT().UpdateFavorites(gomock.Any(), 1, gomock.Any()).Return(errors.New("user not found"))
 
-		handler.HandleFavorites(rr, req)
+		handler.HandleUpdateFavorites(rr, req)
 		assert.Equal(t, http.StatusNotFound, rr.Code)
 	})
 }

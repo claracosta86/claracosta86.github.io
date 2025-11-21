@@ -118,18 +118,18 @@ func (mr *MockUserUseCaseMockRecorder) DeleteUser(ctx, userID, userType any) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockUserUseCase)(nil).DeleteUser), ctx, userID, userType)
 }
 
-// ToggleFavorite mocks base method.
-func (m *MockUserUseCase) ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error {
+// UpdateFavorites mocks base method.
+func (m *MockUserUseCase) UpdateFavorites(ctx context.Context, userID int, request model.FavoriteRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ToggleFavorite", ctx, userID, request)
+	ret := m.ctrl.Call(m, "UpdateFavorites", ctx, userID, request)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ToggleFavorite indicates an expected call of ToggleFavorite.
-func (mr *MockUserUseCaseMockRecorder) ToggleFavorite(ctx, userID, request any) *gomock.Call {
+// UpdateFavorites indicates an expected call of UpdateFavorites.
+func (mr *MockUserUseCaseMockRecorder) UpdateFavorites(ctx, userID, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ToggleFavorite", reflect.TypeOf((*MockUserUseCase)(nil).ToggleFavorite), ctx, userID, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFavorites", reflect.TypeOf((*MockUserUseCase)(nil).UpdateFavorites), ctx, userID, request)
 }
 
 // GetUserFavorites mocks base method.

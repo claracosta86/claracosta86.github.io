@@ -30,8 +30,8 @@ type UseCase interface {
 	// DeleteUser removes a user account
 	DeleteUser(ctx context.Context, userID int, userType string) error
 
-	// ToggleFavorite adds or removes a cultural item from user's favorites
-	ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error
+	// UpdateFavorites adds or removes a cultural item from user's favorites
+	UpdateFavorites(ctx context.Context, userID int, request model.FavoriteRequest) error
 
 	// GetUserFavorites retrieves a user's favorite cultural items
 	GetUserFavorites(ctx context.Context, userID int) ([]model.CulturalList, error)
@@ -158,9 +158,9 @@ func (uc *useCase) DeleteUser(ctx context.Context, userID int, userType string) 
 	return uc.userService.DeleteUser(ctx, userID)
 }
 
-// ToggleFavorite adds or removes a cultural item from user's favorites
-func (uc *useCase) ToggleFavorite(ctx context.Context, userID int, request model.FavoriteRequest) error {
-	return uc.userService.ToggleFavorite(ctx, userID, request.CulturalType, request.CulturalID, request.IsFavorite)
+// UpdateFavorites adds or removes a cultural item from user's favorites
+func (uc *useCase) UpdateFavorites(ctx context.Context, userID int, request model.FavoriteRequest) error {
+	return uc.userService.UpdateFavorites(ctx, userID, request.CulturalType, request.CulturalID, request.IsFavorite)
 }
 
 // GetUserFavorites retrieves a user's favorite cultural items

@@ -71,7 +71,7 @@ func TestHandleGetUserNotifications(t *testing.T) {
 	})
 }
 
-func TestHandleMarkNotificationsAsSeen(t *testing.T) {
+func TestHandleUpdateNotifications(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -92,7 +92,7 @@ func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 
 		mockUseCase.EXPECT().MarkNotificationsAsSeen(gomock.Any(), 1, []int{1, 2}).Return(nil)
 
-		handler.HandleMarkNotificationsAsSeen(rr, req)
+		handler.HandleUpdateNotifications(rr, req)
 
 		assert.Equal(t, http.StatusNoContent, rr.Code)
 	})
@@ -117,7 +117,7 @@ func TestHandleMarkNotificationsAsSeen(t *testing.T) {
 
 		mockUseCase.EXPECT().MarkNotificationsAsSeen(gomock.Any(), 1, []int{1, 2}).Return(errors.New("some error"))
 
-		handler.HandleMarkNotificationsAsSeen(rr, req)
+		handler.HandleUpdateNotifications(rr, req)
 
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
 	})

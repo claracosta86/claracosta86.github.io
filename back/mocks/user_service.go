@@ -162,18 +162,18 @@ func (mr *MockUserServiceMockRecorder) RemoveTouristAttractionFromAllUsers(ctx, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveTouristAttractionFromAllUsers", reflect.TypeOf((*MockUserService)(nil).RemoveTouristAttractionFromAllUsers), ctx, attractionIDs)
 }
 
-// ToggleFavorite mocks base method.
-func (m *MockUserService) ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error {
+// UpdateFavorites mocks base method.
+func (m *MockUserService) UpdateFavorites(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ToggleFavorite", ctx, userID, culturalType, culturalID, isFavorite)
+	ret := m.ctrl.Call(m, "UpdateFavorites", ctx, userID, culturalType, culturalID, isFavorite)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ToggleFavorite indicates an expected call of ToggleFavorite.
-func (mr *MockUserServiceMockRecorder) ToggleFavorite(ctx, userID, culturalType, culturalID, isFavorite any) *gomock.Call {
+// UpdateFavorites indicates an expected call of UpdateFavorites.
+func (mr *MockUserServiceMockRecorder) UpdateFavorites(ctx, userID, culturalType, culturalID, isFavorite any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ToggleFavorite", reflect.TypeOf((*MockUserService)(nil).ToggleFavorite), ctx, userID, culturalType, culturalID, isFavorite)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFavorites", reflect.TypeOf((*MockUserService)(nil).UpdateFavorites), ctx, userID, culturalType, culturalID, isFavorite)
 }
 
 // UpdateLastSeenFavorite mocks base method.

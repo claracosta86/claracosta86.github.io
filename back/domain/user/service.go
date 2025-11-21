@@ -32,8 +32,8 @@ type Service interface {
 	// DeleteUser removes a user from the system
 	DeleteUser(ctx context.Context, id int) error
 
-	// ToggleFavorite adds or removes a cultural item from user's favorites
-	ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error
+	// UpdateFavorites adds or removes a cultural item from user's favorites
+	UpdateFavorites(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error
 
 	// GetUserFavorites retrieves a user's favorite cultural items
 	GetUserFavorites(ctx context.Context, userID int) ([]CulturalList, error)
@@ -153,7 +153,7 @@ func (s *service) DeleteUser(ctx context.Context, id int) error {
 	return s.repository.DeleteUser(ctx, id)
 }
 
-func (s *service) ToggleFavorite(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error {
+func (s *service) UpdateFavorites(ctx context.Context, userID int, culturalType string, culturalID int, isFavorite bool) error {
 	// Check if user exists
 	_, err := s.repository.FindByID(ctx, userID)
 	if err != nil {

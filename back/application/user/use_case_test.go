@@ -247,7 +247,7 @@ func TestDeleteUser(t *testing.T) {
 	})
 }
 
-func TestToggleFavorite(t *testing.T) {
+func TestUpdateFavorites(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -264,9 +264,9 @@ func TestToggleFavorite(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-		mockUserService.EXPECT().ToggleFavorite(ctx, userID, req.CulturalType, req.CulturalID, req.IsFavorite).Return(nil)
+		mockUserService.EXPECT().UpdateFavorites(ctx, userID, req.CulturalType, req.CulturalID, req.IsFavorite).Return(nil)
 
-		err := useCase.ToggleFavorite(ctx, userID, req)
+		err := useCase.UpdateFavorites(ctx, userID, req)
 		assert.NoError(t, err)
 	})
 }
