@@ -1,10 +1,10 @@
 import { useUser } from '../contexts/UserContext';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import NotificationModal from './NotificationModal/NotificationModal';
-import ConfirmModal from './ConfirmModal/ConfirmComment';
-import Header from './Layout/Header';
-import Footer from './Layout/Footer';
+import NotificationModal from '../components/NotificationModal/NotificationModal';
+import ConfirmModal from '../components/ConfirmModal/ConfirmComment';
+import Header from '../components/Layout/Header';
+import Footer from '../components/Layout/Footer';
 import { useNotifications } from '../hooks/useNotifications';
 import './styles/create.css';
 
@@ -194,21 +194,21 @@ const EditCulturalPage = () => {
 
   return (
     <>
-      <NotificationModal
-        isOpen={isNotificationModalOpen}
-        onClose={markNotificationsAsSeen}
-        notifications={notifications}
-        navigate={navigate}
-        userID={userID}
-        userType={userType}
-      />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
-        onConfirm={handleConfirmLogout}
-      />
-
       <section className="screen" id="tela-home">
+        <NotificationModal
+          isOpen={isNotificationModalOpen}
+          onClose={markNotificationsAsSeen}
+          notifications={notifications}
+          navigate={navigate}
+          userID={userID}
+          userType={userType}
+        />
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={closeConfirmModal}
+          onConfirm={handleConfirmLogout}
+        />
+
         <Header
           onLogoutClick={() => setConfirmModalOpen(true)}
           onNotificationClick={fetchNotifications}

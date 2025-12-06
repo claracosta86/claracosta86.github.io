@@ -26,11 +26,6 @@ body {
   align-items: center;
 }
 
-/* Logo */
-.logo-img {
-  width: 120px; 
-  margin-top: 20px;
-}
 
 /* Caixa de login */
 .login-box {

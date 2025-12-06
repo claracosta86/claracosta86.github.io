@@ -1,10 +1,10 @@
 // src/components/ManageCulturalPage.jsx
 import { useUser } from '../contexts/UserContext';
-import RemoveModal from './RemoveModal/RemoveFromApp';
-import NotificationModal from './NotificationModal/NotificationModal';
-import ConfirmModal from './ConfirmModal/ConfirmComment';
-import Header from './Layout/Header';
-import Footer from './Layout/Footer';
+import RemoveModal from '../components/RemoveModal/RemoveFromApp';
+import NotificationModal from '../components/NotificationModal/NotificationModal';
+import ConfirmModal from '../components/ConfirmModal/ConfirmComment';
+import Header from '../components/Layout/Header';
+import Footer from '../components/Layout/Footer';
 import { useNotifications } from '../hooks/useNotifications';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -133,26 +133,25 @@ const ManageCulturalPage = () => {
 
   return (
     <>
-      <NotificationModal
-        isOpen={isNotificationModalOpen}
-        onClose={markNotificationsAsSeen}
-        notifications={notifications}
-        navigate={navigate}
-        userID={userID}
-        userType={userType}
-      />
-      <RemoveModal
-        isOpen={isRemoveModalOpen}
-        onClose={closeRemoveModal}
-        onConfirm={handleConfirmRemove}
-      />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
-        onConfirm={handleConfirmLogout}
-      />
-
       <section className="screen" id="tela-home">
+        <NotificationModal
+          isOpen={isNotificationModalOpen}
+          onClose={markNotificationsAsSeen}
+          notifications={notifications}
+          navigate={navigate}
+          userID={userID}
+          userType={userType}
+        />
+        <RemoveModal
+          isOpen={isRemoveModalOpen}
+          onClose={closeRemoveModal}
+          onConfirm={handleConfirmRemove}
+        />
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={closeConfirmModal}
+          onConfirm={handleConfirmLogout}
+        />
         <Header
           onLogoutClick={() => setConfirmModalOpen(true)}
           onNotificationClick={fetchNotifications}

@@ -2,10 +2,10 @@
 import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import NotificationModal from './NotificationModal/NotificationModal';
-import ConfirmModal from './ConfirmModal/ConfirmComment';
-import Header from './Layout/Header';
-import Footer from './Layout/Footer';
+import NotificationModal from '../components/NotificationModal/NotificationModal';
+import ConfirmModal from '../components/ConfirmModal/ConfirmComment';
+import Header from '../components/Layout/Header';
+import Footer from '../components/Layout/Footer';
 import { useNotifications } from '../hooks/useNotifications';
 import './styles/card.css';
 import favoriteIcon from '../assets/favorite-icon.png';
@@ -165,21 +165,21 @@ const CardPage = () => {
 
   return (
     <>
-      <NotificationModal
-        isOpen={isNotificationModalOpen}
-        onClose={markNotificationsAsSeen}
-        notifications={notifications}
-        navigate={navigate}
-        userID={userID}
-        userType={userType}
-      />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
-        onConfirm={handleConfirmLogout}
-      />
-
       <section className="screen" id="tela-home">
+        <NotificationModal
+          isOpen={isNotificationModalOpen}
+          onClose={markNotificationsAsSeen}
+          notifications={notifications}
+          navigate={navigate}
+          userID={userID}
+          userType={userType}
+        />
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={closeConfirmModal}
+          onConfirm={handleConfirmLogout}
+        />
+
         <Header
           onLogoutClick={() => setConfirmModalOpen(true)}
           onNotificationClick={fetchNotifications}
@@ -247,9 +247,12 @@ const CardPage = () => {
             </div>
 
             <div id="organizer-container">
-              <button className="see-organizer-btn">
-                <Link to={`/organizer/${culturalData.organizer.id}`}>Conhecer Organizador</Link>
-              </button>
+              <Link 
+                to={`/organizer/${culturalData.organizer.id}`} 
+                className="see-organizer-btn"
+              >
+                Conhecer Organizador
+              </Link>
             </div>
 
             <div className="comments-section">

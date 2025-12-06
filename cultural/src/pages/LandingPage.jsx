@@ -2,7 +2,7 @@
 import { useUser } from '../contexts/UserContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import InfoModal from './InformationModal/UserTypeModal';
+import InfoModal from '../components/InformationModal/UserTypeModal';
 import logo from '../assets/logo.png';
 import infoIcon from '../assets/blueinfo-icon.png';
 import hooverIcon from '../assets/redinfo-icon.png';
@@ -24,49 +24,56 @@ const LandingPage = () => {
 
   return (
     <>
-      <InfoModal 
-        isOpen={isInfoModalOpen} 
-        onClose={() => setInfoModalOpen(false)} 
-      />
-      <main className="screen">
+      <main className="landing-screen">
+        <InfoModal 
+          isOpen={isInfoModalOpen} 
+          onClose={() => setInfoModalOpen(false)} 
+        />
         <div className="landing-container">
-          <img src={logo} alt="Logo Cultural" className="logo-img" />
-          <div className="box">
+          <img src={logo} alt="Logo Cultural" className="landing-logo" />
+          <div className="landing-box">
             <div className="welcome-container">
               <h2>Bem-vind@!</h2>
               <button
                 onClick={() => setInfoModalOpen(true)}
-                className="info-btn"
-                aria-label="Ver informação sobre tipos de usuário"
+                id="userType-information-button"
+                aria-label="Ver informações sobre os tipos de usuário"
                 onMouseEnter={() => setIconHovered(true)}
                 onMouseLeave={() => setIconHovered(false)}
               >
                 <img
                   src={isIconHovered ? hooverIcon : infoIcon}
-                  alt="Informação tipos de usuário"
-                  className="info-img"
+                  alt=""
+                  className="userType-information"
                 />
               </button>
             </div>
             <form>
-              <div className="actions">
+              <div className="landing-actions">
                 <button
                   type="button"
                   onClick={() => handleUserTypeSelection('common')}
-                  className="btn"
+                  className="landing-button"
+                  aria-label="Entrar como Usuário Comum"
                 >
                   Sou Usuário
                 </button>
                 <button
                   type="button"
                   onClick={() => handleUserTypeSelection('organizer')}
-                  className="btn"
+                  className="landing-button"
+                  aria-label="Entrar como Organizador de Eventos"
                 >
                   Sou Organizador
                 </button>
               </div>
-              <p className="separator"> ou </p>
-              <button type="button" onClick={() => navigate('/user/register')} className="btn">
+              <p className="actions-separator" aria-hidden="true"> ou </p>
+              <button 
+                type="button" 
+                onClick={() => navigate('/user/register')} 
+                className="landing-button"
+                aria-label="Criar uma nova conta"
+              >
                 Criar Conta
               </button>
             </form>

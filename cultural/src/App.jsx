@@ -1,23 +1,23 @@
 import './styles/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import LoginPage from './components/LoginPage'; 
-import RegisterPage from './components/RegisterPage';
-import PasswordRecoveryPage from './components/PasswordRecoveryPage';
-import HomePage from './components/HomePage';
-import ProfilePage from './components/ProfilePage';
-import EditProfilePage from './components/EditProfilePage';
-import ChangePasswordPage from './components/ChangePasswordPage';
-import FavoritesPage from './components/FavoritesPage';
-import ManageCulturalPage from './components/ManageCulturalPage';
-import CardPage from './components/CardPage';
-import CreateCulturalPage from './components/CreateCulturalPage';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage'; 
+import RegisterPage from './pages/RegisterPage';
+import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import EditProfilePage from './pages/EditProfilePage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import FavoritesPage from './pages/FavoritesPage';
+import ManageCulturalPage from './pages/ManageCulturalPage';
+import CardPage from './pages/CardPage';
+import CreateCulturalPage from './pages/CreateCulturalPage';
 import UserProvider from './contexts/UserContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import OrganizerPage from './components/OrganizerPage';
-import EditCulturalPage from './components/EditCulturalPage';
-import CommentPage from './components/CommentPage';
-import SearchPage from './components/SearchPage';
+import OrganizerPage from './pages/OrganizerPage';
+import EditCulturalPage from './pages/EditCulturalPage';
+import CommentPage from './pages/CommentPage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   return (

@@ -2,10 +2,10 @@
 import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NotificationModal from './NotificationModal/NotificationModal';
-import ConfirmModal from './ConfirmModal/ConfirmComment';
-import Header from './Layout/Header';
-import Footer from './Layout/Footer';
+import NotificationModal from '../components/NotificationModal/NotificationModal';
+import ConfirmModal from '../components/ConfirmModal/ConfirmComment';
+import Header from '../components/Layout/Header';
+import Footer from '../components/Layout/Footer';
 import { useNotifications } from '../hooks/useNotifications';
 import './styles/profile.css';
 
@@ -42,9 +42,8 @@ const ChangePasswordPage = () => {
   }, [userID, userType]);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-
     setError('');
+    event.preventDefault();
 
     if (newPassword.length < 8) {
       setError('A senha deve ter pelo menos 8 caracteres.');
@@ -102,25 +101,27 @@ const ChangePasswordPage = () => {
   };
 
   const handleGoBackClick = () => {
+    setError('');
     navigate(-1);
   };
 
   return (
     <>
-      <NotificationModal
-        isOpen={isNotificationModalOpen}
-        onClose={markNotificationsAsSeen}
-        notifications={notifications}
-        navigate={navigate}
-        userID={userID}
-        userType={userType}
-      />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
-        onConfirm={handleConfirmLogout}
-      />
       <section className="screen" id="tela-home">
+        <NotificationModal
+          isOpen={isNotificationModalOpen}
+          onClose={markNotificationsAsSeen}
+          notifications={notifications}
+          navigate={navigate}
+          userID={userID}
+          userType={userType}
+        />
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={closeConfirmModal}
+          onConfirm={handleConfirmLogout}
+        />
+
         <Header
           onLogoutClick={() => setConfirmModalOpen(true)}
           onNotificationClick={fetchNotifications}
@@ -164,7 +165,7 @@ const ChangePasswordPage = () => {
                 <button onClick={handleGoBackClick} className="profile-btn">
                   Cancelar
                 </button>
-                <button type="submit" className="profile-btn">
+                <button onClick={handleSubmit} className="profile-btn">
                   Confirmar
                 </button>
               </div>

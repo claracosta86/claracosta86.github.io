@@ -1,20 +1,20 @@
 package main
 
 import (
-    "log"
-    "net/http"
 	"database/sql"
+	"log"
+	"net/http"
 
-    _ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 
-    "poc2/back/interface/http/router"
-    "poc2/back/infrastructure/container"
+	"poc2/back/infrastructure/container"
+	"poc2/back/interface/http/router"
 )
 
 func main() {
-    log.Println("Server running at http://localhost:8080/")
+	log.Println("Server running at http://localhost:8080/")
 
-	dsn := "claracosta86:sua_senha@tcp(127.0.0.1:3306)/POCII"
+	dsn := "claracosta86:bolinho@tcp(127.0.0.1:3306)/POCII"
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)

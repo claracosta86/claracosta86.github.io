@@ -41,8 +41,10 @@
 }
 
 .error-message {
+  font-style: italic;
+  font-weight: bold;
   color: red;
-  text-align: center;
+  font-size: 14px;
 }
 
 .results-container {

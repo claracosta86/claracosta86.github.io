@@ -1,0 +1,143 @@
+/* Moldura de celular */
+.recovery-screen {
+  width: 375px; 
+  height: 812px;
+  background-color: #f7d75e;
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* Caixa de login */
+.recovery-box {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 25px 20px;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: auto; 
+  margin-bottom: auto;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* Campos de entrada */
+.login-box label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #346aff;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.login-box .password-container input {
+  width: 100%;
+  padding-right: 45px;
+  box-sizing: border-box; 
+}
+
+.password-toggle {
+  position: absolute;
+  bottom: 10px; 
+  right: 12px;  
+  
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle img {
+  width: 20px; 
+  height: auto; 
+}
+
+.password-toggle:focus {
+  outline: none;
+}
+
+.toggle-btn{
+  background: none;
+  border: none;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.login-actions-row {
+  display: flex;
+  gap: 10px; 
+}
+
+
+/* Botão Login */
+.login-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+  display: block;
+}
+
+.login-btn:hover {
+  background-color: #2653cc;
+}
+
+.login-actions-row .login-btn {
+  flex: 1; 
+}
+
+/* Erros */
+
+label.required {
+  content: " *";
+}
+
+.error {
+  font-style: italic;
+  font-weight: bold;
+  color: red;
+  font-size: 14px;
+}

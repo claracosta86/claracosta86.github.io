@@ -1,11 +1,11 @@
 // src/components/CardPage.jsx
 import { useUser } from '../contexts/UserContext';
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import NotificationModal from './NotificationModal/NotificationModal';
-import ConfirmModal from './ConfirmModal/ConfirmComment';
-import Header from './Layout/Header';
-import Footer from './Layout/Footer';
+import { useNavigate, useParams } from 'react-router-dom';
+import NotificationModal from '../components/NotificationModal/NotificationModal';
+import ConfirmModal from '../components/ConfirmModal/ConfirmComment';
+import Header from '../components/Layout/Header';
+import Footer from '../components/Layout/Footer';
 import { useNotifications } from '../hooks/useNotifications';
 import './styles/card.css';
 import './styles/favorites.css';
@@ -100,20 +100,21 @@ const CommentPage = () => {
 
   return (
     <>
-      <NotificationModal
-        isOpen={isNotificationModalOpen}
-        onClose={markNotificationsAsSeen}
-        notifications={notifications}
-        navigate={navigate}
-        userID={userID}
-        userType={userType}
-      />
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
-        onConfirm={handleConfirmLogout}
-      />
       <section className="screen" id="tela-home">
+        <NotificationModal
+          isOpen={isNotificationModalOpen}
+          onClose={markNotificationsAsSeen}
+          notifications={notifications}
+          navigate={navigate}
+          userID={userID}
+          userType={userType}
+        />
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={closeConfirmModal}
+          onConfirm={handleConfirmLogout}
+        />
+
         <Header
           onLogoutClick={() => setConfirmModalOpen(true)}
           onNotificationClick={fetchNotifications}
@@ -123,7 +124,7 @@ const CommentPage = () => {
           <section className="main-content">
             <div key={culturalData.id} className="favorite-card">
               <img
-                src={`/thumb-size/${culturalData.image}`}
+                src={`http://localhost:8080/static/culturalthumbs/${culturalData.image}`}
                 alt={culturalData.title}
                 className="favorite-img"
               />
@@ -175,7 +176,7 @@ const CommentPage = () => {
                 Voltar
               </button>
               <button onClick={handleAddCommentClick} className="down-btn">
-                Adicionar Comentário
+                Adicionar
               </button>
             </div>
           </div>

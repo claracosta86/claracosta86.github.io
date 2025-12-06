@@ -1,0 +1,104 @@
+.landing-screen {
+  position: relative;
+  width: 375px; 
+  max-height: 812px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  background-color: #f7d75e;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 20px; 
+}
+
+.landing-box {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 30px 20px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-bottom: 115px;
+}
+
+.landing-box h2 {
+  white-space: nowrap;
+  text-align: center;
+  margin-left: 60px;
+}
+
+.landing-logo {
+  width: 120px; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.actions-separator {
+  display: flex; 
+  align-items: center; 
+  text-align: center;
+  color: #000;
+  font-size: 14px;
+  margin: 25px 0; 
+}
+
+.actions-separator::before,
+.actions-separator::after {
+  content: ''; 
+  flex: 1; 
+  border-bottom: 1px solid #dcdcdc; 
+}
+
+.actions-separator::before {
+  margin-right: 15px;
+}
+
+.actions-separator::after {
+  margin-left: 15px;
+}
+
+.landing-button {
+  display: block;
+  text-align: center;
+  background-color: #346aff;
+  color: white;
+  padding: 10px 0;            
+  margin-top: 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  width: 80%;
+  max-width: 300px;         
+  margin-left: auto;         
+  margin-right: auto;
+}
+
+.welcome-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.userType-information {
+  width: 30%;
+}

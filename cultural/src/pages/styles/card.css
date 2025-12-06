@@ -196,6 +196,8 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
     margin-bottom: 20px;
+    text-decoration: none; /* Remove sublinhado do link */
+    text-align: center;    /* Centraliza o texto */
 }
 
 .see-organizer-btn:hover {

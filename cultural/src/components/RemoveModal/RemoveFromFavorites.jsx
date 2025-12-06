@@ -1,4 +1,4 @@
-import React from 'react';  
+import './remove.css';
 
 const RemoveModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;

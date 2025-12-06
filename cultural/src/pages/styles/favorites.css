@@ -123,39 +123,4 @@
   background-color: #d90429; /* Uma cor um pouco diferente no hover */
 }
 
-.modal-confirm-btn {  
-  background-color: #ff0000;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  min-width: 110px;
-  text-align: center;
-  transition: background 0.2s;
-  margin-left: 10px;
-}
-
-.modal-confirm-btn:hover {
-  background-color: #d90429;
-}
-
-.modal-close-btn {
-  background-color: #346aff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  min-width: 110px;
-  text-align: center;
-  transition: background 0.2s;
-}
-
-.modal-close-btn:hover {
-  background-color: #2653cc;
-}
-
 

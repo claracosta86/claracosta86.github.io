@@ -13,6 +13,7 @@ button {
 
 /* Moldura de celular */
 .screen {
+  position: relative;
   width: 375px; 
   height: 812px;
   background-color: #f7d75e;
