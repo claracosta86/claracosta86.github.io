@@ -6,6 +6,7 @@
 > É preciso fazer o clone do repositório primeiro e ter as seguintes instalaçãos em sua máquina local:
 > 1. [go](https://go.dev/);
 > 2. node.js;
+>    
 > Esse projeto foi desenvolvido em um ambiente Ubunto WSL, por isso pressupõe-se o uso do _sudo_.
 
 
