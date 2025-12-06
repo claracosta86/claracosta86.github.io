@@ -69,19 +69,15 @@ Será pedido a senha do **sudo** e do **banco de dados**, a qual foi definida ac
 mysql -u claracosta86 -p
 
 ```
-6. Entre no banco de dados criado;
-```
+6. Entre no banco de dados criado e confirme que todas as tabelas foram criadas:
+```sql
 USE POCII;
-```
-
-6. Confirme que todas as tabelas foram criadas: 
-```
 SHOW TABLES;
 ```
 
 A resposta deve ser essa:
 
-```
+```sql
 +---------------------+
 | Tables_in_POCII     |
 +---------------------+
